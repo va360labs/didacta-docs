@@ -1,48 +1,93 @@
 /* ============================================================
-   Paleta de marca de Didacta.
-   Cambia estas variables si evoluciona el branding de didacta.io.
+   Identidad visual de Didacta — paleta y tipografías oficiales
+   (fuente: guía de identidad + design tokens del producto)
+     Azul noche      #0D1B2A   cabeceras / fondos de marca
+     Azul confianza  #1E5AA8   color primario
+     Azul equilibrio #2E7DCE   apoyo
+     Verde crecim.   #18B5A8   acento (subrayado del logo)
+     Coral energía   #FF6F61   énfasis puntual
+     Tipos: Sora (display) · Inter (texto)
    ============================================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  --didacta-primary: #4f46e5;        /* índigo — color principal */
-  --didacta-primary-dark: #4338ca;
-  --didacta-accent: #f59e0b;         /* ámbar — acentos/CTA */
+  --didacta-noche: #0d1b2a;
+  --didacta-noche-2: #0a1421;
+  --didacta-confianza: #1e5aa8;
+  --didacta-equilibrio: #2e7dce;
+  --didacta-verde: #18b5a8;
+  --didacta-coral: #ff6f61;
 }
 
-[data-md-color-scheme="default"] {
-  --md-primary-fg-color: var(--didacta-primary);
-  --md-primary-fg-color--dark: var(--didacta-primary-dark);
-  --md-accent-fg-color: var(--didacta-accent);
-  --md-typeset-a-color: var(--didacta-primary);
+/* ---------- Colores del tema ---------- */
+
+[data-md-color-scheme='default'] {
+  --md-primary-fg-color: var(--didacta-noche);
+  --md-primary-fg-color--dark: var(--didacta-noche-2);
+  --md-accent-fg-color: var(--didacta-verde);
+  --md-typeset-a-color: var(--didacta-confianza);
+  --md-footer-bg-color: var(--didacta-noche);
+  --md-footer-bg-color--dark: var(--didacta-noche-2);
 }
 
-[data-md-color-scheme="slate"] {
-  --md-primary-fg-color: var(--didacta-primary);
-  --md-accent-fg-color: var(--didacta-accent);
-  --md-typeset-a-color: #818cf8;
+[data-md-color-scheme='slate'] {
+  --md-primary-fg-color: var(--didacta-noche);
+  --md-primary-fg-color--dark: var(--didacta-noche-2);
+  --md-accent-fg-color: var(--didacta-verde);
+  --md-typeset-a-color: #6ea8e8;
+  --md-default-bg-color: #101a26;
+  --md-footer-bg-color: var(--didacta-noche-2);
 }
 
-/* Tablas de referencia (variables de entorno, catálogo de módulos):
-   permitir scroll horizontal sin romper el layout. */
-.md-typeset table:not([class]) {
-  font-size: 0.72rem;
+/* ---------- Tipografía de marca ---------- */
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-header__topic,
+.md-nav__title {
+  font-family: 'Sora', 'Inter', system-ui, sans-serif;
 }
 
-/* Chips de edición (Community / Enterprise / Cloud) */
-.didacta-chip {
-  display: inline-block;
-  padding: 0.05rem 0.5rem;
-  border-radius: 1rem;
-  font-size: 0.65rem;
+.md-typeset h1 {
+  color: var(--didacta-noche);
   font-weight: 700;
-  vertical-align: middle;
 }
-.didacta-chip--community { background: #dcfce7; color: #166534; }
-.didacta-chip--ee { background: #fef3c7; color: #92400e; }
-[data-md-color-scheme="slate"] .didacta-chip--community { background: #14532d; color: #bbf7d0; }
-[data-md-color-scheme="slate"] .didacta-chip--ee { background: #78350f; color: #fde68a; }
+[data-md-color-scheme='slate'] .md-typeset h1 {
+  color: #e8eef6;
+}
 
-/* Portada: tarjetas de la home */
+/* Subrayado verde de marca bajo el h1, como en el logo */
+.md-typeset h1::after {
+  content: '';
+  display: block;
+  width: 3.2rem;
+  height: 0.18rem;
+  margin-top: 0.45rem;
+  border-radius: 0.1rem;
+  background: var(--didacta-verde);
+}
+
+/* Logo del header (anagrama) con esquinas suaves */
+.md-header__button.md-logo img {
+  border-radius: 0.25rem;
+  height: 1.6rem;
+  width: auto;
+}
+
+/* ---------- Portada ---------- */
+
+.didacta-hero {
+  text-align: center;
+  margin: 1.5rem 0 0.5rem;
+}
+.didacta-hero img {
+  max-width: min(26rem, 80%);
+}
+
+/* Tarjetas de la home */
 .didacta-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
@@ -52,22 +97,48 @@
 .didacta-cards > a {
   display: block;
   border: 1px solid var(--md-default-fg-color--lightest);
-  border-radius: 0.4rem;
+  border-radius: 0.5rem;
   padding: 1rem;
   color: var(--md-default-fg-color) !important;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
 .didacta-cards > a:hover {
-  border-color: var(--didacta-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-color: var(--didacta-equilibrio);
+  box-shadow: 0 4px 14px rgba(13, 27, 42, 0.12);
+  transform: translateY(-1px);
 }
 .didacta-cards h3 {
   margin: 0 0 0.3rem 0;
   font-size: 0.8rem;
-  color: var(--didacta-primary);
+  font-family: 'Sora', sans-serif;
+  color: var(--didacta-confianza);
+}
+[data-md-color-scheme='slate'] .didacta-cards h3 {
+  color: #6ea8e8;
 }
 .didacta-cards p {
   margin: 0;
   font-size: 0.7rem;
   color: var(--md-default-fg-color--light);
 }
+
+/* ---------- Componentes de referencia ---------- */
+
+/* Tablas grandes (variables de entorno, endpoints) */
+.md-typeset table:not([class]) {
+  font-size: 0.72rem;
+}
+
+/* Chips de edición */
+.didacta-chip {
+  display: inline-block;
+  padding: 0.05rem 0.55rem;
+  border-radius: 1rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+.didacta-chip--community { background: #d7f4f1; color: #0c5d56; }
+.didacta-chip--ee { background: #ffe3df; color: #a3392e; }
+[data-md-color-scheme='slate'] .didacta-chip--community { background: #0c4d47; color: #a9ede6; }
+[data-md-color-scheme='slate'] .didacta-chip--ee { background: #6e2a22; color: #ffcdc7; }

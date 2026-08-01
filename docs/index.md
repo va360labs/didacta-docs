@@ -4,6 +4,11 @@ hide:
   - toc
 ---
 
+<p class="didacta-hero">
+  <img src="assets/logo.png#only-light" alt="Didacta — Plataforma educativa modular, abierta y preparada para escalar">
+  <img src="assets/logo-blanco.png#only-dark" alt="Didacta — Plataforma educativa modular, abierta y preparada para escalar">
+</p>
+
 # Documentación de Didacta
 
 **Didacta** es un LMS (Learning Management System) fair-code de nueva generación: código fuente disponible, arquitectura modular, sin licencias por usuario y con cumplimiento legal (Fundae, RGPD, WCAG 2.2 AA) integrado en el núcleo.

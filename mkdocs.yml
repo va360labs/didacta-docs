@@ -16,8 +16,12 @@ edit_uri: ""
 theme:
   name: material
   language: es
+  logo: assets/anagrama.png
+  favicon: assets/anagrama.png
+  font:
+    text: Inter
+    code: JetBrains Mono
   icon:
-    logo: material/school
     repo: fontawesome/brands/github
   palette:
     - media: "(prefers-color-scheme: light)"
@@ -109,7 +113,32 @@ nav:
       - Telemetría: configuracion/telemetria.md
   - Módulos:
       - modulos/index.md
-      - Catálogo de módulos: modulos/catalogo.md
+      - Catálogo de módulos:
+          - modulos/catalogo/index.md
+          - Cursos y catálogo: modulos/catalogo/courses.md
+          - Player y progreso: modulos/catalogo/learning.md
+          - Quizzes y exámenes: modulos/catalogo/assessments.md
+          - Certificados: modulos/catalogo/certificates.md
+          - Grupos de acceso: modulos/catalogo/access-groups.md
+          - Inscripción de miembros: modulos/catalogo/member-registration.md
+          - SSO desde WordPress: modulos/catalogo/wp-sso.md
+          - Stripe Checkout: modulos/catalogo/billing.md
+          - Suscripciones: modulos/catalogo/subscriptions.md
+          - Conexiones de pago: modulos/catalogo/payment-connections.md
+          - Referidos: modulos/catalogo/referrals.md
+          - Comunidad: modulos/catalogo/community.md
+          - Mensajería: modulos/catalogo/messaging.md
+          - Puntos y retos: modulos/catalogo/gamification.md
+          - Biblioteca de recursos: modulos/catalogo/resources.md
+          - Encuestas y NPS: modulos/catalogo/surveys.md
+          - Tutor IA: modulos/catalogo/ai-tutor.md
+          - Corrección IA: modulos/catalogo/ai-grader.md
+          - Generador IA: modulos/catalogo/ai-content.md
+          - Aula virtual Zoom: modulos/catalogo/zoom-live.md
+          - Fundae: modulos/catalogo/fundae.md
+          - Personalización visual: modulos/catalogo/theming.md
+          - Migrador LearnDash: modulos/catalogo/migrator-learndash.md
+          - Hello World: modulos/catalogo/hello-world.md
       - Gestionar módulos: modulos/gestion.md
       - Módulos de terceros: modulos/modulos-de-terceros.md
       - Crear un módulo:
@@ -124,7 +153,13 @@ nav:
       - api/index.md
       - Autenticación: api/autenticacion.md
       - Convenciones: api/convenciones.md
-      - Referencia de endpoints: api/referencia.md
+      - Referencia de endpoints:
+          - api/referencia/index.md
+          - Núcleo y transversales: api/referencia/nucleo.md
+          - Administración: api/referencia/administracion.md
+          - Aprendizaje: api/referencia/aprendizaje.md
+          - Comunidad y personas: api/referencia/comunidad.md
+          - Pagos, aula e IA: api/referencia/pagos-directo-ia.md
   - Enterprise:
       - enterprise/index.md
       - Capabilities: enterprise/capabilities.md

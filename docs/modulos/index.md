@@ -50,6 +50,6 @@ Un manifest declara dependencias **duras** (`dependencies.modules` — sin ellas
 
 ## Siguiente paso
 
-- [Catálogo de los 24 módulos](catalogo.md)
+- [Catálogo de los 24 módulos](catalogo/index.md)
 - [Gestionar módulos en tu instalación](gestion.md)
 - [Crear un módulo](crear-un-modulo/index.md)
