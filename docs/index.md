@@ -15,38 +15,13 @@ hide:
 
 Esta documentación cubre todo lo necesario para instalar, operar y extender tu propia instancia de **Didacta Community**, y para entender qué añaden las ediciones **Enterprise** y **Cloud**.
 
-<div class="didacta-cards" markdown>
-
-<a href="primeros-pasos/">
-<h3>🚀 Primeros pasos</h3>
-<p>Qué es Didacta, cómo se organiza el producto y sus tres ediciones.</p>
-</a>
-
-<a href="instalacion/">
-<h3>📦 Instalación y despliegue</h3>
-<p>Docker Compose en 5 minutos, docker run manual, asistente de configuración, actualizaciones y copias de seguridad.</p>
-</a>
-
-<a href="configuracion/">
-<h3>⚙️ Configuración</h3>
-<p>Referencia 1 a 1 de todas las variables de entorno, base de datos, almacenamiento, email, IA y branding.</p>
-</a>
-
-<a href="modulos/">
-<h3>🧩 Módulos</h3>
-<p>Catálogo completo de módulos, cómo gestionarlos y la guía para crear el tuyo.</p>
-</a>
-
-<a href="api/">
-<h3>🔌 API</h3>
-<p>Autenticación, convenciones multi-tenant y referencia de la API REST.</p>
-</a>
-
-<a href="enterprise/">
-<h3>🏢 Enterprise</h3>
-<p>Capabilities Enterprise, cómo funciona la licencia y cómo activarla.</p>
-</a>
-
+<div class="didacta-cards">
+  <a href="primeros-pasos/"><h3>🚀 Primeros pasos</h3><p>Qué es Didacta, cómo se organiza el producto y sus tres ediciones.</p></a>
+  <a href="instalacion/"><h3>📦 Instalación y despliegue</h3><p>Docker Compose en 5 minutos, docker run manual, asistente de configuración, actualizaciones y copias de seguridad.</p></a>
+  <a href="configuracion/"><h3>⚙️ Configuración</h3><p>Referencia 1 a 1 de todas las variables de entorno, base de datos, almacenamiento, email, IA y branding.</p></a>
+  <a href="modulos/"><h3>🧩 Módulos</h3><p>Catálogo completo con una página por módulo, cómo gestionarlos y la guía para crear el tuyo.</p></a>
+  <a href="api/"><h3>🔌 API</h3><p>Autenticación, convenciones multi-tenant y referencia endpoint a endpoint de la API REST.</p></a>
+  <a href="enterprise/"><h3>🏢 Enterprise</h3><p>Capabilities Enterprise, cómo funciona la licencia y cómo activarla.</p></a>
 </div>
 
 ## Rutas rápidas

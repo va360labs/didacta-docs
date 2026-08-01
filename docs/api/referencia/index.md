@@ -2,33 +2,12 @@
 
 Referencia **endpoint a endpoint** de la API de Didacta, extraída del código real (~100 controllers, ~540 endpoints), organizada en cinco áreas:
 
-<div class="didacta-cards" markdown>
-
-<a href="nucleo/">
-<h3>🔐 Núcleo y transversales</h3>
-<p>Auth, MFA, API keys, mi cuenta, setup, licencia, branding, storage, auditoría, SSO, SCIM, inscripción externa y webhooks.</p>
-</a>
-
-<a href="administracion/">
-<h3>🛠️ Administración</h3>
-<p>Organizaciones, usuarios, invitaciones, módulos, SMTP, identidad corporativa (EE), IA, moderación y Fundae.</p>
-</a>
-
-<a href="aprendizaje/">
-<h3>🎓 Aprendizaje</h3>
-<p>Cursos, matrículas y progreso, drip, SCORM, rutas, evaluaciones, certificados, grupos de acceso y Fundae.</p>
-</a>
-
-<a href="comunidad/">
-<h3>👥 Comunidad y personas</h3>
-<p>Comunidad, mensajería SSE, gamificación, recursos, encuestas, referidos, theming, inscripción y membresía.</p>
-</a>
-
-<a href="pagos-directo-ia/">
-<h3>💳 Pagos, aula virtual e IA</h3>
-<p>Billing, suscripciones, conexiones de pago, Zoom en directo y los tres módulos de IA.</p>
-</a>
-
+<div class="didacta-cards">
+  <a href="nucleo/"><h3>🔐 Núcleo y transversales</h3><p>Auth, MFA, API keys, mi cuenta, setup, licencia, branding, storage, auditoría, SSO, SCIM, inscripción externa y webhooks.</p></a>
+  <a href="administracion/"><h3>🛠️ Administración</h3><p>Organizaciones, usuarios, invitaciones, módulos, SMTP, identidad corporativa (EE), IA, moderación y Fundae.</p></a>
+  <a href="aprendizaje/"><h3>🎓 Aprendizaje</h3><p>Cursos, matrículas y progreso, drip, SCORM, rutas, evaluaciones, certificados, grupos de acceso y Fundae.</p></a>
+  <a href="comunidad/"><h3>👥 Comunidad y personas</h3><p>Comunidad, mensajería SSE, gamificación, recursos, encuestas, referidos, theming, inscripción y membresía.</p></a>
+  <a href="pagos-directo-ia/"><h3>💳 Pagos, aula virtual e IA</h3><p>Billing, suscripciones, conexiones de pago, Zoom en directo y los tres módulos de IA.</p></a>
 </div>
 
 ## Cómo leer la referencia
