@@ -1,0 +1,73 @@
+/* ============================================================
+   Paleta de marca de Didacta.
+   Cambia estas variables si evoluciona el branding de didacta.io.
+   ============================================================ */
+
+:root {
+  --didacta-primary: #4f46e5;        /* índigo — color principal */
+  --didacta-primary-dark: #4338ca;
+  --didacta-accent: #f59e0b;         /* ámbar — acentos/CTA */
+}
+
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: var(--didacta-primary);
+  --md-primary-fg-color--dark: var(--didacta-primary-dark);
+  --md-accent-fg-color: var(--didacta-accent);
+  --md-typeset-a-color: var(--didacta-primary);
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: var(--didacta-primary);
+  --md-accent-fg-color: var(--didacta-accent);
+  --md-typeset-a-color: #818cf8;
+}
+
+/* Tablas de referencia (variables de entorno, catálogo de módulos):
+   permitir scroll horizontal sin romper el layout. */
+.md-typeset table:not([class]) {
+  font-size: 0.72rem;
+}
+
+/* Chips de edición (Community / Enterprise / Cloud) */
+.didacta-chip {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+.didacta-chip--community { background: #dcfce7; color: #166534; }
+.didacta-chip--ee { background: #fef3c7; color: #92400e; }
+[data-md-color-scheme="slate"] .didacta-chip--community { background: #14532d; color: #bbf7d0; }
+[data-md-color-scheme="slate"] .didacta-chip--ee { background: #78350f; color: #fde68a; }
+
+/* Portada: tarjetas de la home */
+.didacta-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.8rem;
+  margin: 1.2rem 0;
+}
+.didacta-cards > a {
+  display: block;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.4rem;
+  padding: 1rem;
+  color: var(--md-default-fg-color) !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.didacta-cards > a:hover {
+  border-color: var(--didacta-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.didacta-cards h3 {
+  margin: 0 0 0.3rem 0;
+  font-size: 0.8rem;
+  color: var(--didacta-primary);
+}
+.didacta-cards p {
+  margin: 0;
+  font-size: 0.7rem;
+  color: var(--md-default-fg-color--light);
+}

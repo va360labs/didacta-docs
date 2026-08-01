@@ -1,0 +1,2 @@
+# Generador del sitio de documentación (mismo stack que docs.n8n.io)
+mkdocs-material==9.*

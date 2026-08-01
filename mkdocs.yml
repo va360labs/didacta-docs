@@ -1,0 +1,135 @@
+# Sitio de documentación de Didacta — https://docs.didacta.io
+# Generado con MkDocs Material (mismo stack que docs.n8n.io).
+
+site_name: Didacta Docs
+site_url: https://docs.didacta.io/
+site_description: >-
+  Documentación oficial de Didacta — LMS fair-code, modular y listo para
+  Fundae. Instalación, configuración, módulos, API y Enterprise.
+site_author: VA360 LABS S.L.
+copyright: Copyright &copy; 2026 VA360 LABS S.L. — Didacta™ es una marca de VA360 LABS S.L.
+
+repo_url: https://github.com/va360labs/didacta-io
+repo_name: va360labs/didacta-io
+edit_uri: ""
+
+theme:
+  name: material
+  language: es
+  icon:
+    logo: material/school
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Cambiar a modo oscuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Cambiar a modo claro
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - navigation.instant
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+
+validation:
+  links:
+    anchors: warn
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/va360labs/didacta-io
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/r/didactaio/community
+    - icon: material/web
+      link: https://didacta.io
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Inicio: index.md
+  - Primeros pasos:
+      - primeros-pasos/index.md
+      - Ediciones: primeros-pasos/ediciones.md
+      - Arquitectura: primeros-pasos/arquitectura.md
+  - Instalación:
+      - instalacion/index.md
+      - Docker Compose: instalacion/docker-compose.md
+      - docker run manual: instalacion/docker-run.md
+      - Asistente de configuración: instalacion/setup-wizard.md
+      - Actualizar: instalacion/actualizacion.md
+      - Copias de seguridad: instalacion/copias-de-seguridad.md
+      - Solución de problemas: instalacion/solucion-de-problemas.md
+  - Configuración:
+      - configuracion/index.md
+      - Variables de entorno: configuracion/variables-de-entorno.md
+      - Base de datos: configuracion/base-de-datos.md
+      - Almacenamiento: configuracion/almacenamiento.md
+      - Email: configuracion/email.md
+      - IA (BYOK): configuracion/ia.md
+      - Aula virtual (Zoom): configuracion/zoom.md
+      - Branding whitelabel: configuracion/branding.md
+      - Telemetría: configuracion/telemetria.md
+  - Módulos:
+      - modulos/index.md
+      - Catálogo de módulos: modulos/catalogo.md
+      - Gestionar módulos: modulos/gestion.md
+      - Módulos de terceros: modulos/modulos-de-terceros.md
+      - Crear un módulo:
+          - modulos/crear-un-modulo/index.md
+          - El manifest: modulos/crear-un-modulo/manifest.md
+          - Base de datos: modulos/crear-un-modulo/base-de-datos.md
+          - Backend: modulos/crear-un-modulo/backend.md
+          - Interfaz de usuario: modulos/crear-un-modulo/ui.md
+          - Eventos y hooks: modulos/crear-un-modulo/eventos-y-hooks.md
+          - Validación y tests: modulos/crear-un-modulo/validacion.md
+  - API:
+      - api/index.md
+      - Autenticación: api/autenticacion.md
+      - Convenciones: api/convenciones.md
+      - Referencia de endpoints: api/referencia.md
+  - Enterprise:
+      - enterprise/index.md
+      - Capabilities: enterprise/capabilities.md
+      - Licencia: enterprise/licencia.md
+  - Comunidad:
+      - Contribuir: comunidad/contribuir.md
+      - Tests en local: comunidad/tests-locales.md
+      - Licencias: comunidad/licencias.md

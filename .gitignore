@@ -1,0 +1,13 @@
+# Build del sitio
+site/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# SO / editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
