@@ -9,25 +9,25 @@ Endpoints de cursos, matrículas y progreso, rutas, evaluaciones, certificados, 
 | Método | Ruta | Auth | Qué hace |
 |---|---|---|---|
 | GET | `/modules/courses` | Bearer | Lista cursos del tenant; query `status`, `q`, `category`. |
-| POST | `/modules/courses` | Bearer | Crea curso en DRAFT. |
+| POST | `/modules/courses` | formador+ | Crea curso en DRAFT. |
 | GET | `/modules/courses/categories` | Bearer | Categorías usadas por cursos publicados. |
 | GET | `/modules/courses/managed-categories` | Bearer | Categorías curadas del tenant (color, icono). |
 | POST | `/modules/courses/managed-categories` | admin | Crea categoría curada. |
 | PUT | `/modules/courses/managed-categories/:id` | admin | Actualiza categoría curada. |
 | DELETE | `/modules/courses/managed-categories/:id` | admin | Borra categoría curada. |
 | GET | `/modules/courses/:id` | Bearer | Detalle con módulos y lecciones (ver gating abajo). |
-| PUT | `/modules/courses/:id` | Bearer | Actualiza metadatos del curso. |
-| POST | `/modules/courses/:id/modules` | Bearer | Añade módulo al curso. |
-| POST | `/modules/courses/modules/:moduleId/lessons` | Bearer | Añade lección al módulo. |
-| PUT | `/modules/courses/lessons/:lessonId` | Bearer | Actualiza contenido de una lección. |
-| POST | `/modules/courses/:id/publish` | Bearer | Publica (ejecuta el hook `courses.publish.validate`). |
-| POST | `/modules/courses/:id/archive` · `/:id/unarchive` | Bearer | Archiva / vuelve a DRAFT. |
-| POST | `/modules/courses/lessons/:lessonId/move` | Bearer | Mueve la lección un puesto arriba/abajo. |
-| POST | `/modules/courses/lessons/:lessonId/move-to-module` | Bearer | Mueve la lección a otro módulo. |
-| POST | `/modules/courses/modules/:moduleId/reorder-lessons` | Bearer | Reordena lecciones en bloque (drag & drop). |
-| POST | `/modules/courses/:id/reorder-modules` | Bearer | Reordena módulos del curso en bloque. |
-| DELETE | `/modules/courses/modules/:moduleId` | Bearer | Soft-delete del módulo (cascade lógico de lecciones). |
-| DELETE | `/modules/courses/lessons/:lessonId` | Bearer | Soft-delete de la lección (preserva progreso histórico). |
+| PUT | `/modules/courses/:id` | formador+ | Actualiza metadatos del curso. |
+| POST | `/modules/courses/:id/modules` | formador+ | Añade módulo al curso. |
+| POST | `/modules/courses/modules/:moduleId/lessons` | formador+ | Añade lección al módulo. |
+| PUT | `/modules/courses/lessons/:lessonId` | formador+ | Actualiza contenido de una lección. |
+| POST | `/modules/courses/:id/publish` | formador+ | Publica (ejecuta el hook `courses.publish.validate`). |
+| POST | `/modules/courses/:id/archive` · `/:id/unarchive` | formador+ | Archiva / vuelve a DRAFT. |
+| POST | `/modules/courses/lessons/:lessonId/move` | formador+ | Mueve la lección un puesto arriba/abajo. |
+| POST | `/modules/courses/lessons/:lessonId/move-to-module` | formador+ | Mueve la lección a otro módulo. |
+| POST | `/modules/courses/modules/:moduleId/reorder-lessons` | formador+ | Reordena lecciones en bloque (drag & drop). |
+| POST | `/modules/courses/:id/reorder-modules` | formador+ | Reordena módulos del curso en bloque. |
+| DELETE | `/modules/courses/modules/:moduleId` | formador+ | Soft-delete del módulo (cascade lógico de lecciones). |
+| DELETE | `/modules/courses/lessons/:lessonId` | formador+ | Soft-delete de la lección (preserva progreso histórico). |
 
 **Bodies clave** — crear curso: `slug` (kebab-case), `title`, `description?`, `thumbnailUrl?`, `language` (default `es-ES`), `estimatedMinutes?`, `category?`. `slug` y `language` son inmutables. Crear lección: `type` (`VIDEO|HTML|PDF|TEXT|QUIZ|SCORM`), `title`, `content` (objeto libre), `durationMinutes?`, `publishAt?` (fecha futura = bloqueada).
 
@@ -50,9 +50,9 @@ Endpoints de cursos, matrículas y progreso, rutas, evaluaciones, certificados, 
 | POST | `/modules/learning/progress` | Bearer | Reporta progreso: `{ enrollmentId, lessonId, watchedSeconds, resumePositionSec?, completed? }`. |
 | GET | `/modules/learning/courses/:courseId/enrollments` | formador+ | Alumnos matriculados en el curso. |
 | GET | `/modules/learning/courses/:courseId/enrollments/:id/progress` | formador+ | Progreso detallado de un alumno. |
-| GET | `/modules/learning/invitations` | Bearer | Invitaciones activas de un curso (`?courseId=`). |
-| POST | `/modules/learning/invitations` | Bearer | Crea invitación (`courseId`, `maxUses?`, `expiresAt?`) → código + token. |
-| DELETE | `/modules/learning/invitations/:id` | Bearer | Revoca invitación. |
+| GET | `/modules/learning/invitations` | formador+ | Invitaciones activas de un curso (`?courseId=`). |
+| POST | `/modules/learning/invitations` | formador+ | Crea invitación (`courseId`, `maxUses?`, `expiresAt?`) → código + token. |
+| DELETE | `/modules/learning/invitations/:id` | formador+ | Revoca invitación. |
 | GET | `/modules/learning/courses/:courseId/drip` | formador+ | Calendarios de drip del curso. |
 | POST | `/modules/learning/courses/:courseId/drip` | formador+ | Crea calendario: `audienceKind` (`TIER\|GROUP`), `audienceRef`, `unit` (`LESSON\|MODULE`), `intervalDays` (≥1), `startOffsetDays?`. |
 | PUT | `/modules/learning/drip/:id` · DELETE | formador+ | Edita / borra calendario de drip. |
@@ -120,7 +120,7 @@ Endpoints de cursos, matrículas y progreso, rutas, evaluaciones, certificados, 
 | Método | Ruta | Auth | Qué hace |
 |---|---|---|---|
 | GET | `/modules/certificates/me` | Bearer | Mis certificados emitidos. |
-| GET | `/modules/certificates/:id` · `/:id/download` | Bearer | Detalle · descarga del PDF (regenerado desde snapshot inmutable). |
+| GET | `/modules/certificates/:id` · `/:id/download` | Titular o formador+ | Detalle · descarga del PDF (regenerado desde snapshot inmutable). Un usuario solo accede a sus propios certificados; el staff, a los de cualquiera. Un id ajeno responde 404. |
 | GET | `/modules/certificates/verify/:id` | **Público** | Verificación pública: `{ number, studentName, courseTitle, issuedAt, valid }`. Nunca expone email ni datos internos. |
 | GET · POST | `/modules/certificates/templates` | formador+ | Lista · crea plantilla: `name`, `body`, `primaryColor?`, `logoUrl?`, `signerName?`, `signerTitle?`, `isDefault?`. |
 | GET · PATCH · DELETE | `/modules/certificates/templates/:id` | formador+ | Detalle · edición · borrado (409 si es default o está en uso). |

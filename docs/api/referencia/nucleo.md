@@ -74,7 +74,7 @@ Errores relevantes: `signin` responde 401 genérico («Credenciales inválidas»
 |---|---|---|---|
 | GET | ⚠ `/api/license` | Público | Estado público de la licencia (status, capabilities, avisos). Exento de rate limit. |
 | GET | `/branding/options` | Público | Branding del tenant para la UI (`logoUrl`, `primaryColor`, `poweredByDidacta`). |
-| GET · POST | `/branding/white-label/preview` · `configure` | Capability `feat:white_label` | Estado y configuración white-label. **402** sin licencia. |
+| GET · POST | `/branding/white-label/preview` · `configure` | admin + capability `feat:white_label` | Estado y configuración white-label. Requiere sesión de administrador; **402** sin licencia. |
 | GET | `/system/version-check` | Público | Proxy a los tags de Docker Hub para el banner de «versión nueva» (cache 15 min). |
 | GET | ⚠ `/healthz` · `/livez` | Público | Liveness (versión, uptime). |
 | GET | ⚠ `/readyz` | Público | Readiness: comprueba BD, Redis y storage; **503** si algo está degradado. |

@@ -96,7 +96,7 @@ WP-SSO es Community: `GET/PUT/DELETE /admin/sso/wp/config` (admin, sin capabilit
 | POST | `/admin/users/:userId/restrictions/:id/lift` | Levanta la sanción (sella `liftedAt`, no borra). |
 | GET | `/admin/users/:userId/dossier` | Expediente completo (identidad, compras, formación, actividad, sanciones). **Cada consulta queda auditada.** |
 | GET | `/admin/restrictions/scopes` · `active?userIds=csv` | Áreas sancionables · sanciones vigentes en lote (máx. 200). |
-| GET · POST · DELETE | `/admin/registry/status` · `opt-in` | Registro opt-in de la instalación con el equipo de Didacta (`acceptTerms: true` obligatorio) · opt-out RGPD con borrado remoto. |
+| GET · POST · DELETE | `/admin/registry/status` · `opt-in` | **super_admin.** Registro opt-in de la instalación con el equipo de Didacta (`acceptTerms: true` obligatorio) · opt-out RGPD con borrado remoto. Decisión de instancia, no de tenant. |
 
 ## Fundae (admin; el rol formador no accede)
 
