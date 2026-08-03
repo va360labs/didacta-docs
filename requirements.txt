@@ -1,2 +1,2 @@
-# Generador del sitio de documentación (mismo stack que docs.n8n.io)
+# Generador del sitio de documentación de Didacta
 mkdocs-material==9.*

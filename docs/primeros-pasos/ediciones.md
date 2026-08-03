@@ -10,7 +10,7 @@ Didacta es **un solo producto con tres ediciones**. El código es el mismo; camb
 
 Precios y contratación: [didacta.io](https://didacta.io).
 
-## El modelo «WordPress matizado»
+## Dónde está la línea
 
 La línea que separa Community de Enterprise es deliberadamente simple:
 
@@ -19,7 +19,7 @@ La línea que separa Community de Enterprise es deliberadamente simple:
 
 ## Cómo se ve el gating en el producto
 
-Didacta sigue la convención de n8n: **nada se oculta**.
+En Didacta **nada se oculta**.
 
 - Toda pantalla Enterprise **existe siempre** en el menú y carga con su título y descripción; si no hay licencia, el panel muestra un aviso de upsell en lugar del contenido.
 - En la API, los endpoints Enterprise responden **HTTP 402** (`Payment Required`) cuando la capability no está activa.

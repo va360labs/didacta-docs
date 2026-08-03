@@ -1,6 +1,6 @@
 # Licencias
 
-Didacta es **fair-code, source-available**, alineado con el movimiento [faircode.io](https://faircode.io/) y con el mismo modelo que n8n.io. No es open source bajo la definición OSI.
+Didacta es **fair-code, source-available**, alineado con el movimiento [faircode.io](https://faircode.io/). No es open source bajo la definición OSI.
 
 ## Qué puedes hacer
 
@@ -25,7 +25,7 @@ Para cualquiera de estos casos: **licensing@didacta.io**, o usa Didacta Cloud (`
 
 | Código | Licencia |
 | --- | --- |
-| Todo lo que **no** es `*.ee.*` ni carpetas `ee/` | [Didacta Sustainable Use License v1.0](https://github.com/va360labs/didacta-io/blob/main/LICENSE) — fair-code, adaptada de la SUL de n8n |
+| Todo lo que **no** es `*.ee.*` ni carpetas `ee/` | [Didacta Sustainable Use License v1.0](https://github.com/va360labs/didacta-io/blob/main/LICENSE) — licencia fair-code de uso sostenible |
 | Ficheros `*.ee.*` o en carpetas `ee/` (solo en el core) | [Didacta Enterprise License](https://github.com/va360labs/didacta-io/blob/main/LICENSE_EE) |
 | Componentes de terceros | Su licencia upstream original |
 

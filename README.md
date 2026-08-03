@@ -2,7 +2,7 @@
 
 Documentación oficial de **Didacta** (didacta.io) — LMS fair-code, modular y listo para Fundae.
 
-Sitio generado con [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) (el mismo generador que usa docs.n8n.io) y publicado en **https://docs.didacta.io**.
+Sitio generado con [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) y publicado en **https://docs.didacta.io**.
 
 ## Desarrollo local
 
@@ -41,6 +41,7 @@ El workflow de GitHub Actions construye el sitio y lo publica en GitHub Pages. P
 - Todo en **español**, tono directo, segunda persona ("configura", "arranca").
 - Los hechos técnicos (variables, rutas, comandos) salen del código real del repo `didacta-io` — nunca de memoria. Si el producto cambia, la página se actualiza en el mismo PR o en uno enlazado.
 - Nada específico de un cliente concreto: dominios de ejemplo `example.com` / `ejemplo.com` y tenants `demo`.
+- **Didacta se explica por sí misma**: nunca se define el producto, su licencia ni su modelo de ediciones por comparación con otra plataforma, ni se cita a otros proyectos como referencia o inspiración. Las únicas menciones a productos ajenos son las técnicas imprescindibles: aquellos con los que Didacta integra (Stripe, Zoom, WordPress, LearnDash…) o de los que depende su stack.
 - Admoniciones de Material (`!!! note`, `!!! warning`) para avisos; pestañas (`=== "Linux"`) para variantes por plataforma.
 
 ---

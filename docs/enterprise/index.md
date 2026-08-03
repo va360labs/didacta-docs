@@ -18,7 +18,7 @@ El detalle de cada una, con su efecto exacto y sus límites frente a Community: 
 
 ## Cómo se comporta sin licencia
 
-Didacta sigue la convención de n8n — **el gating nunca oculta**:
+En Didacta **el gating nunca oculta**:
 
 - Las pantallas Enterprise existen siempre, con su título y descripción; sin licencia muestran un aviso de qué desbloquean en lugar del panel.
 - Los endpoints Enterprise responden **HTTP 402** con la capability requerida en el cuerpo.
