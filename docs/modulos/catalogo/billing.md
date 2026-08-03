@@ -6,7 +6,7 @@
 
 Monetización de cursos con pago único vía **Stripe Checkout**: el admin liga cada curso a un precio de Stripe (o lo crea desde Didacta), el alumno pulsa comprar, el backend crea la Checkout Session y redirige al checkout hosted. Al confirmarse el pago, el webhook completa la orden y emite `billing.order.completed`, que `mod.learning` escucha para matricular con origen `PURCHASE`.
 
-Incluye además el **viaje de compra pública**: un visitante **sin cuenta** compra desde el catálogo público (`/catalogo`); la orden nace `PENDING` sin dueño y el fulfillment materializa la cuenta con el email confirmado por Stripe (find-or-create + email de bienvenida con enlace «Define tu contraseña»).
+Incluye además el **viaje de compra pública**: un visitante **sin cuenta** compra desde el catálogo público (`/catalogo`) o la ficha de venta del curso (`/catalogo/<slug>`); la orden nace `PENDING` sin dueño y el fulfillment materializa la cuenta con el email confirmado por Stripe (find-or-create + email de bienvenida con enlace «Define tu contraseña», plantilla `billing.welcome`, editable por tenant en Administración → Emails). Las páginas de retorno del pago público son `/catalogo/checkout/success` y `/catalogo/checkout/cancel`.
 
 ## Cómo funciona
 
@@ -37,4 +37,4 @@ Prefijo `/modules/billing`: checkout autenticado, superficie pública (`public/c
 | --- | --- |
 | `STRIPE_SECRET_KEY` | Sin ella el módulo no arranca (compartida con `mod.subscriptions`). |
 | `STRIPE_WEBHOOK_SECRET` | Firma del webhook de billing. |
-| `BILLING_SUCCESS_URL_BASE` / `BILLING_CANCEL_URL_BASE` | Retorno del checkout (defaults sensatos). |
+| `BILLING_SUCCESS_URL_BASE` / `BILLING_CANCEL_URL_BASE` | Retorno del checkout **autenticado** (default: `/cursos` del dominio de la instancia). El checkout **público** las ignora: siempre vuelve a `/catalogo/checkout/success` y `/catalogo/checkout/cancel` sobre el dominio del tenant. |

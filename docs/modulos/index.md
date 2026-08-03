@@ -39,7 +39,7 @@ Un módulo no accede a la infraestructura directamente: recibe un `ModuleContext
 Los módulos se activan y desactivan **por organización**:
 
 - El estado vive en la base de datos (`tenant_module`); si no hay registro, aplica el `enabledByDefault` del módulo.
-- Los módulos de categoría **core** (cursos, aprendizaje, evaluaciones, certificados…) no se pueden desactivar.
+- Los módulos de categoría **core** (cursos, aprendizaje, evaluaciones, certificados…) no se pueden desactivar (la API responde **422** `CORE_MODULE_NOT_DISABLEABLE`).
 - Con un módulo desactivado, sus endpoints (`/api/v1/modules/<slug>/…`) responden **403** y su UI desaparece del menú.
 
 Ver [Gestionar módulos](gestion.md).

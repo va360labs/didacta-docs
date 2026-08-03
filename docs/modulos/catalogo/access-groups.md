@@ -1,6 +1,6 @@
 # mod.access-groups — Grupos de acceso
 
-<span class="didacta-chip didacta-chip--community">Community</span> · Categoría **core** (siempre activo)
+<span class="didacta-chip didacta-chip--community">Community</span> · Categoría **core** (siempre activo — intentar desactivarlo responde `422 CORE_MODULE_NOT_DISABLEABLE`)
 
 ## Qué hace
 
@@ -15,9 +15,11 @@ La pertenencia al grupo se materializa como **matrículas reales** del core (ví
 
 - Los miembros entran por tres vías con dueño distinto: **MANUAL** (alta del admin o aprobación de inscripción — *sticky*, nunca se revoca sola), **TIER** (reconciliada con los tiers de `mod.payment-connections`) y **MEMBERSHIP** (concedida por la membresía de pago de `mod.subscriptions`).
 - La clave del diseño es el **refcount con provenance**: un curso solo se desmatricula cuando ningún grupo vivo lo otorga, y jamás se tocan matrículas de origen `PURCHASE`, `SUBSCRIPTION` o `API`.
-- La revocación por cancelación o impago retira **solo** las membresías de origen `MEMBERSHIP`.
+- La revocación por cancelación o impago retira **solo** las membresías de origen `MEMBERSHIP`. En `/admin/grupos-acceso` y en el dossier del usuario, esas membresías se distinguen con el badge «Por membresía».
 - Borrar un grupo revoca sus membresías y limpia los calendarios de drip huérfanos.
 - Un grupo puede marcarse `isDefaultForApproval` (se concede al aprobar inscripciones) o vincularse a un tier (`linkedTierName`).
+
+Es un módulo first-party **formalizado como paquete** (`modules/access-groups/`, manifest propio) cuya orquestación NestJS —controller, service Prisma y bridges de eventos— vive en el host (`apps/api/src/modules/access-groups/`), el patrón estándar de módulo built-in.
 
 ## Dependencias
 

@@ -9,8 +9,8 @@ Billing, suscripciones, conexiones de pago, Zoom y los tres módulos de IA. Toda
 | GET | `/modules/billing/offer/:courseId` | Bearer | Oferta del curso (`forSale`, precio, descuento). Tolerante: sin Stripe configurado devuelve `forSale: false`, nunca 500. |
 | POST | `/modules/billing/checkout/:courseId` | Bearer | Crea la Checkout Session de Stripe y devuelve la URL. 409 si el curso no está publicado o ya tienes acceso. |
 | GET · POST · PATCH · DELETE | `/modules/billing/products[/:id]` | admin | Productos (curso ↔ precio de Stripe): alta con `stripePriceId` existente **o** `amountCents` (crea Product+Price), activación, borrado (no toca órdenes históricas). |
-| GET | `/modules/billing/public/catalog` · `public/offer/:courseId` | Público (tenant por dominio) | Catálogo público de venta · oferta pública. Degradan a vacío sin Stripe. |
-| POST | `/modules/billing/public/checkout/:courseId` | Público | **Checkout anónimo**: el visitante compra sin cuenta; la cuenta se materializa después con el email confirmado por Stripe. 503 sin pasarela configurada. |
+| GET | `/modules/billing/public/catalog` · `public/offer/:courseId` | Público (tenant por dominio) | Catálogo público de venta · oferta pública. Degradan a vacío sin Stripe. La oferta **no filtra existencia**: curso inexistente o sin publicar responde 200 `{ forSale: false, options: [] }`, nunca 404. |
+| POST | `/modules/billing/public/checkout/:courseId` | Público | **Checkout anónimo**: el visitante compra sin cuenta. Body `{ optionId?, email? }` — el `email` solo **precarga** el formulario de Stripe; la cuenta se crea SIEMPRE con el email confirmado en el pago. 404 curso inexistente (o `:courseId` no UUID) · 409 no publicado · 503 sin pasarela. |
 | POST | `/modules/billing/webhook` | Firma Stripe (`stripe-signature`) | Recibe `checkout.session.completed/expired`, `charge.refunded`. Idempotente por `stripe_event_id`. |
 
 ## Suscripciones — `/modules/subscriptions`

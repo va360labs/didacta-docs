@@ -16,6 +16,18 @@ Fundae, RGPD y WCAG 2.2 AA integrados en el núcleo, no añadidos con plugins de
 **IA discreta.**
 Inteligencia artificial que ayuda sin interrumpir: crea contenido, sugiere itinerarios y resume actividad. El proveedor lo eliges tú: la capa de IA es **BYOK multi-proveedor** — cada instalación configura su proveedor y su clave (ver [Configurar la IA](../configuracion/ia.md)).
 
+## Tres formas de llenar tu academia de alumnos
+
+Los tres caminos de captación conviven en la misma instalación y se combinan libremente:
+
+1. **Tú los das de alta.** Invita alumnos uno a uno o por lotes desde el panel: eliges su [grupo de acceso](../modulos/catalogo/access-groups.md) al invitarles, reciben un email para crear su contraseña y entran directamente a sus cursos. Desde la ficha de cada alumno gestionas sus grupos, matrículas y bajas.
+
+2. **Vendes cursos sueltos.** Publica un curso, ponle precio y comparte tu catálogo público en `/catalogo`. El visitante paga con tarjeta vía Stripe sin registrarse antes: su cuenta se crea automáticamente con el email confirmado en el pago y queda matriculado al instante ([mod.billing](../modulos/catalogo/billing.md)). Los reembolsos retiran el acceso solos.
+
+3. **Vendes membresías.** Crea planes con la periodicidad (1–12 meses) y la moneda que quieras, con periodo de prueba opcional. Tu página pública de venta en `/unete` muestra el catálogo real; al suscribirse, el alumno accede a todos los cursos del grupo que definas ([mod.subscriptions](../modulos/catalogo/subscriptions.md)). Si deja de pagar, el acceso se revoca automáticamente — sin tocar lo concedido a mano.
+
+Y si tu comunidad exige aprobación previa, activa el [registro con solicitud](../modulos/catalogo/member-registration.md): verificadores configurables por tenant, evidencia de cada solicitud y decisión en un clic.
+
 ## Stack tecnológico
 
 | Capa | Tecnología |

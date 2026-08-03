@@ -37,6 +37,24 @@ Los enlaces absolutos de los emails (botón de «Restablecer contraseña», invi
 WEB_PUBLIC_URL=https://campus.ejemplo.com
 ```
 
+## Plantillas de email (Administración → Emails)
+
+El **contenido** de los correos transaccionales se edita por tenant en **Administración → Emails**, sin tocar código: asunto y cuerpo admiten variables (`{{tenantName}}`, `{{userName}}`…) y cada plantilla tiene un default sensato. Las **partes estructurales** de cada email (el botón de acción, el código OTP, los botones de aprobar/rechazar) no son editables: garantizan que el flujo siga funcionando aunque el texto cambie.
+
+Claves del núcleo:
+
+| Clave | Cuándo se envía |
+| --- | --- |
+| `auth.password_reset` | Restablecer contraseña. |
+| `enrollment.welcome` | Alta por invitación/API con enlace de acceso. |
+| `membership.welcome` | Alta por compra de membresía (`mod.subscriptions`). |
+| `billing.welcome` | Alta por compra pública de un curso (`mod.billing`): «Define tu contraseña». |
+| `subscriptions.renewal_warning` | Aviso de renovación próxima. |
+| `payment_connections.access_expiring` | Acceso derivado de una cuenta de pago externa a punto de expirar. |
+| `subscriptions.admin_digest` | Resumen diario de suscripciones para admins. |
+
+Los módulos añaden las suyas al mismo catálogo — por ejemplo, `mod.member-registration` registra sus 4 plantillas (`member_registration.otp_code`, `.approval_request`, `.welcome_approved`, `.rejection`). Los endpoints de lectura/edición están en [Referencia → Administración](../api/referencia/administracion.md).
+
 ## Si no hay SMTP configurado
 
 Los emails no se envían pero **quedan registrados en los logs** — la plataforma no se bloquea. Aun así, flujos como la invitación de usuarios o el reset de contraseña dependen del correo: configúralo antes de dar de alta usuarios reales.

@@ -26,7 +26,7 @@ POST /api/v1/admin/modules/mod.courses/disable?force=true
 
 ## Reglas
 
-- **Los módulos core no se desactivan.** Cursos, aprendizaje, evaluaciones, certificados, grupos de acceso, inscripción, billing, suscripciones… devuelven `CORE_MODULE_NOT_DISABLEABLE`.
+- **Los módulos core no se desactivan.** Cursos, aprendizaje, evaluaciones, certificados, grupos de acceso, inscripción, billing, suscripciones… devuelven **422** `CORE_MODULE_NOT_DISABLEABLE`.
 - **Dependencias**: si intentas desactivar un módulo del que dependen otros activos, la API responde `MODULE_HAS_ACTIVE_DEPENDENTS`; con `force=true` se desactivan en cascada.
 - **Los datos se conservan**: desactivar un módulo no borra sus tablas. Al reactivarlo, todo sigue donde estaba.
 - Cada cambio queda en el **log de auditoría** (`admin.module.enabled` / `admin.module.disabled`) y publica un evento de dominio.
