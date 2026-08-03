@@ -8,7 +8,7 @@ Definen la infraestructura de la instancia: base de datos, Redis, storage, SMTP 
 
 → [Referencia 1 a 1 de todas las variables](variables-de-entorno.md)
 
-Solo 3 son obligatorias (`DATABASE_URL`, `REDIS_URL`, `AUTH_SECRET`); el resto tienen defaults razonables.
+Solo 3 son obligatorias (`ADMIN_DATABASE_URL`, `REDIS_URL`, `AUTH_SECRET`); el resto tienen defaults razonables.
 
 ## 2. Ajustes por tenant (panel de administración)
 

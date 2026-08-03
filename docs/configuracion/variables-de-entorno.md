@@ -8,7 +8,7 @@ Referencia **1 a 1** de todas las variables de entorno de Didacta, agrupadas por
 
 **Mínimo para arrancar** (la app falla o se degrada gravemente sin ellas):
 
-1. `DATABASE_URL`
+1. `ADMIN_DATABASE_URL` (o `DATABASE_URL` como fallback — ver § Base de datos)
 2. `REDIS_URL`
 3. `AUTH_SECRET` — la única que provoca un **crash duro al arrancar** si falta o mide menos de 32 caracteres.
 
@@ -34,7 +34,7 @@ Con `docker-compose.alpha.yml`, las dos primeras se componen solas: **solo `AUTH
 | `WEB_PORT` | No | `3000` | web, compose | Puerto de Next.js. Igual que `API_PORT`: en el compose alpha solo mapea el host. |
 | `DIDACTA_IMAGE_TAG` | No | la versión recomendada del repo | compose | Tag de la imagen `didactaio/community` que levanta el compose. Fija siempre una versión concreta. |
 | `DIDACTA_CORE_VERSION` | No | derivada del build / `DIDACTA_IMAGE_TAG` | api, compose | Fuente de verdad de la versión del core: la consumen `/healthz`, la validación de compatibilidad de módulos del marketplace y la telemetría. Normalmente no se toca. |
-| `RLS_ENFORCEMENT` | No | `on` | api | Enforcement de Row-Level Security en runtime: `off` \| `warn` \| `on`. En `warn`/`on` cada query con contexto de tenant viaja con `set_config('app.current_tenant_id')`; las queries sin contexto se loguean a nivel warning (`warn`) o error (`on`). El aislamiento real requiere que `DATABASE_URL` use el rol `didacta_app` (sin `BYPASSRLS`). |
+| `RLS_ENFORCEMENT` | No | `on` | api | Enforcement de Row-Level Security en runtime: `off` \| `warn` \| `on`. En `warn`/`on` cada query con contexto de tenant viaja con `set_config('app.current_tenant_id')`; las queries sin contexto se loguean a nivel warning (`warn`) o error (`on`). El aislamiento es real porque `DATABASE_URL` conecta con el rol `didacta_app` (sin `BYPASSRLS`) por defecto — ver § Base de datos. |
 | `LOG_DB_QUERIES` | No | — | api | Con `true`, Prisma loguea todas las queries SQL. Muy verboso; solo debugging. |
 | `DIDACTA_CNAME_TARGET` | No | `cname.didacta.io` | api | Target CNAME que la UI de dominios personalizados muestra al admin. |
 
@@ -57,12 +57,13 @@ Con `docker-compose.alpha.yml`, las dos primeras se componen solas: **solo `AUTH
 
 | Nombre | Obligatoria | Default | Componente | Descripción |
 |---|---|---|---|---|
-| `DATABASE_URL` | **Sí** | — | api, worker, compose | Cadena de conexión Postgres: `postgresql://user:pass@host:port/db?schema=public`. En el compose alpha se construye automáticamente desde `POSTGRES_*`. Para aislamiento RLS real debe apuntar al rol `didacta_app` (sin `BYPASSRLS`). |
-| `POSTGRES_USER` | No | `didacta` | compose | Usuario del contenedor Postgres. |
+| `ADMIN_DATABASE_URL` | **Sí** (o `DATABASE_URL` como fallback) | — | api, worker, compose | Conexión de **administración** (superuser/owner): `postgresql://user:pass@host:port/db?schema=public`. El entrypoint la usa SOLO para migraciones + `rls.sql` + `grants.sql` — nunca para servir tráfico. En el compose alpha se construye automáticamente desde `POSTGRES_*`. |
+| `DATABASE_URL` | No — **dejar vacía** | derivada de `ADMIN_DATABASE_URL` | api, worker, compose | Conexión de **runtime** de la app. Si la dejas vacía (el caso normal), el entrypoint la deriva sustituyendo usuario/contraseña de `ADMIN_DATABASE_URL` por el rol `didacta_app` (sin `BYPASSRLS` — aislamiento RLS real). Si la defines explícitamente, se respeta tal cual (upgrade path: instalaciones existentes que solo tenían esta variable con el superuser siguen arrancando, con una degradación logueada). |
+| `POSTGRES_USER` | No | `didacta` | compose | Usuario del contenedor Postgres (el de `ADMIN_DATABASE_URL`). |
 | `POSTGRES_PASSWORD` | No | `didacta_dev` | compose | Contraseña del contenedor Postgres. **Cámbiala en cualquier despliegue no local** (el compose publica Postgres solo en `127.0.0.1` precisamente por este default). |
 | `POSTGRES_DB` | No | `didacta` | compose | Nombre de la base de datos. |
 | `POSTGRES_PORT` | No | `5432` | compose | Puerto del host mapeado a Postgres (publicado solo en loopback). |
-| `POSTGRES_APP_PASSWORD` | No | — | compose | Contraseña que el entrypoint asigna al rol `didacta_app` (el rol sin `BYPASSRLS` para enforcement RLS real). Si falta, el rol no se aprovisiona. |
+| `POSTGRES_APP_PASSWORD` | No | autogenerada y persistida en el volumen de datos | compose | Contraseña del rol de runtime `didacta_app`. Si la dejas vacía (el caso normal), el entrypoint la genera una sola vez y la persiste — no hace falta que la sepas. Fijarla solo si querés controlarla desde tu secrets manager. |
 
 ## 4. Redis, colas y workers
 

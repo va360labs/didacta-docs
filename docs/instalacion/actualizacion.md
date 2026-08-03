@@ -33,6 +33,29 @@ En el arranque, el contenedor aplica solo las migraciones **pendientes** (`prism
 !!! danger "Nunca solo la imagen"
     No hagas rollback de la imagen sin restaurar la base de datos: una BD con migraciones de una versión más nueva no es compatible con la imagen antigua.
 
+## Flip a `didacta_app` (aislamiento RLS real)
+
+Desde la versión que introduce el flip, la app deja de conectar con el usuario
+bootstrap/superuser en runtime. Si venías de una versión anterior con solo
+`DATABASE_URL`, migra tu `.env`:
+
+```bash
+# 1. Renombra la línea DATABASE_URL=<valor> a ADMIN_DATABASE_URL=<el mismo valor>
+# 2. Borra (o deja vacía) la línea DATABASE_URL
+
+docker compose -f docker-compose.alpha.yml up -d didacta
+```
+
+El entrypoint deriva sola la conexión de runtime (rol `didacta_app`, sin
+`BYPASSRLS`) a partir de `ADMIN_DATABASE_URL`. El log confirma el modo:
+`runtime conecta como didacta_app (aislamiento RLS real)`. Detalle completo en
+[Base de datos](../configuracion/base-de-datos.md).
+
+!!! note "No rompe si no migras el .env"
+    Si dejas `DATABASE_URL` apuntando al superuser (como antes), el contenedor
+    sigue arrancando sin tocar nada — solo pierdes el aislamiento RLS real, y
+    el log lo advierte como degradación explícita.
+
 ## Caso especial: instalaciones anteriores al baseline (era `db push`)
 
 Hasta la retomada fair-code (2026-07-31) el schema se aplicaba con `prisma db push` y la base de datos **no tiene tabla `_prisma_migrations`**. Esas instalaciones deben adoptar el baseline **una sola vez** antes de arrancar la primera imagen con migraciones:

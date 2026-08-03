@@ -24,7 +24,7 @@ El resto de variables tienen valores por defecto razonables o las inyecta el com
 
 | Variable | Qué es |
 | --- | --- |
-| `DATABASE_URL` | Connection string de Postgres 16 con `pgvector`. |
+| `ADMIN_DATABASE_URL` | Connection string de administración (superuser) de Postgres 16 con `pgvector`. La app deriva sola su conexión de runtime (rol `didacta_app`, sin `BYPASSRLS`). |
 | `REDIS_URL` | Connection string de Redis 7. |
 | `AUTH_SECRET` | Secreto para firmar sesiones y cookies. **Mínimo 32 caracteres** aleatorios. |
 

@@ -6,14 +6,15 @@ Para operadores que ya tienen **Postgres 16 y Redis 7 administrados** (RDS, Clou
 
 - Postgres 16 con la extensión **pgvector** instalada y un schema vacío. La aplicación aplica las migraciones Prisma al arrancar.
 - Redis 7 accesible desde el contenedor.
-- Las 3 variables obligatorias: `DATABASE_URL`, `REDIS_URL`, `AUTH_SECRET` (32+ caracteres).
+- Las 3 variables obligatorias: `ADMIN_DATABASE_URL`, `REDIS_URL`, `AUTH_SECRET` (32+ caracteres).
 
 ## Ejecución
 
 ```bash
 docker pull didactaio/community:<versión>
 
-# Volumen para uploads + clave de cifrado autogenerada.
+# Volumen para uploads + clave de cifrado autogenerada + contraseña
+# autogenerada del rol de runtime didacta_app.
 docker volume create didacta_data
 
 docker run -d \
@@ -21,7 +22,7 @@ docker run -d \
   -p 3000:3000 \
   -p 4000:4000 \
   -v didacta_data:/app/data \
-  -e DATABASE_URL='postgresql://USER:PASS@HOST:5432/didacta?schema=public' \
+  -e ADMIN_DATABASE_URL='postgresql://USER:PASS@HOST:5432/didacta?schema=public' \
   -e REDIS_URL='redis://HOST:6379' \
   -e AUTH_SECRET='cualquier-cadena-aleatoria-de-32+-caracteres' \
   -e STORAGE_DRIVER=local \
@@ -30,6 +31,8 @@ docker run -d \
   --restart unless-stopped \
   didactaio/community:<versión>
 ```
+
+`ADMIN_DATABASE_URL` es el usuario superuser/owner que ya tenías: el entrypoint lo usa solo para migraciones + RLS + grants. **No definas `DATABASE_URL`** — el entrypoint la deriva sola hacia el rol de runtime `didacta_app` (sin `BYPASSRLS`, aislamiento RLS real), con una contraseña autogenerada y persistida en `didacta_data` la primera vez. Detalle en [Base de datos](../configuracion/base-de-datos.md).
 
 !!! warning "El volumen `didacta_data` no es opcional en la práctica"
     Guarda los archivos subidos — cursos, certificados, evidencias — **y** una clave de cifrado autogenerada en el primer arranque para los secretos at-rest. Sin ese volumen montado, todo se pierde al recrear el contenedor.
