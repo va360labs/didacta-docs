@@ -106,4 +106,4 @@ Cómo se consume y se dispara, en [Eventos y hooks](eventos-y-hooks.md).
 
 ## El segundo manifest: `module.json`
 
-Cada módulo lleva además un `module.json` en su raíz, usado por el linter `scripts/module-doctor.ts` (no por el runtime). Campos que exige: `name`, `version`, `edition` (siempre `community`), `coreVersionRequired`, `tablePrefix`, `apiNamespace`. Mantenlo **coherente con `src/manifest.ts`** — el doctor detecta divergencias. Ver [Validación](validacion.md).
+Cada módulo lleva además un `module.json` en su raíz, usado por el linter `scripts/module-doctor.ts` (no por el runtime). Campos que exige: `name`, `version`, `edition` (siempre `community`), `coreVersionRequired`, `tablePrefix`, `apiNamespace`. Los `module.json` **marketplace-style** (con `vendor`/`isolation`/`http`/`didacta`, el shape expandido que valida el schema strict del host) son la excepción: no llevan `edition` — el schema del host rechaza esa key al instalar. Mantenlo **coherente con `src/manifest.ts`** — el doctor detecta divergencias. Ver [Validación](validacion.md).

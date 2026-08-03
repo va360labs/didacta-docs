@@ -31,7 +31,7 @@ CREATE POLICY tenant_isolation ON <tabla>
 
 ### Niveles de enforcement
 
-La variable `RLS_ENFORCEMENT` controla el modo (`off` | `warn` | `on`, por defecto `warn`). Para que el aislamiento sea **real** a nivel de base de datos, `DATABASE_URL` debe conectar con el rol **`didacta_app`** (sin `BYPASSRLS`), no con el superusuario del contenedor.
+La variable `RLS_ENFORCEMENT` controla el modo (`off` | `warn` | `on`, por defecto `on`). En `warn` las queries sin contexto de tenant se loguean a nivel *warning*; en `on`, a nivel *error*. Para que el aislamiento sea **real** a nivel de base de datos, `DATABASE_URL` debe conectar con el rol **`didacta_app`** (sin `BYPASSRLS`), no con el superusuario del contenedor.
 
 ## Migraciones
 

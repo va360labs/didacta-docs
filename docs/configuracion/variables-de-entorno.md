@@ -34,7 +34,7 @@ Con `docker-compose.alpha.yml`, las dos primeras se componen solas: **solo `AUTH
 | `WEB_PORT` | No | `3000` | web, compose | Puerto de Next.js. Igual que `API_PORT`: en el compose alpha solo mapea el host. |
 | `DIDACTA_IMAGE_TAG` | No | la versión recomendada del repo | compose | Tag de la imagen `didactaio/community` que levanta el compose. Fija siempre una versión concreta. |
 | `DIDACTA_CORE_VERSION` | No | derivada del build / `DIDACTA_IMAGE_TAG` | api, compose | Fuente de verdad de la versión del core: la consumen `/healthz`, la validación de compatibilidad de módulos del marketplace y la telemetría. Normalmente no se toca. |
-| `RLS_ENFORCEMENT` | No | `warn` | api | Enforcement de Row-Level Security en runtime: `off` \| `warn` \| `on`. En `warn`/`on` cada query con contexto de tenant viaja con `set_config('app.current_tenant_id')`. El aislamiento real requiere que `DATABASE_URL` use el rol `didacta_app` (sin `BYPASSRLS`). |
+| `RLS_ENFORCEMENT` | No | `on` | api | Enforcement de Row-Level Security en runtime: `off` \| `warn` \| `on`. En `warn`/`on` cada query con contexto de tenant viaja con `set_config('app.current_tenant_id')`; las queries sin contexto se loguean a nivel warning (`warn`) o error (`on`). El aislamiento real requiere que `DATABASE_URL` use el rol `didacta_app` (sin `BYPASSRLS`). |
 | `LOG_DB_QUERIES` | No | — | api | Con `true`, Prisma loguea todas las queries SQL. Muy verboso; solo debugging. |
 | `DIDACTA_CNAME_TARGET` | No | `cname.didacta.io` | api | Target CNAME que la UI de dominios personalizados muestra al admin. |
 

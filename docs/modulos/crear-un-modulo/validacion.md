@@ -12,7 +12,7 @@ pnpm tsx scripts/module-doctor.ts --all
 Valida el contrato declarativo:
 
 - `module.json` es JSON válido con los campos obligatorios (`name`, `version`, `edition`, `coreVersionRequired`, `tablePrefix`, `apiNamespace`).
-- `edition` es `community` (los módulos nunca son enterprise).
+- `edition` es `community` (los módulos nunca son enterprise). Excepción: los `module.json` **marketplace-style** (los que traen `vendor`/`isolation`/`http`/`didacta`, validados por el schema strict del host) **no llevan** `edition` — el doctor lo exime y marca como error las keys legacy `edition`/`category`/`requiredLicenseFeature`, que romperían el install con `MANIFEST_SCHEMA_INVALID`.
 - `tablePrefix` sigue la convención `mod_<slug-en-snake>_` y `apiNamespace` es `/modules/<slug>`.
 - Existe `README.md` con las **9 secciones obligatorias**.
 - Si el módulo lleva schema Prisma propio, todas las `@@map` usan el prefijo.
