@@ -34,3 +34,5 @@ Todo en una única transacción:
 2. **Administración → SMTP** — servidor de correo real (por defecto apunta a Mailpit).
 3. **Administración → IA** — proveedor y clave de IA si vas a usar tutor/corrección/generación IA.
 4. **Administración → Módulos** — ajustar qué módulos están activos.
+
+→ Sigue el [recorrido visual](recorrido-visual.md) para ver estos pasos y todo el camino hasta el primer certificado emitido, captura a captura.

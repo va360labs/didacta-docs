@@ -44,6 +44,7 @@ Didacta versiona con **SemVer** y publica cada versión como tag de imagen Docke
 ## Después de instalar
 
 1. [Asistente de configuración](setup-wizard.md) — crear la organización y el primer administrador.
-2. [Configuración](../configuracion/index.md) — SMTP real, storage S3, branding, IA.
-3. [Copias de seguridad](copias-de-seguridad.md) — antes de que haya datos de verdad.
-4. [Actualizar](actualizacion.md) — cuando salga la siguiente versión.
+2. [Recorrido visual: primeros pasos](recorrido-visual.md) — captura a captura, desde el asistente hasta el primer certificado emitido.
+3. [Configuración](../configuracion/index.md) — SMTP real, storage S3, branding, IA.
+4. [Copias de seguridad](copias-de-seguridad.md) — antes de que haya datos de verdad.
+5. [Actualizar](actualizacion.md) — cuando salga la siguiente versión.

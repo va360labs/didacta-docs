@@ -98,6 +98,7 @@ nav:
       - Docker Compose: instalacion/docker-compose.md
       - docker run manual: instalacion/docker-run.md
       - Asistente de configuración: instalacion/setup-wizard.md
+      - "Recorrido visual: primeros pasos": instalacion/recorrido-visual.md
       - Actualizar: instalacion/actualizacion.md
       - Copias de seguridad: instalacion/copias-de-seguridad.md
       - Solución de problemas: instalacion/solucion-de-problemas.md
