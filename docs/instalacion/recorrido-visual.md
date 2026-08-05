@@ -116,7 +116,6 @@ Community funciona completo sin licencia. **Administración → Licencia** (`/ad
 
 ## Qué no se ve en estas capturas
 
-- El chat flotante (esquina inferior derecha, visible en varias capturas de este recorrido) puede quedar visualmente encima de botones de envío cercanos a esa esquina en pantallas largas — un solape de estilos conocido, sin impacto funcional (el botón sigue siendo clicable).
 - El endpoint de matrículas propias (`GET /me/enrollments`) puede tardar hasta ~1 segundo en reflejar una matrícula recién creada. Si acabas de canjear un código y no ves el curso de inmediato en algún listado, recarga.
 
 ## Siguiente paso
