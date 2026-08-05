@@ -120,6 +120,7 @@ Community funciona completo sin licencia. **Administración → Licencia** (`/ad
 
 ## Siguiente paso
 
+- [Recorrido visual: notificaciones y ventas](recorrido-visual-ventas.md) — configura SMTP de verdad y prepara la instancia para vender cursos y membresías.
 - [Configuración](../configuracion/index.md) — SMTP real, storage S3, IA.
 - [Gestionar módulos](../modulos/gestion.md) — activa o desactiva módulos opcionales.
 - [Copias de seguridad](copias-de-seguridad.md) — antes de que haya datos de verdad.

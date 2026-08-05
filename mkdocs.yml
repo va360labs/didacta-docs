@@ -99,6 +99,7 @@ nav:
       - docker run manual: instalacion/docker-run.md
       - Asistente de configuración: instalacion/setup-wizard.md
       - "Recorrido visual: primeros pasos": instalacion/recorrido-visual.md
+      - "Recorrido visual: notificaciones y ventas": instalacion/recorrido-visual-ventas.md
       - Actualizar: instalacion/actualizacion.md
       - Copias de seguridad: instalacion/copias-de-seguridad.md
       - Solución de problemas: instalacion/solucion-de-problemas.md
