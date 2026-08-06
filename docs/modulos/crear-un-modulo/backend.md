@@ -84,6 +84,6 @@ Reglas del host:
 - Los errores de dominio se mapean a HTTP con un **exception filter** propio del módulo (patrón `courses-error.filter.ts`), registrado en el módulo NestJS correspondiente.
 - Declara el módulo NestJS en `apps/api/src/modules/modules.module.ts`.
 
-## Módulos condicionados por entorno
+## Módulos condicionados por configuración externa
 
-Si tu módulo depende de configuración externa (como `mod.billing` de `STRIPE_SECRET_KEY`), el patrón es: **no registrarse** si falta la configuración y responder `503` con un error claro en sus endpoints — nunca tumbar el arranque del resto de la plataforma.
+Si tu módulo depende de una credencial externa (como `mod.billing`/`mod.subscriptions` de sus claves de Stripe), el patrón es: el módulo se **registra siempre** — nunca gatees el arranque completo por si falta una config, porque en multi-tenant esa config puede vivir POR TENANT (panel de Administración, `tenant_setting` cifrado) y no se sabe hasta la primera llamada real si un tenant concreto la tiene. En su lugar, resuelve la credencial **dentro de cada método** (un `stripeFor(tenantId)` o equivalente, nunca cacheado a nivel de instancia) y lanza un error de dominio tipado si falta — un exception filter propio del módulo lo mapea a `503` con un mensaje claro. Así un tenant sin configurar no tumba nada para el resto, y el mismo despliegue puede tener tenants con y sin la integración activa al mismo tiempo.

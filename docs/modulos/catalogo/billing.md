@@ -33,8 +33,9 @@ Prefijo `/modules/billing`: checkout autenticado, superficie pública (`public/c
 
 ## Configuración
 
+Stripe se configura **por tenant** en Administración → Pagos (credenciales cifradas), compartidas con `mod.subscriptions` — un único par de claves por academia. `mod.billing` se registra siempre; sin credenciales (ni de tenant ni de instancia) el checkout responde 503, el resto de la app sigue operativa.
+
 | Variable | Para qué |
 | --- | --- |
-| `STRIPE_SECRET_KEY` | Sin ella el módulo no arranca (compartida con `mod.subscriptions`). |
-| `STRIPE_WEBHOOK_SECRET` | Firma del webhook de billing. |
+| `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | Fallback de instancia: solo se usan si el tenant no configuró las suyas en el panel. |
 | `BILLING_SUCCESS_URL_BASE` / `BILLING_CANCEL_URL_BASE` | Retorno del checkout **autenticado** (default: `/cursos` del dominio de la instancia). El checkout **público** las ignora: siempre vuelve a `/catalogo/checkout/success` y `/catalogo/checkout/cancel` sobre el dominio del tenant. |

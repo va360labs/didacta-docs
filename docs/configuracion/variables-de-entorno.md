@@ -159,9 +159,11 @@ Las credenciales Server-to-Server de Zoom **no son variables de entorno**: viven
 
 ## 10. Pagos — Stripe (módulos billing y subscriptions)
 
+La configuración canónica vive **por tenant** en Administración → Pagos (`/admin/configuracion`, tab "Pagos"): cada academia guarda su propia clave secreta y secreto de webhook, cifrados. Estas variables son solo el **fallback global** de instancia — un tenant que no configuró las suyas cae aquí; si tampoco hay nada aquí, el checkout de ese tenant responde 503 hasta que configure Stripe en algún sitio (nunca tumba el arranque de `mod.billing`/`mod.subscriptions`, que se registran siempre).
+
 | Nombre | Obligatoria | Default | Componente | Descripción |
 |---|---|---|---|---|
-| `STRIPE_SECRET_KEY` | Sí, para activar pagos | — | api | Clave secreta de Stripe. Una cuenta por instancia, compartida por billing y subscriptions. Si falta, los endpoints de billing devuelven 503 y el resto de la app sigue operativa. |
+| `STRIPE_SECRET_KEY` | No — fallback de instancia | — | api | Clave secreta de Stripe. Un tenant sin credenciales propias en el panel cae aquí; una cuenta por instancia, compartida por billing y subscriptions. |
 | `STRIPE_WEBHOOK_SECRET` | No | cae a `SUBSCRIPTIONS_WEBHOOK_SECRET` | api | Secret del webhook de billing (`…/modules/billing/webhook`). |
 | `BILLING_SUCCESS_URL_BASE` | No | `<AUTH_URL>/cursos` | api | Base de la URL de éxito del checkout de compra puntual. |
 | `BILLING_CANCEL_URL_BASE` | No | `<AUTH_URL>/cursos` | api | Base de la URL de cancelación del checkout puntual. |

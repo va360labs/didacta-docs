@@ -33,10 +33,12 @@ Prefijos `/modules/subscriptions` (alumno + webhook) y `/membership` (público +
 
 ## Configuración
 
+Stripe (clave secreta + webhook) se configura por tenant en Administración → Pagos, compartida con `mod.billing`. Sin credenciales (ni de tenant ni de instancia) el checkout responde 503 — planes, trial y grupo de acceso siguen editables igualmente, no dependen de Stripe.
+
 | Variable | Para qué |
 | --- | --- |
-| `STRIPE_SECRET_KEY` | Obligatoria (compartida con billing); sin ella, 503. |
-| `SUBSCRIPTIONS_WEBHOOK_SECRET` | Webhook dedicado (recomendado separarlo del de billing). |
+| `STRIPE_SECRET_KEY` | Fallback de instancia: solo si el tenant no configuró su clave en el panel. |
+| `SUBSCRIPTIONS_WEBHOOK_SECRET` | Webhook dedicado (recomendado separarlo del de billing); fallback de instancia. |
 | `SUBSCRIPTIONS_GRACE_PERIOD_DAYS` | Gracia tras impago (3). |
 | `SUBSCRIPTIONS_SUCCESS_URL_BASE` / `CANCEL_URL_BASE` | Retorno del checkout. |
 | `SUBSCRIPTIONS_DAILY_CRON` / `DAILY_TZ` / `RENEWAL_WINDOW_DAYS` | Resumen diario y avisos de renovación. |
