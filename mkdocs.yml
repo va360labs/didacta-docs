@@ -167,6 +167,7 @@ nav:
       - Capabilities: enterprise/capabilities.md
       - Licencia: enterprise/licencia.md
   - Comunidad:
+      - Reportar un error: comunidad/reportar-un-error.md
       - Contribuir: comunidad/contribuir.md
       - Tests en local: comunidad/tests-locales.md
       - Licencias: comunidad/licencias.md

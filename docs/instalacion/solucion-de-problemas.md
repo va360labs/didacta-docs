@@ -26,5 +26,5 @@ curl -fsS http://localhost:4000/healthz
 
 ## Pedir ayuda
 
-- **Bugs y feedback**: issues en [GitHub](https://github.com/va360labs/didacta-io/issues) — hay plantillas de bug, feedback y feature request.
+- **Bugs y feedback**: issues en [GitHub](https://github.com/va360labs/didacta-io/issues) — hay plantillas de bug, feedback y feature request. Antes de abrir una, mira [Reportar un error](../comunidad/reportar-un-error.md): qué datos hacen falta y qué anonimizar.
 - **Vulnerabilidades de seguridad**: sigue la política de [SECURITY.md](https://github.com/va360labs/didacta-io/blob/main/SECURITY.md) — nunca las publiques en un issue.

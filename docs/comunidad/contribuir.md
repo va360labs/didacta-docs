@@ -44,6 +44,6 @@ Cambios que afecten al contrato de módulo, al modelo de licencias, al SDK o a A
 ## Contacto
 
 - 💬 Preguntas técnicas: GitHub Discussions o Discord `#didacta-alpha` (durante alpha).
-- 🐛 Bugs: issue con la plantilla de bug.
+- 🐛 Bugs: issue con la plantilla de bug — cómo prepararla en [Reportar un error](reportar-un-error.md).
 - 🔒 Seguridad: `security@didacta.io` — **nunca** un issue público. Ver [SECURITY.md](https://github.com/va360labs/didacta-io/blob/main/SECURITY.md).
 - 📜 Licensing / comercial: `licensing@didacta.io`.
