@@ -31,4 +31,4 @@ Prefijo `/modules/ai-grader` (formador+): gestión de rúbricas y ciclo de suger
 
 ## Configuración
 
-Proveedor IA en Administración → IA; sin variables propias.
+Proveedor IA en Administración → Proveedores de IA; sin variables propias.

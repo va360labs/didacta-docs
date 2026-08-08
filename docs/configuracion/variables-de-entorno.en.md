@@ -159,7 +159,7 @@ Zoom's Server-to-Server credentials **are not environment variables**: they live
 
 ## 10. Payments — Stripe (the billing and subscriptions modules)
 
-The canonical configuration lives **per tenant** under Settings → Payments (`/admin/configuracion`, the "Payments" tab): each academy stores its own secret key and webhook secret, encrypted. These variables are only the instance-wide **global fallback** — a tenant that has not configured its own lands here; if there is nothing here either, that tenant's checkout returns 503 until Stripe is configured somewhere (it never blocks the startup of `mod.billing`/`mod.subscriptions`, which are always registered).
+The canonical configuration lives **per tenant** under Administration → Settings → Payments (`/admin/configuracion`, the "Payments" tab): each academy stores its own secret key and webhook secret, encrypted. These variables are only the instance-wide **global fallback** — a tenant that has not configured its own lands here; if there is nothing here either, that tenant's checkout returns 503 until Stripe is configured somewhere (it never blocks the startup of `mod.billing`/`mod.subscriptions`, which are always registered).
 
 | Name | Required | Default | Component | Description |
 |---|---|---|---|---|
@@ -193,7 +193,7 @@ The canonical configuration lives **per tenant** under Administration → Settin
 
 | Name | Required | Default | Component | Description |
 |---|---|---|---|---|
-| `DIDACTA_LICENSE_KEY` | No | — (Community mode) | api, compose | Enterprise license JWT signed by Didacta, read **once at startup**. Without it: `License: community` and EE capabilities disabled. If invalid: HTTP 402/401 on gated endpoints. Changing the license requires restarting the container. |
+| `DIDACTA_LICENSE_KEY` | No | — (Community mode) | api, compose | Enterprise license JWT signed by Didacta, read **once at startup**. Without it: `License: community` and EE capabilities disabled, unless a license was activated from **Administration → License** (the environment wins over the panel). If invalid: HTTP 402/401 on gated endpoints. Changing it through this route requires restarting the container; from the panel it reloads hot. |
 | `DIDACTA_DEV_BYPASS` | No | `false` | api, compose | License bypass: enables **every** capability. **Development only** — it is ignored with `NODE_ENV=production` and emits a visible WARN. |
 | `MARKETPLACE_PUBLIC_KEYS_DIR` | No | the embedded directory | api | Directory holding the public keys that verify the signature of marketplace module `.zip` packages. |
 

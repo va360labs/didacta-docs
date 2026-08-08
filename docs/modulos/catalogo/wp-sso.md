@@ -34,4 +34,4 @@ Sin tablas propias: el único estado (el `jti` consumido) es efímero y vive en 
 
 ## Configuración
 
-Por tenant desde el panel (Administración → SSO → WordPress): secreto compartido (cifrado), issuer/audience opcionales, auto-provisionado y auto-redirect.
+Por tenant desde el panel (Administración → Identidad (SSO), pestaña WordPress): secreto compartido (cifrado), issuer/audience opcionales, auto-provisionado y auto-redirect.

@@ -40,8 +40,8 @@ En el primer arranque el contenedor de la app aplica automáticamente las **migr
 ## Primer acceso
 
 1. Abre `http://localhost:3000`. La primera vez te llevará al **asistente de configuración** (`/setup`): ahí creas la organización (tenant) y la cuenta del primer administrador.
-2. Entra con esa cuenta y configura tu marca en **Administración → Marca** (logo, colores, textos de la pantalla de acceso).
-3. El correo saliente apunta por defecto al buzón de pruebas Mailpit (`http://localhost:8025`). Para producción configura tu SMTP real en **Administración → SMTP**.
+2. Entra con esa cuenta y configura tu marca en **Administración → Branding** (logo, colores, textos de la pantalla de acceso).
+3. El correo saliente apunta por defecto al buzón de pruebas Mailpit (`http://localhost:8025`). Para producción configura tu SMTP real en **Administración → Configuración → Notificaciones**.
 
 ## Persistencia: volúmenes
 

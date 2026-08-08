@@ -10,7 +10,7 @@ While the instance has no tenant at all, the web app redirects **every route** t
 
 1. **Welcome** — an introduction to the wizard.
 2. **Organization** — the organization name (required) and the public domain, pre-filled with the host you are connecting from. Under "Advanced settings" you can adjust the *slug* (auto-generated, DNS-safe).
-3. **Modules** — the list of available modules. **Core** modules (courses, learning, assessments…) come pre-selected and cannot be unchecked; optional ones (community, gamification, Fundae, virtual classroom…) are up to you. Everything can be changed later under **Settings → Modules**.
+3. **Modules** — the list of available modules. **Core** modules (courses, learning, assessments…) come pre-selected and cannot be unchecked; optional ones (community, gamification, Fundae, virtual classroom…) are up to you. Everything can be changed later under **Administration → Settings → Modules**.
 4. **Your account** — name, email and password of the first administrator (**at least 12 characters**, with a strength meter).
 5. **Done** — a quick tour (Courses, Community, Administration) and a recommendation to enable MFA.
 
@@ -31,8 +31,8 @@ All in a single transaction:
 ## After the wizard
 
 1. **Administration → Branding** — logo, colors and sign-in screen copy.
-2. **Settings → Notifications** — your real mail server (it points to Mailpit by default).
+2. **Administration → Settings → Notifications** — your real mail server (it points to Mailpit by default).
 3. **Administration → AI providers** — the AI provider and key, if you are going to use the AI tutor, AI grading or AI content generation.
-4. **Settings → Modules** — adjust which modules are active.
+4. **Administration → Settings → Modules** — adjust which modules are active.
 
 → Follow the [visual walkthrough](recorrido-visual.md) to see these steps, and the whole path up to the first certificate issued, screenshot by screenshot.

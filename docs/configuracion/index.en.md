@@ -17,9 +17,9 @@ Everything specific to an organization lives in the database and is managed from
 | Setting | Where |
 | --- | --- |
 | Branding: logo, colors, sign-in copy | Administration → Branding |
-| The tenant's own SMTP server | Settings → Notifications |
+| The tenant's own SMTP server | Administration → Settings → Notifications |
 | AI provider and API key (BYOK) | Administration → AI providers |
-| Zoom Server-to-Server credentials | Administration → Integrations & API |
+| Zoom Server-to-Server credentials | Administration, «Integrations & API» group |
 | Registration verifiers, Telegram bot | Administration → Settings → Registration |
 | Opt-in registration with the Didacta team | Administration → Settings → Registration |
 

@@ -20,7 +20,7 @@ If any of the first three is missing there is **no instance-wide SMTP**: only te
 
 ## 2. Per-tenant SMTP (admin panel)
 
-Each organization can define its own server under **Settings → Notifications**. That setting takes priority over the instance-wide one, and its credentials are stored **encrypted at rest** in the database.
+Each organization can define its own server under **Administration → Settings → Notifications**. That setting takes priority over the instance-wide one, and its credentials are stored **encrypted at rest** in the database.
 
 ## In development: Mailpit
 

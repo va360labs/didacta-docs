@@ -7,7 +7,7 @@ Segunda parte del recorrido visual — continúa donde termina [Recorrido visual
 
 ## 1 · Notificaciones (SMTP)
 
-En **Configuración → Notificaciones** (`/admin/configuracion`, tab "Notificaciones") cada tenant puede definir su propio servidor SMTP. Sin esto, la organización hereda el SMTP global de la instancia si el operador lo configuró por variables de entorno — ver [Email](../configuracion/email.md).
+En **Administración → Configuración → Notificaciones** (`/admin/configuracion`, pestaña «Notificaciones») cada tenant puede definir su propio servidor SMTP. Sin esto, la organización hereda el SMTP global de la instancia si el operador lo configuró por variables de entorno — ver [Email](../configuracion/email.md).
 
 ![Tab Notificaciones vacío, sin SMTP configurado](../assets/notificaciones-y-pagos/01-smtp-vacio.png)
 
@@ -38,7 +38,7 @@ Y el correo, real, en el buzón:
 
 Stripe se configura **por tenant, desde el panel** — no hace falta tocar el `.env` de la instancia. Un único par de credenciales (clave secreta + secreto de webhook) sirve tanto para cursos sueltos (`mod.billing`) como para suscripciones/membresía (`mod.subscriptions`): comparten cuenta de Stripe, la misma academia cobra por los dos caminos.
 
-En **Configuración → Pagos** (`/admin/configuracion`, tab "Pagos"), sin nada configurado todavía:
+En **Administración → Configuración → Pagos** (`/admin/configuracion`, pestaña «Pagos»), sin nada configurado todavía:
 
 ![Tab Pagos vacío, sin Stripe configurado](../assets/notificaciones-y-pagos/07-pagos-vacio.png)
 
@@ -50,7 +50,7 @@ Mientras Stripe no esté configurado, dos pantallas más lo avisan **antes** de 
 
 - **Pagos → Productos Stripe** (`/admin/billing/products`) deja vincular cursos igual, pero al guardar sin Stripe configurado responde con un mensaje claro y un enlace directo a la pestaña Pagos — nunca un 500 crudo.
 
-  ![Error con enlace a Administración → Pagos al vincular un curso sin Stripe configurado](../assets/notificaciones-y-pagos/09-billing-cta-sin-stripe.png)
+  ![Error con enlace a Administración → Configuración → Pagos al vincular un curso sin Stripe configurado](../assets/notificaciones-y-pagos/09-billing-cta-sin-stripe.png)
 
 Para activarlo: pega la **clave secreta** (Stripe → Desarrolladores → Claves de API) y el **secreto del webhook** — la propia tarjeta enseña las dos URLs a pegar en tu panel de Stripe (`{tu-dominio}/api/v1/modules/billing/webhook` y `.../modules/subscriptions/webhook`; el webhook de suscripciones es opcional, si lo dejas vacío reutiliza el mismo secreto que cursos sueltos).
 
@@ -67,7 +67,7 @@ Al guardar, igual que SMTP, el banner pasa a "configurado pero sin verificar" �
 Con una clave real guardada y verificada: en cada curso vinculado desde **Pagos → Productos Stripe**, eliges el curso publicado, pegas el `price_id` de un **Product + Price ya creado en tu dashboard de Stripe** (Didacta valida contra la API que existe y está activo antes de guardar) y el botón «Comprar curso» aparece solo en el catálogo público de ese curso.
 
 !!! warning "No confundir con «Conexiones de pago»"
-    `/admin/integraciones/payment-connections` es una pantalla **distinta**: sirve para reconciliar suscriptores de una cuenta de Stripe **externa** con una clave restringida de solo lectura — no habilita el checkout de Didacta. Para vender de verdad, la única vía es configurar Stripe en **Administración → Pagos**, de arriba.
+    `/admin/integraciones/payment-connections` es una pantalla **distinta**: sirve para reconciliar suscriptores de una cuenta de Stripe **externa** con una clave restringida de solo lectura — no habilita el checkout de Didacta. Para vender de verdad, la única vía es configurar Stripe en **Administración → Configuración → Pagos**, de arriba.
 
 !!! tip "Instalaciones que ya usaban STRIPE_SECRET_KEY por .env"
     Sigue funcionando como fallback de instancia: si un tenant no configura sus propias credenciales en el panel, hereda las variables de entorno del operador (si están definidas) — igual que el SMTP global. Ningún despliegue existente se rompe al actualizar.
@@ -102,7 +102,7 @@ Y el resultado, en vivo, sin sesión — con el precio, el ahorro, el curso incl
 
 ![/unete en vivo con el plan mensual visible](../assets/notificaciones-y-pagos/18-unete-publico.png)
 
-El botón "Continuar al pago seguro" abre Stripe Checkout — funciona en cuanto configures Stripe en **Administración → Pagos** (§2), por tenant. Sin credenciales (ni del tenant ni del fallback de instancia), responde el mismo error explicado arriba.
+El botón "Continuar al pago seguro" abre Stripe Checkout — funciona en cuanto configures Stripe en **Administración → Configuración → Pagos** (§2), por tenant. Sin credenciales (ni del tenant ni del fallback de instancia), responde el mismo error explicado arriba.
 
 ## Siguiente paso
 

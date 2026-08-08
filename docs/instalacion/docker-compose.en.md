@@ -41,7 +41,7 @@ On first start the app container automatically applies the **versioned migration
 
 1. Open `http://localhost:3000`. The first time it takes you to the **setup wizard** (`/setup`), where you create the organization (tenant) and the first administrator account.
 2. Sign in with that account and configure your brand under **Administration → Branding** (logo, colors, sign-in screen copy).
-3. Outgoing mail points to the Mailpit test mailbox by default (`http://localhost:8025`). For production, configure your real SMTP server under **Settings → Notifications**.
+3. Outgoing mail points to the Mailpit test mailbox by default (`http://localhost:8025`). For production, configure your real SMTP server under **Administration → Settings → Notifications**.
 
 ## Persistence: volumes
 

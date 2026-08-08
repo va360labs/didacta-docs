@@ -23,7 +23,7 @@ Si no configuras ningún proveedor, estos módulos devuelven un error claro de �
 
 ## Configuración por tenant (recomendada)
 
-Cada organización configura su proveedor y clave en **Administración → IA**. Las claves se cifran at-rest con AES-256-GCM.
+Cada organización configura su proveedor y clave en **Administración → Proveedores de IA**. Las claves se cifran at-rest con AES-256-GCM.
 
 !!! warning "Clave de cifrado obligatoria para IA por tenant"
     La gestión de configuraciones de IA por tenant necesita `AI_CONFIG_ENCRYPTION_KEY`: una clave **hex de exactamente 64 caracteres** (32 bytes).

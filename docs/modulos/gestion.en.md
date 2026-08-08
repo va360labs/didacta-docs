@@ -4,7 +4,7 @@ Modules are enabled and disabled **per organization (tenant)**, from the admin p
 
 ## From the panel
 
-**Settings → Modules** lists the available modules with their state, description and dependencies. A `tenant_admin` manages the ones in their own organization; a `super_admin` can manage any organization's.
+**Administration → Settings → Modules** lists the available modules with their state, description and dependencies. A `tenant_admin` manages the ones in their own organization; a `super_admin` can manage any organization's.
 
 You already chose an initial set in the [setup wizard](../instalacion/setup-wizard.md); you can change it here at any time.
 

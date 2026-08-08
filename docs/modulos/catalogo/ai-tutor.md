@@ -6,7 +6,7 @@
 
 Tutor IA **por curso** con RAG: indexa el contenido al publicar el curso, genera embeddings (proveedor configurable por tenant vía el [AI Gateway](../../configuracion/ia.md)) y los guarda en pgvector; el chat vive en la página del curso y **cita las lecciones concretas** en las que se apoya cada respuesta.
 
-Encima hay un **ciclo de calidad** en Administración → IA → Tutor con tres pestañas: revisión de pares pregunta→respuesta (con filtro «solo sin respaldo» para aislar respuestas sin citas), **conocimiento validado** escrito por humanos, e informe mensual con las preguntas agrupadas por tema y ordenadas por volumen.
+Encima hay un **ciclo de calidad** en Administración → Tutor IA con tres pestañas: revisión de pares pregunta→respuesta (con filtro «solo sin respaldo» para aislar respuestas sin citas), **conocimiento validado** escrito por humanos, e informe mensual con las preguntas agrupadas por tema y ordenadas por volumen.
 
 ## Cómo funciona
 
@@ -34,4 +34,4 @@ Opcionales: `mod.courses`, `mod.learning`.
 
 ## Configuración
 
-Proveedor y clave en Administración → IA (requiere `AI_CONFIG_ENCRYPTION_KEY`). Los parámetros del RAG (top-K 5, presupuesto de historial 3000 tokens, umbral de correcciones, cuota diaria 10) son constantes del producto.
+Proveedor y clave en Administración → Proveedores de IA (requiere `AI_CONFIG_ENCRYPTION_KEY`). Los parámetros del RAG (top-K 5, presupuesto de historial 3000 tokens, umbral de correcciones, cuota diaria 10) son constantes del producto.

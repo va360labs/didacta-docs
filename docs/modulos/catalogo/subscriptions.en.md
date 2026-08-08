@@ -33,7 +33,7 @@ Prefixes `/modules/subscriptions` (student + webhook) and `/membership` (public 
 
 ## Configuration
 
-Stripe (secret key + webhook) is configured per tenant under Settings → Payments, shared with `mod.billing`. With no credentials (neither tenant nor instance) checkout returns 503 — plans, trials and the access group remain editable regardless, as they do not depend on Stripe.
+Stripe (secret key + webhook) is configured per tenant under Administration → Settings → Payments, shared with `mod.billing`. With no credentials (neither tenant nor instance) checkout returns 503 — plans, trials and the access group remain editable regardless, as they do not depend on Stripe.
 
 | Variable | What it is for |
 | --- | --- |

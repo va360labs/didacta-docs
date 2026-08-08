@@ -41,7 +41,7 @@ The sign-in screen (`/signin`) already carries the tenant's branding: name, real
 
 Under **Administration → Branding** (`/admin/branding`) you upload the logo and pick the brand color (`brandHue`). Both are applied instantly to the sign-in screen and the public catalog.
 
-![Administration → Branding: logo uploaded and color chosen, before saving](../assets/recorrido-visual/07-branding.png)
+![Admin → Branding: logo uploaded and color chosen, before saving](../assets/recorrido-visual/07-branding.png)
 
 ## 5 · Create your first course
 
@@ -110,9 +110,9 @@ All of a student's certificates are also kept at `/mis-certificados`, with a ver
 
 ## 9 · A look at Administration → License
 
-Community works in full without a license. **Administration → License** (`/admin/licencia`) shows the current status and lets you activate an Enterprise license by pasting the key — verification is local, with no calls to an external server.
+Community works in full without a license. **Administration → License** (`/admin/licencia`) shows the current status and lets you activate an Enterprise license by pasting the key — verification is local, with no calls to an external server. If the operator pinned `DIDACTA_LICENSE_KEY` through the environment, the screen becomes read-only; see [License](../enterprise/licencia.md).
 
-![Administration → License: Community status, no active Enterprise license](../assets/recorrido-visual/22-admin-licencia.png)
+![Admin → License: Community status, no active Enterprise license](../assets/recorrido-visual/22-admin-licencia.png)
 
 ## What these screenshots do not show
 

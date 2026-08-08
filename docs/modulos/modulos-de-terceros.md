@@ -1,6 +1,6 @@
 # Módulos de terceros (ZIP firmado)
 
-Además de los módulos incluidos, Didacta puede ejecutar módulos **empaquetados como ZIP firmado** que un `super_admin` instala desde **Administración → Marketplace**. Es la vía prevista para el futuro marketplace de módulos.
+Además de los módulos incluidos, Didacta puede ejecutar módulos **empaquetados como ZIP firmado** que un `super_admin` instala desde **Administración → Marketplace módulos**. Es la vía prevista para el futuro marketplace de módulos.
 
 !!! note "Estado: funcional, en evolución"
     El pipeline de instalación, el sandbox y el enrutado están implementados y operativos. El **catálogo público de marketplace aún no existe** (hoy la instalación es por subida manual del ZIP), los módulos de vendor `community` todavía no se aceptan (solo paquetes firmados por Didacta o subida directa consciente), y la desinstalación no revierte migraciones ni borra tablas.

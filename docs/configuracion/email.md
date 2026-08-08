@@ -20,7 +20,7 @@ Si falta cualquiera de las tres primeras, **no hay SMTP global**: solo podrán e
 
 ## 2. SMTP por tenant (panel de administración)
 
-Cada organización puede definir su propio servidor en **Administración → SMTP**. Ese ajuste tiene prioridad sobre el global, y sus credenciales se guardan **cifradas at-rest** en la base de datos.
+Cada organización puede definir su propio servidor en **Administración → Configuración → Notificaciones** (la pestaña «Notificaciones» de `/admin/configuracion`). Ese ajuste tiene prioridad sobre el global, y sus credenciales se guardan **cifradas at-rest** en la base de datos.
 
 ## En desarrollo: Mailpit
 

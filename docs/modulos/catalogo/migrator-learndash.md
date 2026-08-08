@@ -13,7 +13,7 @@ Migra una academia completa de **WordPress + LearnDash** a Didacta: cursos, lecc
 - **Solo lee** del origen: el WordPress queda intacto.
 - Contraseñas: por defecto no importa hashes (PHPass no es compatible con Argon2id); cada usuario recibe email de activación para definir la suya.
 - El job corre en backend (se puede cerrar el navegador), con timeout de 6 horas.
-- Es el **ejemplo real del formato third-party**: se instala por ZIP en Administración → Marketplace, corre en la VM aislada con `ctx.db`/`ctx.http`/`ctx.secrets` sandboxeados, y sus credenciales de WordPress se guardan cifradas AES-256-GCM con clave scoped al job.
+- Es el **ejemplo real del formato third-party**: se instala por ZIP en Administración → Marketplace módulos, corre en la VM aislada con `ctx.db`/`ctx.http`/`ctx.secrets` sandboxeados, y sus credenciales de WordPress se guardan cifradas AES-256-GCM con clave scoped al job.
 
 ## Dependencias
 

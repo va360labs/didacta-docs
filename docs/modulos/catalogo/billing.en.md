@@ -33,7 +33,7 @@ Prefix `/modules/billing`: authenticated checkout, public surface (`public/catal
 
 ## Configuration
 
-Stripe is configured **per tenant** under Settings → Payments (encrypted credentials), shared with `mod.subscriptions` — a single key pair per academy. `mod.billing` always registers itself; with no credentials (neither tenant nor instance) checkout returns 503 and the rest of the app stays operational.
+Stripe is configured **per tenant** under Administration → Settings → Payments (encrypted credentials), shared with `mod.subscriptions` — a single key pair per academy. `mod.billing` always registers itself; with no credentials (neither tenant nor instance) checkout returns 503 and the rest of the app stays operational.
 
 | Variable | What it is for |
 | --- | --- |

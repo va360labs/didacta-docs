@@ -7,7 +7,7 @@ The second part of the visual walkthrough — it picks up where [Visual walkthro
 
 ## 1 · Notifications (SMTP)
 
-Under **Settings → Notifications** (`/admin/configuracion`, the "Notifications" tab) each tenant can define its own SMTP server. Without this, the organization inherits the instance-wide SMTP server if the operator configured one through environment variables — see [Email](../configuracion/email.md).
+Under **Administration → Settings → Notifications** (`/admin/configuracion`, the "Notifications" tab) each tenant can define its own SMTP server. Without this, the organization inherits the instance-wide SMTP server if the operator configured one through environment variables — see [Email](../configuracion/email.md).
 
 ![Empty Notifications tab, with no SMTP configured](../assets/notificaciones-y-pagos/01-smtp-vacio.png)
 
@@ -38,7 +38,7 @@ And the email, for real, in the mailbox:
 
 Stripe is configured **per tenant, from the admin panel** — there is no need to touch the instance `.env`. A single pair of credentials (secret key + webhook secret) covers both individual courses (`mod.billing`) and subscriptions/membership (`mod.subscriptions`): they share the same Stripe account, so one academy charges through both paths.
 
-Under **Settings → Payments** (`/admin/configuracion`, the "Payments" tab), with nothing configured yet:
+Under **Administration → Settings → Payments** (`/admin/configuracion`, the "Payments" tab), with nothing configured yet:
 
 ![Empty Payments tab, with no Stripe configured](../assets/notificaciones-y-pagos/07-pagos-vacio.png)
 
@@ -50,7 +50,7 @@ While Stripe is not configured, two more screens warn you **before** a student t
 
 - **Payments · Stripe products** (`/admin/billing/products`) still lets you link courses, but saving without Stripe configured returns a clear message and a direct link to the Payments tab — never a raw 500.
 
-  ![Error with a link to Settings → Payments when linking a course with no Stripe configured](../assets/notificaciones-y-pagos/09-billing-cta-sin-stripe.png)
+  ![Error with a link to Administration → Settings → Payments when linking a course with no Stripe configured](../assets/notificaciones-y-pagos/09-billing-cta-sin-stripe.png)
 
 To activate it: paste the **secret key** (Stripe → Developers → API keys) and the **webhook secret** — the card itself shows the two URLs to paste into your Stripe dashboard (`{your-domain}/api/v1/modules/billing/webhook` and `.../modules/subscriptions/webhook`; the subscriptions webhook is optional — leave it empty and it reuses the same secret as individual courses).
 
@@ -67,7 +67,7 @@ On saving, just like SMTP, the banner switches to "configured but not verified" 
 With a real key saved and verified: for each course linked from **Payments · Stripe products**, you pick the published course, paste the `price_id` of a **Product + Price you already created in your Stripe dashboard** (Didacta validates against the API that it exists and is active before saving) and the "Buy course" button appears on that course's public catalog page.
 
 !!! warning "Not to be confused with «Payment connections»"
-    `/admin/integraciones/payment-connections` is a **different** screen: it reconciles subscribers from an **external** Stripe account using a read-only restricted key — it does not enable Didacta's checkout. To actually sell, the only way is to configure Stripe under **Settings → Payments**, above.
+    `/admin/integraciones/payment-connections` is a **different** screen: it reconciles subscribers from an **external** Stripe account using a read-only restricted key — it does not enable Didacta's checkout. To actually sell, the only way is to configure Stripe under **Administration → Settings → Payments**, above.
 
 !!! tip "Installations that already used STRIPE_SECRET_KEY from .env"
     It still works as an instance-wide fallback: if a tenant does not configure its own credentials in the panel, it inherits the operator's environment variables (when they are defined) — exactly like the instance-wide SMTP server. No existing deployment breaks on upgrade.
@@ -102,7 +102,7 @@ And the result, live and signed out — with the price, the saving, the included
 
 ![/unete live with the monthly plan visible](../assets/notificaciones-y-pagos/18-unete-publico.png)
 
-The "Continue to secure payment" button opens Stripe Checkout — it works as soon as you configure Stripe under **Settings → Payments** (§2), per tenant. With no credentials (neither the tenant's nor the instance fallback), it returns the same error explained above.
+The "Continue to secure payment" button opens Stripe Checkout — it works as soon as you configure Stripe under **Administration → Settings → Payments** (§2), per tenant. With no credentials (neither the tenant's nor the instance fallback), it returns the same error explained above.
 
 ## Next step
 

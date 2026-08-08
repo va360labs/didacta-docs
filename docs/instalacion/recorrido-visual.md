@@ -33,15 +33,15 @@ La primera vez que cualquier cuenta entra (incluida la del administrador), Didac
 
 ## 3 · Inicia sesión
 
-La pantalla de acceso (`/signin`) ya lleva la marca del tenant: nombre, cifras reales (alumnado activo, cursos publicados) y el copy que configures en **Administración → Marca**.
+La pantalla de acceso (`/signin`) ya lleva la marca del tenant: nombre, cifras reales (alumnado activo, cursos publicados) y el copy que configures en **Administración → Branding**.
 
 ![Pantalla de acceso con la marca del tenant](../assets/recorrido-visual/06-signin.png)
 
 ## 4 · Personaliza tu marca
 
-En **Administración → Marca** (`/admin/branding`) subes el logo y eliges el color de marca (`brandHue`). Se aplican al instante a la pantalla de acceso y al catálogo público.
+En **Administración → Branding** (`/admin/branding`) subes el logo y eliges el color de marca (`brandHue`). Se aplican al instante a la pantalla de acceso y al catálogo público.
 
-![Admin → Marca: logo subido y color elegido, antes de guardar](../assets/recorrido-visual/07-branding.png)
+![Admin → Branding: logo subido y color elegido, antes de guardar](../assets/recorrido-visual/07-branding.png)
 
 ## 5 · Crea tu primer curso
 
@@ -72,7 +72,7 @@ Sin auto-matriculación pública, la vía normal para que alguien entre a un cur
 
 ![Catálogo público de venta vacío: este curso no tiene precio configurado](../assets/recorrido-visual/13-catalogo-publico.png)
 
-Para dar de alta a una persona directamente, **Administración → Usuarios → Invitar** crea la cuenta ya activa y le envía un email para que defina su contraseña.
+Para dar de alta a una persona directamente, **Administración → Usuarios y roles → Invitar persona** crea la cuenta ya activa y le envía un email para que defina su contraseña.
 
 ![Alta de una alumna por invitación individual](../assets/recorrido-visual/14-admin-invitar-alumna.png)
 
@@ -110,7 +110,7 @@ Todos los certificados del alumnado quedan también en `/mis-certificados`, con 
 
 ## 9 · Un vistazo a Administración → Licencia
 
-Community funciona completo sin licencia. **Administración → Licencia** (`/admin/licencia`) muestra el estado actual y permite activar una licencia Enterprise pegando la clave — la verificación es local, sin llamadas a un servidor externo.
+Community funciona completo sin licencia. **Administración → Licencia** (`/admin/licencia`) muestra el estado actual y permite activar una licencia Enterprise pegando la clave — la verificación es local, sin llamadas a un servidor externo. Si el operador fijó `DIDACTA_LICENSE_KEY` por entorno, la pantalla pasa a solo lectura; ver [Licencia](../enterprise/licencia.md).
 
 ![Admin → Licencia: estado Community, sin licencia Enterprise activa](../assets/recorrido-visual/22-admin-licencia.png)
 

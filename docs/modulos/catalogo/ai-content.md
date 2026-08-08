@@ -32,4 +32,4 @@ Prefijo `/modules/ai-content` (formador+): `generate`, listado/detalle de `draft
 
 ## Configuración
 
-Proveedor IA por tenant en Administración → IA; sin variables propias.
+Proveedor IA por tenant en Administración → Proveedores de IA; sin variables propias.
