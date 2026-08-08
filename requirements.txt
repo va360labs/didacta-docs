@@ -1,2 +1,3 @@
 # Generador del sitio de documentación de Didacta
 mkdocs-material==9.*
+mkdocs-static-i18n==1.*
