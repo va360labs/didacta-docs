@@ -4,19 +4,39 @@ Didacta's license is a **JWT signed with ES256** (ECDSA P-256) by VA360 LABS. Th
 
 ## Activating the license
 
-```bash
-# In your .env
-DIDACTA_LICENSE_KEY=eyJhbGciOiJFUzI1NiIs...
-```
+There are **two routes**, and the precedence between them is fixed: **the environment always wins over the panel**.
 
-```bash
-docker compose -f docker-compose.alpha.yml up -d didacta
-```
+=== "From the panel (recommended)"
 
-The license is read **once at startup** and the resulting state is written to the startup log (`License: active`, `License: community (no key set)`…).
+    **Administration → License** (`/admin/licencia`, `super_admin` only) shows the current
+    status and lets you paste the key, refresh it or delete it.
 
-!!! note "Changing the license requires a restart"
-    There is no admin screen today for entering the license: it is configured through an environment variable and applied by restarting the container.
+    - The key is **validated live before being persisted**: an invalid key returns a 400 and
+      **does not overwrite the one you already had**.
+    - It is stored encrypted as an instance setting and the license is **reloaded hot**:
+      **no container restart is needed**.
+    - Endpoints: `GET`/`PUT`/`DELETE /api/v1/admin/license` and `POST /api/v1/admin/license/refresh`.
+
+=== "Through an environment variable"
+
+    ```bash
+    # In your .env
+    DIDACTA_LICENSE_KEY=eyJhbGciOiJFUzI1NiIs...
+    ```
+
+    ```bash
+    docker compose -f docker-compose.alpha.yml up -d didacta
+    ```
+
+    On this route the license is read **at startup**, so **changing it requires restarting**
+    the container. The resulting state is written to the startup log (`License: active`,
+    `License: community (no key set)`…).
+
+!!! note "The environment wins over the panel"
+    If `DIDACTA_LICENSE_KEY` is set, the panel becomes **read-only**: it hides the activation
+    form, shows the license with an "set by the operator" badge, and any attempt to edit or
+    delete it returns **409**. This is what lets an operator pin the license per deployment
+    without anyone changing it from the interface.
 
 ## What it contains
 

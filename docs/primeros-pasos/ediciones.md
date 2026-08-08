@@ -27,4 +27,4 @@ En Didacta **nada se oculta**.
 
 ## Cómo se activa Enterprise
 
-Con una licencia JWT firmada por VA360 LABS que se introduce en la variable `DIDACTA_LICENSE_KEY` al arrancar. El detalle está en [Licencia Enterprise](../enterprise/licencia.md).
+Con una licencia JWT firmada por VA360 LABS, que se pega en **Administración → Licencia** o se fija en la variable `DIDACTA_LICENSE_KEY`. El detalle está en [Licencia Enterprise](../enterprise/licencia.md).
