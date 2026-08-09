@@ -159,7 +159,7 @@ Las credenciales Server-to-Server de Zoom **no son variables de entorno**: viven
 
 ## 10. Pagos — Stripe (módulos billing y subscriptions)
 
-La configuración canónica vive **por tenant** en Administración → Pagos (`/admin/configuracion`, tab "Pagos"): cada academia guarda su propia clave secreta y secreto de webhook, cifrados. Estas variables son solo el **fallback global** de instancia — un tenant que no configuró las suyas cae aquí; si tampoco hay nada aquí, el checkout de ese tenant responde 503 hasta que configure Stripe en algún sitio (nunca tumba el arranque de `mod.billing`/`mod.subscriptions`, que se registran siempre).
+La configuración canónica vive **por tenant** en Administración → Configuración → Pagos (`/admin/configuracion`, pestaña «Pagos»): cada academia guarda su propia clave secreta y secreto de webhook, cifrados. Estas variables son solo el **fallback global** de instancia — un tenant que no configuró las suyas cae aquí; si tampoco hay nada aquí, el checkout de ese tenant responde 503 hasta que configure Stripe en algún sitio (nunca tumba el arranque de `mod.billing`/`mod.subscriptions`, que se registran siempre).
 
 | Nombre | Obligatoria | Default | Componente | Descripción |
 |---|---|---|---|---|
@@ -193,7 +193,7 @@ La configuración canónica vive **por tenant** en Administración → Configura
 
 | Nombre | Obligatoria | Default | Componente | Descripción |
 |---|---|---|---|---|
-| `DIDACTA_LICENSE_KEY` | No | — (modo Community) | api, compose | JWT de licencia Enterprise firmado por Didacta, leído **una vez al arrancar**. Sin él: `License: community` y capabilities EE deshabilitadas. Inválido: HTTP 402/401 en endpoints gateados. Cambiar de licencia exige reiniciar el contenedor. |
+| `DIDACTA_LICENSE_KEY` | No | — (modo Community) | api, compose | JWT de licencia Enterprise firmado por Didacta, leído **una vez al arrancar**. Sin él: `License: community` y capabilities EE deshabilitadas, salvo que se haya activado una licencia desde **Administración → Licencia** (el entorno gana sobre el panel). Inválido: HTTP 402/401 en endpoints gateados. Cambiarla por esta vía exige reiniciar el contenedor; desde el panel se recarga en caliente. |
 | `DIDACTA_DEV_BYPASS` | No | `false` | api, compose | Bypass de licencia: activa **todas** las capabilities. **Solo desarrollo** — se ignora con `NODE_ENV=production` y emite un WARN visible. |
 | `MARKETPLACE_PUBLIC_KEYS_DIR` | No | directorio embebido | api | Directorio con las claves públicas que verifican la firma de los paquetes `.zip` de módulos del marketplace. |
 

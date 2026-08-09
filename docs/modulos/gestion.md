@@ -4,7 +4,7 @@ Los módulos se activan y desactivan **por organización (tenant)**, desde el pa
 
 ## Desde el panel
 
-**Administración → Módulos** lista los módulos disponibles con su estado, descripción y dependencias. Un `tenant_admin` gestiona los de su organización; un `super_admin` puede gestionar los de cualquiera.
+**Administración → Configuración → Módulos** (la pestaña «Módulos» de `/admin/configuracion`) lista los módulos disponibles con su estado, descripción y dependencias. Un `tenant_admin` gestiona los de su organización; un `super_admin` puede gestionar los de cualquiera.
 
 En el [asistente de configuración](../instalacion/setup-wizard.md) ya elegiste un conjunto inicial; puedes cambiarlo aquí en cualquier momento.
 
@@ -43,4 +43,4 @@ El frontend consulta `GET /api/v1/me/modules`, que devuelve los módulos activos
 
 ## Módulos de terceros
 
-La instalación de módulos externos (ZIP firmado) es una operación de **instancia**, reservada a `super_admin`, y se gestiona en **Administración → Marketplace**. Ver [Módulos de terceros](modulos-de-terceros.md).
+La instalación de módulos externos (ZIP firmado) es una operación de **instancia**, reservada a `super_admin`, y se gestiona en **Administración → Marketplace módulos**. Ver [Módulos de terceros](modulos-de-terceros.md).

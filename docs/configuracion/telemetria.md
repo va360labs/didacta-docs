@@ -20,4 +20,4 @@ DIDACTA_TELEMETRY_DISABLED=true
 
 ## Registro opt-in (opcional)
 
-Aparte del latido anónimo existe un **registro voluntario** (**Administración → Registro**) donde el operador puede identificarse con email y organización a cambio de un canal directo con el equipo. Ese nivel envía métricas agregadas y tiene **opt-out y borrado RGPD** desde el propio panel.
+Aparte del latido anónimo existe un **registro voluntario** (**Administración → Configuración → Registro**) donde el operador puede identificarse con email y organización a cambio de un canal directo con el equipo. Ese nivel envía métricas agregadas y tiene **opt-out y borrado RGPD** desde el propio panel.

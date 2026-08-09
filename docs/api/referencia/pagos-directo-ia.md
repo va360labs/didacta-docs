@@ -94,4 +94,4 @@ Errores: `AI_CONTENT_LESSON_TEXT_EMPTY` 422 · `AI_CONTENT_DRAFT_NOT_IN_DRAFT` 4
 
 Errores del tutor: `AI_TUTOR_DAILY_QUESTION_QUOTA` / `AI_TUTOR_TOKEN_QUOTA_EXCEEDED` **429** · `AI_TUTOR_COURSE_NOT_INDEXED` 404 · `AI_TUTOR_COURSE_ACCESS_DENIED` 403 · `AI_PROVIDER_NOT_CONFIGURED` **424** · proveedor caído 502.
 
-El panel de revisión del tutor (respuestas, conocimiento validado, informe mensual) está en [Administración → IA](administracion.md#ia-adminai-admin).
+El panel de revisión del tutor (respuestas, conocimiento validado, informe mensual) está en [Administración → Proveedores de IA](administracion.md#ia-adminai-admin).

@@ -16,12 +16,12 @@ Todo lo específico de una organización vive en la base de datos y se gestiona 
 
 | Ajuste | Dónde |
 | --- | --- |
-| Marca: logo, colores, textos de acceso | Administración → Marca |
-| SMTP propio del tenant | Administración → SMTP |
-| Proveedor y clave de IA (BYOK) | Administración → IA |
-| Credenciales Zoom Server-to-Server | Administración → Integraciones |
+| Marca: logo, colores, textos de acceso | Administración → Branding |
+| SMTP propio del tenant | Administración → Configuración → Notificaciones |
+| Proveedor y clave de IA (BYOK) | Administración → Proveedores de IA |
+| Credenciales Zoom Server-to-Server | Administración, grupo «Integraciones y API» |
 | Verificadores de inscripción, bot de Telegram | Administración → Configuración → Registro |
-| Registro opt-in con el equipo de Didacta | Administración → Registro |
+| Registro opt-in con el equipo de Didacta | Administración → Configuración → Registro |
 
 Los secretos por tenant (client secrets OIDC, tokens, claves Stripe, bot de Telegram…) se **cifran at-rest** con la clave maestra de la instancia (`TENANT_SETTINGS_ENC_KEY` o la clave autogenerada en el volumen de datos).
 

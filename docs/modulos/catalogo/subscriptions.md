@@ -33,7 +33,7 @@ Prefijos `/modules/subscriptions` (alumno + webhook) y `/membership` (público +
 
 ## Configuración
 
-Stripe (clave secreta + webhook) se configura por tenant en Administración → Pagos, compartida con `mod.billing`. Sin credenciales (ni de tenant ni de instancia) el checkout responde 503 — planes, trial y grupo de acceso siguen editables igualmente, no dependen de Stripe.
+Stripe (clave secreta + webhook) se configura por tenant en Administración → Configuración → Pagos, compartida con `mod.billing`. Sin credenciales (ni de tenant ni de instancia) el checkout responde 503 — planes, trial y grupo de acceso siguen editables igualmente, no dependen de Stripe.
 
 | Variable | Para qué |
 | --- | --- |

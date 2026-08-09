@@ -33,7 +33,7 @@ Prefijo `/modules/billing`: checkout autenticado, superficie pública (`public/c
 
 ## Configuración
 
-Stripe se configura **por tenant** en Administración → Pagos (credenciales cifradas), compartidas con `mod.subscriptions` — un único par de claves por academia. `mod.billing` se registra siempre; sin credenciales (ni de tenant ni de instancia) el checkout responde 503, el resto de la app sigue operativa.
+Stripe se configura **por tenant** en Administración → Configuración → Pagos (credenciales cifradas), compartidas con `mod.subscriptions` — un único par de claves por academia. `mod.billing` se registra siempre; sin credenciales (ni de tenant ni de instancia) el checkout responde 503, el resto de la app sigue operativa.
 
 | Variable | Para qué |
 | --- | --- |

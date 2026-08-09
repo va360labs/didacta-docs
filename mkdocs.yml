@@ -40,7 +40,6 @@ theme:
     - navigation.indexes
     - navigation.top
     - navigation.footer
-    - navigation.instant
     - toc.follow
     - search.suggest
     - search.highlight
@@ -63,6 +62,114 @@ extra:
       link: https://hub.docker.com/r/didactaio/community
     - icon: material/web
       link: https://didacta.io
+
+plugins:
+  # El buscador se declara explícitamente porque al añadir `plugins:` deja de
+  # cargarse el plugin `search` por defecto de MkDocs.
+  - search:
+      lang:
+        - es
+        - en
+  # Sitio bilingüe. Estructura `suffix`: el español (idioma por defecto) se
+  # queda en `docs/<ruta>.md` y conserva EXACTAMENTE sus URLs actuales; el
+  # inglés vive en `docs/<ruta>.en.md` y se publica bajo `/en/<ruta>/`.
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: es
+          name: Español
+          default: true
+          build: true
+        - locale: en
+          name: English
+          build: true
+          site_description: >-
+            Official Didacta documentation — the fair-code, modular LMS with
+            built-in Fundae support. Installation, configuration, modules, API
+            and Enterprise.
+          copyright: >-
+            Copyright &copy; 2026 VA360 LABS S.L. — Didacta&trade; is a trademark
+            of VA360 LABS S.L.
+          theme:
+            palette:
+              - toggle:
+                  name: Switch to dark mode
+              - toggle:
+                  name: Switch to light mode
+          nav_translations:
+            # Secciones y páginas de primer nivel
+            Inicio: Home
+            Primeros pasos: Getting started
+            Ediciones: Editions
+            Arquitectura: Architecture
+            # Instalación
+            Instalación: Installation
+            docker run manual: Manual docker run
+            Asistente de configuración: Setup wizard
+            "Recorrido visual: primeros pasos": "Visual walkthrough: getting started"
+            "Recorrido visual: notificaciones y ventas": "Visual walkthrough: notifications and sales"
+            Actualizar: Upgrading
+            Copias de seguridad: Backups
+            Solución de problemas: Troubleshooting
+            # Configuración
+            Configuración: Configuration
+            Variables de entorno: Environment variables
+            Base de datos: Database
+            Almacenamiento: Storage
+            IA (BYOK): AI (BYOK)
+            Aula virtual (Zoom): Virtual classroom (Zoom)
+            Branding whitelabel: Whitelabel branding
+            Telemetría: Telemetry
+            # Módulos
+            Módulos: Modules
+            Catálogo de módulos: Module catalog
+            Cursos y catálogo: Courses and catalog
+            Player y progreso: Player and progress
+            Quizzes y exámenes: Quizzes and exams
+            Certificados: Certificates
+            Grupos de acceso: Access groups
+            Inscripción de miembros: Member registration
+            SSO desde WordPress: WordPress SSO
+            Suscripciones: Subscriptions
+            Conexiones de pago: Payment connections
+            Referidos: Referrals
+            Comunidad: Community
+            Mensajería: Messaging
+            Puntos y retos: Points & challenges
+            Biblioteca de recursos: Resource library
+            Encuestas y NPS: Surveys and NPS
+            Tutor IA: AI Tutor
+            Corrección IA: AI grading
+            Generador IA: AI content generator
+            Aula virtual Zoom: Zoom virtual classroom
+            Personalización visual: Visual customization
+            Migrador LearnDash: LearnDash migrator
+            Gestionar módulos: Managing modules
+            Módulos de terceros: Third-party modules
+            Crear un módulo: Building a module
+            El manifest: The manifest
+            Interfaz de usuario: User interface
+            Eventos y hooks: Events and hooks
+            Validación y tests: Validation and tests
+            # API
+            Autenticación: Authentication
+            Convenciones: Conventions
+            Referencia de endpoints: Endpoint reference
+            Núcleo y transversales: Core and cross-cutting
+            Administración: Administration
+            Aprendizaje: Learning
+            Comunidad y personas: Community and people
+            Pagos, aula e IA: Payments, classroom and AI
+            # Enterprise
+            Licencia: License
+            # Comunidad
+            Reportar un error: Reporting a bug
+            Contribuir: Contributing
+            Tests en local: Running tests locally
+            Licencias: Licenses
 
 markdown_extensions:
   - admonition

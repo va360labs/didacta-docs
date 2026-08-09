@@ -26,7 +26,7 @@ En Didacta **el gating nunca oculta**:
 
 ## Cómo se activa
 
-Con una licencia JWT firmada por VA360 LABS en la variable `DIDACTA_LICENSE_KEY`. El funcionamiento completo (estados, periodo de gracia, verificación) está en [Licencia](licencia.md).
+Con una licencia JWT firmada por VA360 LABS, pegada en **Administración → Licencia** o fijada en la variable `DIDACTA_LICENSE_KEY` (el entorno gana sobre el panel). El funcionamiento completo (estados, periodo de gracia, verificación) está en [Licencia](licencia.md).
 
 ## Contratación
 

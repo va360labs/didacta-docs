@@ -4,7 +4,7 @@ Didacta es **whitelabel de serie**: nada de la marca de una instalación concret
 
 ## Marca por organización (Community)
 
-En **Administración → Marca** cada organización configura:
+En **Administración → Branding** cada organización configura:
 
 - Logo y favicon.
 - Color primario (el tema deriva el resto de la paleta).
@@ -16,7 +16,7 @@ El módulo `mod.theming` amplía la personalización visual: fuentes, tokens de 
 
 El tenant se resuelve por el **host** de la petición: cada organización tiene uno o más dominios verificados asociados (el primero se crea en el [asistente de configuración](../instalacion/setup-wizard.md)).
 
-- Los administradores gestionan dominios adicionales desde el panel (**Administración → Organizaciones**).
+- Los administradores gestionan dominios adicionales desde el panel (**Administración → Tenants**).
 - La gestión avanzada de **dominios personalizados por tenant** con verificación CNAME es una capability Enterprise (`feat:custom_domains`). La UI muestra el target CNAME configurable con `DIDACTA_CNAME_TARGET`.
 
 !!! note "Sin comodines de subdominio"

@@ -38,4 +38,4 @@ Prefijo `/modules/gamification` (miembro + `/admin`). Detalle en [Referencia →
 
 ## Configuración
 
-Todo por tenant desde Administración → Gamificación (pesos, techos, niveles, beneficios, retos). Sin variables de entorno.
+Todo por tenant desde Administración → Puntos y retos (pesos, techos, niveles, beneficios, retos). Sin variables de entorno.

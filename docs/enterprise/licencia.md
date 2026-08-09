@@ -4,19 +4,39 @@ La licencia de Didacta es un **JWT firmado con ES256** (ECDSA P-256) por VA360 L
 
 ## Activar la licencia
 
-```bash
-# En tu .env
-DIDACTA_LICENSE_KEY=eyJhbGciOiJFUzI1NiIs...
-```
+Hay **dos caminos**, y la precedencia entre ellos es fija: **el entorno gana siempre sobre el panel**.
 
-```bash
-docker compose -f docker-compose.alpha.yml up -d didacta
-```
+=== "Desde el panel (recomendado)"
 
-La licencia se lee **una vez al arrancar** y el estado queda en el log de arranque (`License: active`, `License: community (no key set)`…).
+    **Administración → Licencia** (`/admin/licencia`, solo `super_admin`) muestra el estado
+    actual y permite pegar la clave, refrescarla o borrarla.
 
-!!! note "Cambiar de licencia requiere reiniciar"
-    Hoy no existe pantalla de administración para introducir la licencia: se configura por variable de entorno y se aplica reiniciando el contenedor.
+    - La clave se **valida en vivo antes de persistirse**: una clave inválida responde 400 y
+      **no pisa la que ya tenías**.
+    - Se guarda cifrada como ajuste de instancia y la licencia se **recarga en caliente**:
+      **no hace falta reiniciar el contenedor**.
+    - Endpoints: `GET`/`PUT`/`DELETE /api/v1/admin/license` y `POST /api/v1/admin/license/refresh`.
+
+=== "Por variable de entorno"
+
+    ```bash
+    # En tu .env
+    DIDACTA_LICENSE_KEY=eyJhbGciOiJFUzI1NiIs...
+    ```
+
+    ```bash
+    docker compose -f docker-compose.alpha.yml up -d didacta
+    ```
+
+    Por esta vía la licencia se lee **al arrancar**, así que **cambiarla exige reiniciar** el
+    contenedor. El estado queda en el log de arranque (`License: active`,
+    `License: community (no key set)`…).
+
+!!! note "El entorno gana sobre el panel"
+    Si `DIDACTA_LICENSE_KEY` está definida, el panel pasa a **solo lectura**: oculta el
+    formulario de activación, muestra la licencia con el distintivo de definida por el
+    operador, y los intentos de editarla o borrarla responden **409**. Es lo que permite a un
+    operador fijar la licencia por despliegue sin que nadie la cambie desde la interfaz.
 
 ## Qué contiene
 
