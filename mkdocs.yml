@@ -165,6 +165,7 @@ plugins:
             Pagos, aula e IA: Payments, classroom and AI
             # Enterprise
             Licencia: License
+            Aprovisionamiento (SCIM): Provisioning (SCIM)
             # Comunidad
             Reportar un error: Reporting a bug
             Contribuir: Contributing
@@ -273,6 +274,7 @@ nav:
       - enterprise/index.md
       - Capabilities: enterprise/capabilities.md
       - Licencia: enterprise/licencia.md
+      - Aprovisionamiento (SCIM): enterprise/scim.md
   - Comunidad:
       - Reportar un error: comunidad/reportar-un-error.md
       - Contribuir: comunidad/contribuir.md

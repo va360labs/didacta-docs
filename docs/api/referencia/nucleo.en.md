@@ -124,7 +124,7 @@ With no configuration enabled, the flows return 404. Errors always redirect to `
 | GET · POST | `/scim/v2/Users` | Lists with SCIM pagination and a `userName eq` filter · creates a user (201). |
 | GET · PATCH · DELETE | `/scim/v2/Users/:id` | Reads · applies a `PatchOp` (active, name, locale…) · soft deletes (204). |
 
-All five CRUD operations require the `feat:scim` capability (**402** without a license). The token is issued at `/admin/scim/token`.
+All five CRUD operations require the `feat:scim` capability (**402** without a license). The token is issued at `/admin/scim/token`. The full guide —attribute mapping, error format and what is **not** supported— is in [SCIM provisioning](../../enterprise/scim.md).
 
 ## External enrollment — `/inscribe` (API keys)
 
