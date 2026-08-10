@@ -8,7 +8,7 @@ La lista **cerrada** de capabilities Enterprise — 11 hoy, definidas en `packag
 | --- | --- |
 | `feat:sso.saml` | Configuración de login corporativo **SAML 2.0** (`/admin/sso/saml`). |
 | `feat:sso.oidc` | Configuración de login corporativo **OIDC** (`/admin/sso/oidc`). |
-| `feat:scim` | **Aprovisionamiento SCIM 2.0** desde Okta/Entra: alta, baja y actualización automática de usuarios (`/scim/v2` + emisión del token). |
+| `feat:scim` | **Aprovisionamiento SCIM 2.0** desde Okta/Entra: alta, baja y actualización automática de usuarios (`/scim/v2` + emisión del token). Detalle completo en [Aprovisionamiento SCIM](scim.md). |
 | `feat:mfa.enforcement` | **MFA obligatorio a nivel de organización** (política aplicada en el login). Community permite MFA opcional por usuario. |
 
 ## Plataforma

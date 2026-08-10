@@ -17,7 +17,7 @@ Con `docker-compose.alpha.yml`, las dos primeras se componen solas: **solo `AUTH
 **Fuertemente recomendadas en producción:**
 
 - `WEB_PUBLIC_URL` — sin ella, todos los emails llevan enlaces a `localhost`.
-- `TENANT_SETTINGS_ENC_KEY` — fíjala **antes** de configurar SSO OIDC, SCIM, SMTP por tenant, Stripe o Zoom S2S.
+- `TENANT_SETTINGS_ENC_KEY` — fíjala **antes** de configurar SSO OIDC, SMTP por tenant, Stripe o Zoom S2S.
 - `METRICS_TOKEN` — si `/metrics` es alcanzable desde Internet.
 - `AUDIT_REPORT_HMAC_KEY` — el fallback embebido es público (está en el repo).
 - `WEB_PUBLIC_ALLOWED_HOSTS` — si hay SSO activo.
@@ -88,7 +88,7 @@ Con `docker-compose.alpha.yml`, las dos primeras se componen solas: **solo `AUTH
 | `AUTH_SECRET` | **Sí** | — | api, worker | Secreto de firma de JWT (access + refresh), tickets de inscripción y tokens de desuscripción. **Mínimo 32 caracteres**: la app lanza error al arrancar si falta o es más corta. Generar con `openssl rand -base64 32`. Cambiarla invalida todas las sesiones. |
 | `AUTH_URL` | No | `https://didacta.local` | api | Issuer (`iss`) de los JWT. También base por defecto de las URLs de éxito/cancelación de checkouts de Stripe. |
 | `AUTH_SIGNUP_ENABLED` | No | `false` | api, web | Habilita el registro público (`POST /auth/signup` + página `/signup`). Cerrado por diseño: las altas reales entran por inscripción o invitación de admin. Solo `true` en stacks dev/E2E. |
-| `TENANT_SETTINGS_ENC_KEY` | Crítica si usas integraciones | — (cascada) | api, compose | Clave AES-256 en **hex de 64 caracteres** que cifra los secretos at-rest por tenant (client secret OIDC, token SCIM, SMTP por tenant, claves Stripe, Zoom S2S, bot de Telegram). Cascada: esta variable → fichero `${STORAGE_ROOT}/.didacta-secret-key` (autogenerado, `0600`) → clave efímera en memoria (los secretos se pierden al reiniciar). Generar con `openssl rand -hex 32`. **Jamás rotar sin plan de re-cifrado.** |
+| `TENANT_SETTINGS_ENC_KEY` | Crítica si usas integraciones | — (cascada) | api, compose | Clave AES-256 en **hex de 64 caracteres** que cifra los secretos at-rest por tenant (client secret OIDC, SMTP por tenant, claves Stripe, Zoom S2S, bot de Telegram; el token SCIM no la usa: de él solo se guarda un hash SHA-256). Cascada: esta variable → fichero `${STORAGE_ROOT}/.didacta-secret-key` (autogenerado, `0600`) → clave efímera en memoria (los secretos se pierden al reiniciar). Generar con `openssl rand -hex 32`. **Jamás rotar sin plan de re-cifrado.** |
 | `TENANT_SETTINGS_ENC_KEY_FILE` | No | `${STORAGE_ROOT}/.didacta-secret-key` | api | Path alternativo del fichero de la clave maestra, para separar clave y storage en volúmenes distintos. |
 | `DIDACTA_REQUIRE_MFA_ADMIN` | No | `false` | api | Fuerza MFA a los admins de toda la instancia. Acepta `true`/`1`/`yes`/`on`. Independiente de la política por tenant (capability Enterprise `feat:mfa.enforcement`). |
 | `OIDC_REDIRECT_URI` | No | cae a `PUBLIC_API_URL` | api | `redirect_uri` enviado al IdP OIDC; debe coincidir con el registrado en el proveedor. |

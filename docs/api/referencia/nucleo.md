@@ -124,7 +124,7 @@ Sin configuración habilitada, los flujos responden 404. Los errores siempre red
 | GET · POST | `/scim/v2/Users` | Lista con paginación SCIM y filtro `userName eq` · crea usuario (201). |
 | GET · PATCH · DELETE | `/scim/v2/Users/:id` | Lee · aplica `PatchOp` (active, name, locale…) · soft-delete (204). |
 
-Los cinco CRUD requieren la capability `feat:scim` (**402** sin licencia). El token se emite en `/admin/scim/token`.
+Los cinco CRUD requieren la capability `feat:scim` (**402** sin licencia). El token se emite en `/admin/scim/token`. Guía completa —mapeo de atributos, formato de error y lo que **no** está soportado— en [Aprovisionamiento SCIM](../../enterprise/scim.md).
 
 ## Inscripción externa — `/inscribe` (API keys)
 

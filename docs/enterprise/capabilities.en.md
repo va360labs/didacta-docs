@@ -8,7 +8,7 @@ The **closed** list of Enterprise capabilities — 11 today, defined in `package
 | --- | --- |
 | `feat:sso.saml` | Configuration of **SAML 2.0** corporate sign-in (`/admin/sso/saml`). |
 | `feat:sso.oidc` | Configuration of **OIDC** corporate sign-in (`/admin/sso/oidc`). |
-| `feat:scim` | **SCIM 2.0 provisioning** from Okta/Entra: automatic user creation, deactivation and updates (`/scim/v2` + token issuing). |
+| `feat:scim` | **SCIM 2.0 provisioning** from Okta/Entra: automatic user creation, deactivation and updates (`/scim/v2` + token issuing). Full detail in [SCIM provisioning](scim.md). |
 | `feat:mfa.enforcement` | **Mandatory MFA at the organization level** (a policy enforced at sign-in). Community allows optional per-user MFA. |
 
 ## Platform
