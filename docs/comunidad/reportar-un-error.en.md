@@ -39,7 +39,7 @@ Any of these three will do:
 ```bash
 # 1. The version the API reports (no authentication needed)
 curl -fsS http://localhost:4000/healthz
-# → {"status":"ok","service":"api","version":"0.0.1-alpha.101",...}
+# → {"status":"ok","service":"api","version":"0.0.1-alpha.114",...}
 
 # 2. The image tag you have deployed
 docker compose -f docker-compose.alpha.yml images didacta
@@ -103,7 +103,7 @@ Logs and screenshots from a real installation carry personal data and credential
 
     **Title:** Redeeming an invitation code returns 500 if the course is already archived
 
-    **Version:** 0.0.1-alpha.101 · **Running:** `docker compose -f docker-compose.alpha.yml` · **OS:** Ubuntu 22.04
+    **Version:** 0.0.1-alpha.114 · **Running:** `docker compose -f docker-compose.alpha.yml` · **OS:** Ubuntu 22.04
 
     **Steps:**
 

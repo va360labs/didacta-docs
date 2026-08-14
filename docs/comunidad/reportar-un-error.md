@@ -39,7 +39,7 @@ Cualquiera de estas tres vale:
 ```bash
 # 1. La versión que responde la API (no necesita autenticación)
 curl -fsS http://localhost:4000/healthz
-# → {"status":"ok","service":"api","version":"0.0.1-alpha.101",...}
+# → {"status":"ok","service":"api","version":"0.0.1-alpha.114",...}
 
 # 2. El tag de imagen que tienes desplegado
 docker compose -f docker-compose.alpha.yml images didacta
@@ -103,7 +103,7 @@ Los logs y las capturas de una instalación real llevan datos de personas y cred
 
     **Título:** El canje de código de invitación devuelve 500 si el curso ya está archivado
 
-    **Versión:** 0.0.1-alpha.101 · **Ejecución:** `docker compose -f docker-compose.alpha.yml` · **SO:** Ubuntu 22.04
+    **Versión:** 0.0.1-alpha.114 · **Ejecución:** `docker compose -f docker-compose.alpha.yml` · **SO:** Ubuntu 22.04
 
     **Pasos:**
 
