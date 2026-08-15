@@ -1,6 +1,10 @@
+---
+render_macros: true
+---
+
 # Contributing to Didacta
 
-Didacta is in **alpha** on its way to `v1.0.0`. External contributions are welcome — issues, installation feedback and focused PRs — with the caveat that the API and the schema can still change between alpha versions.
+Didacta is in **{{ didacta_channel_en|lower }}** on its way to `v1.0.0`. External contributions are welcome — issues, installation feedback and focused PRs — with the caveat that the API and the schema can still change between pre-1.0 versions.
 
 The canonical guide is [CONTRIBUTING.md](https://github.com/va360labs/didacta-io/blob/main/CONTRIBUTING.md); this is the operational summary.
 
@@ -43,7 +47,7 @@ Changes affecting the module contract, the licensing model, the SDK or public AP
 
 ## Contact
 
-- 💬 Technical questions: GitHub Discussions or Discord `#didacta-alpha` (during the alpha).
+- 💬 Technical questions: GitHub Discussions or Discord `#didacta-alpha` (pre-1.0 phase).
 - 🐛 Bugs: an issue using the bug template — how to prepare it in [Reporting a bug](reportar-un-error.md).
 - 🔒 Security: `security@didacta.io` — **never** a public issue. See [SECURITY.md](https://github.com/va360labs/didacta-io/blob/main/SECURITY.md).
 - 📜 Licensing / commercial: `licensing@didacta.io`.

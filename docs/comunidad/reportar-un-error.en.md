@@ -4,7 +4,7 @@ render_macros: true
 
 # Reporting a bug
 
-Didacta is in **alpha**: reports from the people who install it are the main source of fixes. This page explains what to check before opening an issue, what data is needed and how to send it without leaking sensitive information.
+Didacta is in **{{ didacta_channel_en|lower }}**: reports from the people who install it are the main source of fixes. This page explains what to check before opening an issue, what data is needed and how to send it without leaking sensitive information.
 
 Bugs are reported as a **GitHub issue** using a template:
 
@@ -17,7 +17,7 @@ Bugs are reported as a **GitHub issue** using a template:
 ## Before opening the issue
 
 1. **Check [Troubleshooting](../instalacion/solucion-de-problemas.md).** The most frequent installation failures (missing pgvector, a half-applied migration, a port already in use, a short `AUTH_SECRET`, emails stuck in Mailpit) are there with their fixes.
-2. **Upgrade to the latest alpha.** During the closed alpha, only the latest published version is supported; if the bug is from an earlier alpha, you will be asked to reproduce it on the current one. See [Upgrading](../instalacion/actualizacion.md).
+2. **Upgrade to the latest version.** Before 1.0, only the latest published version is supported; if the bug is from an earlier version, you will be asked to reproduce it on the current one. See [Upgrading](../instalacion/actualizacion.md).
 3. **Search the [open issues](https://github.com/va360labs/didacta-io/issues).** If it has already been reported, add your case as a comment (your version, your operating system, your logs) instead of opening a duplicate: it helps reproduce it far more.
 4. **Make sure it is a bug and not a usage question.** Questions about usage, installation or architecture belong in [GitHub Discussions](https://github.com/va360labs/didacta-io/discussions), which is where they get answered.
 
@@ -129,7 +129,7 @@ Logs and screenshots from a real installation carry personal data and credential
 2. If it reproduces, that is confirmed in the issue and it is prioritised by impact: data loss and failures that block installation come first.
 3. When the fix is merged, the issue is closed referencing the commit, and the change ships in the next release with an entry in the [CHANGELOG](https://github.com/va360labs/didacta-io/blob/main/CHANGELOG.md).
 
-There is no committed turnaround time for bugs during the alpha; the committed timelines are those in the [security policy](https://github.com/va360labs/didacta-io/blob/main/SECURITY.md), which apply only to vulnerabilities.
+There is no committed turnaround time for bugs before 1.0; the committed timelines are those in the [security policy](https://github.com/va360labs/didacta-io/blob/main/SECURITY.md), which apply only to vulnerabilities.
 
 ## What if you want to fix it yourself?
 
