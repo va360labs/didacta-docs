@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Reconstrucción diaria: la versión que enseñan las páginas se lee de la
+  # última release de didacta-io en cada build, así que el cron garantiza que
+  # el sitio nunca se queda con una versión vieja aunque nadie toque este repo.
+  schedule:
+    - cron: "17 5 * * *"
 
 permissions:
   contents: read
@@ -24,6 +29,17 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
+      # La versión vigente sale de la última release real (prereleases
+      # incluidas: /releases/latest daría 404 mientras todo sea Pre-release).
+      # Si GitHub no contesta, se queda el valor por defecto de mkdocs.yml.
+      - name: Última versión publicada de didacta-io
+        run: |
+          V=$(curl -sf "https://api.github.com/repos/va360labs/didacta-io/releases?per_page=1" \
+            | python3 -c "import json,sys;r=json.load(sys.stdin);print(r[0]['tag_name'].lstrip('v') if r else '')" || true)
+          if [ -n "$V" ]; then
+            sed -i "s/^  didacta_version: .*/  didacta_version: $V/" mkdocs.yml
+          fi
+          grep "didacta_version:" mkdocs.yml
       - run: mkdocs build --strict
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Instalar con docker run
 
 Para operadores que ya tienen **Postgres 16 y Redis 7 administrados** (RDS, Cloud SQL, un Postgres propio…) y solo quieren ejecutar el contenedor de la aplicación.
@@ -11,7 +15,7 @@ Para operadores que ya tienen **Postgres 16 y Redis 7 administrados** (RDS, Clou
 ## Ejecución
 
 ```bash
-docker pull didactaio/community:<versión>
+docker pull ghcr.io/va360labs/didacta-community:{{ didacta_version }}
 
 # Volumen para uploads + clave de cifrado autogenerada + contraseña
 # autogenerada del rol de runtime didacta_app.
@@ -29,7 +33,7 @@ docker run -d \
   -e STORAGE_ROOT=/app/data/storage \
   -e NODE_ENV=production \
   --restart unless-stopped \
-  didactaio/community:<versión>
+  ghcr.io/va360labs/didacta-community:{{ didacta_version }}
 ```
 
 `ADMIN_DATABASE_URL` es el usuario superuser/owner que ya tenías: el entrypoint lo usa solo para migraciones + RLS + grants. **No definas `DATABASE_URL`** — el entrypoint la deriva sola hacia el rol de runtime `didacta_app` (sin `BYPASSRLS`, aislamiento RLS real), con una contraseña autogenerada y persistida en `didacta_data` la primera vez. Detalle en [Base de datos](../configuracion/base-de-datos.md).

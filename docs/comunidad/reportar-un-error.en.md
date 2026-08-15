@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Reporting a bug
 
 Didacta is in **alpha**: reports from the people who install it are the main source of fixes. This page explains what to check before opening an issue, what data is needed and how to send it without leaking sensitive information.
@@ -39,7 +43,7 @@ Any of these three will do:
 ```bash
 # 1. The version the API reports (no authentication needed)
 curl -fsS http://localhost:4000/healthz
-# → {"status":"ok","service":"api","version":"0.0.1-alpha.114",...}
+# → {"status":"ok","service":"api","version":"{{ didacta_version }}",...}
 
 # 2. The image tag you have deployed
 docker compose -f docker-compose.alpha.yml images didacta
@@ -103,7 +107,7 @@ Logs and screenshots from a real installation carry personal data and credential
 
     **Title:** Redeeming an invitation code returns 500 if the course is already archived
 
-    **Version:** 0.0.1-alpha.114 · **Running:** `docker compose -f docker-compose.alpha.yml` · **OS:** Ubuntu 22.04
+    **Version:** {{ didacta_version }} · **Running:** `docker compose -f docker-compose.alpha.yml` · **OS:** Ubuntu 22.04
 
     **Steps:**
 

@@ -9,7 +9,7 @@ flowchart LR
     subgraph Cliente
         B[Navegador]
     end
-    subgraph "Didacta (imagen didactaio/community)"
+    subgraph "Didacta (imagen ghcr.io/va360labs/didacta-community)"
         W["Web · Next.js 15<br/>puerto 3000"]
         A["API · NestJS 11<br/>puerto 4000"]
     end
@@ -27,7 +27,7 @@ flowchart LR
     A --> M
 ```
 
-- **Una sola imagen Docker** (`didactaio/community`) contiene la web y la API. En el primer arranque aplica automáticamente las migraciones Prisma versionadas, las políticas RLS y el seed idempotente de sistema.
+- **Una sola imagen Docker** (`ghcr.io/va360labs/didacta-community`) contiene la web y la API. En el primer arranque aplica automáticamente las migraciones Prisma versionadas, las políticas RLS y el seed idempotente de sistema.
 - **PostgreSQL 16** necesita la extensión **pgvector** (la IA guarda embeddings en columnas `vector`). El compose oficial usa la imagen `pgvector/pgvector:pg16`.
 - **Redis 7** respalda la cache y las colas de trabajos (BullMQ): outbox de eventos, envío de emails, tareas en segundo plano.
 - **Storage**: disco local por defecto (volumen `didacta_data`) o cualquier proveedor S3-compatible.

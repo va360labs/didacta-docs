@@ -55,11 +55,16 @@ extra_css:
 
 extra:
   generator: false
+  # Version publicada mas reciente de didacta-io. Es solo el valor por
+  # defecto: el workflow de deploy la sobreescribe en cada build con la
+  # ultima release real de GitHub, y un cron diario reconstruye el sitio
+  # para que nunca se quede vieja. En las paginas: {{ didacta_version }}.
+  didacta_version: 0.0.1-alpha.114
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/va360labs/didacta-io
     - icon: fontawesome/brands/docker
-      link: https://hub.docker.com/r/didactaio/community
+      link: https://github.com/va360labs/didacta-io/pkgs/container/didacta-community
     - icon: material/web
       link: https://didacta.io
 
@@ -70,6 +75,13 @@ plugins:
       lang:
         - es
         - en
+  # Variables en las paginas ({{ didacta_version }}). Va antes de i18n
+  # para que las dos lenguas rendericen las mismas variables.
+  - macros:
+      # Solo las paginas que lo piden (render_macros: true en su
+      # front-matter): las anclas {#...} del resto parecen comentarios Jinja
+      # y rompian el build en estricto.
+      render_by_default: false
   # Sitio bilingüe. Estructura `suffix`: el español (idioma por defecto) se
   # queda en `docs/<ruta>.md` y conserva EXACTAMENTE sus URLs actuales; el
   # inglés vive en `docs/<ruta>.en.md` y se publica bajo `/en/<ruta>/`.
