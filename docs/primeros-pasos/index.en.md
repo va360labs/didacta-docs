@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # What Didacta is
 
 Didacta is a **next-generation fair-code LMS** for academies, instructors and organisations that want to run their own training platform with full control.
@@ -42,7 +46,7 @@ And if your community requires prior approval, enable [registration with an appr
 
 ## Project status
 
-Didacta is in **alpha**: between May and July 2026 the product matured while serving its first deployment in real production; since 31 July 2026 the repository is the whitelabel product and is preparing its first public release.
+Didacta is in **{{ didacta_channel_en|lower }}** ({{ didacta_version }}): between May and July 2026 the product matured while serving its first deployment in real production; since 31 July 2026 the repository is the whitelabel product, and in August 2026 it entered public beta.
 
 - **SemVer** versioning; every release is published as a Docker image tag. **There is no `latest` tag**: always pin a specific version.
 - Change history in the [CHANGELOG](https://github.com/va360labs/didacta-io/blob/main/CHANGELOG.md).

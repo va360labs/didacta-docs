@@ -4,7 +4,7 @@ render_macros: true
 
 # Reportar un error
 
-Didacta está en **alpha**: los reportes de quienes lo instalan son la principal fuente de arreglos. Esta página explica qué mirar antes de abrir una issue, qué datos hacen falta y cómo enviarlos sin filtrar información sensible.
+Didacta está en **{{ didacta_channel|lower }}**: los reportes de quienes lo instalan son la principal fuente de arreglos. Esta página explica qué mirar antes de abrir una issue, qué datos hacen falta y cómo enviarlos sin filtrar información sensible.
 
 Los errores se reportan como **issue en GitHub** con plantilla:
 
@@ -17,7 +17,7 @@ Los errores se reportan como **issue en GitHub** con plantilla:
 ## Antes de abrir la issue
 
 1. **Mira [Solución de problemas](../instalacion/solucion-de-problemas.md).** Los fallos más frecuentes de instalación (pgvector ausente, migración a medias, puerto ocupado, `AUTH_SECRET` corto, correos que se quedan en Mailpit) están ahí con su arreglo.
-2. **Actualiza a la última alpha.** Durante la alpha cerrada solo se da soporte a la última versión publicada; si el bug es de una alpha anterior, se te pedirá reproducirlo en la actual. Ver [Actualizar](../instalacion/actualizacion.md).
+2. **Actualiza a la última versión.** Antes de la 1.0 solo se da soporte a la última versión publicada; si el bug es de una versión anterior, se te pedirá reproducirlo en la actual. Ver [Actualizar](../instalacion/actualizacion.md).
 3. **Busca en las [issues abiertas](https://github.com/va360labs/didacta-io/issues).** Si ya está reportado, añade tu caso como comentario (tu versión, tu sistema operativo, tus logs) en vez de abrir una duplicada: sirve más para reproducirlo.
 4. **Comprueba que es un error y no una duda de uso.** Las preguntas de uso, instalación o arquitectura van a [GitHub Discussions](https://github.com/va360labs/didacta-io/discussions), que es donde se responden.
 
@@ -129,7 +129,7 @@ Los logs y las capturas de una instalación real llevan datos de personas y cred
 2. Si se reproduce, se confirma en la issue y se prioriza según el impacto: pérdida de datos y fallos que bloquean la instalación van primero.
 3. Al mergearse el arreglo, la issue se cierra referenciando el commit, y el cambio sale en la siguiente versión con entrada en el [CHANGELOG](https://github.com/va360labs/didacta-io/blob/main/CHANGELOG.md).
 
-No hay compromiso de plazo para bugs durante la alpha; los plazos comprometidos son los de la [política de seguridad](https://github.com/va360labs/didacta-io/blob/main/SECURITY.md), que solo aplican a vulnerabilidades.
+No hay compromiso de plazo para bugs antes de la 1.0; los plazos comprometidos son los de la [política de seguridad](https://github.com/va360labs/didacta-io/blob/main/SECURITY.md), que solo aplican a vulnerabilidades.
 
 ## ¿Y si quieres arreglarlo tú?
 

@@ -1,4 +1,5 @@
 ---
+render_macros: true
 hide:
   - navigation
   - toc
@@ -40,7 +41,7 @@ This documentation covers everything you need to install, operate and extend you
 | **Source code** | [github.com/va360labs/didacta-io](https://github.com/va360labs/didacta-io) |
 | **Docker image** | [ghcr.io/va360labs/didacta-community](https://github.com/va360labs/didacta-io/pkgs/container/didacta-community) (public) |
 | **License** | [Didacta Sustainable Use License v1.0](https://github.com/va360labs/didacta-io/blob/main/LICENSE) (fair-code) |
-| **Status** | Alpha — SemVer versioning, no `latest` tag |
+| **Status** | {{ didacta_channel_en }} ({{ didacta_version }}) — SemVer versioning; `latest` only for stable releases |
 
 !!! info "Fair-code"
     Didacta is **source-available with free internal use**: audit it, modify it and deploy it for your own organisation at no cost. Commercial distribution, third-party SaaS and white-labelling require an agreement with VA360 LABS S.L. Details in [Licenses](comunidad/licencias.md).
