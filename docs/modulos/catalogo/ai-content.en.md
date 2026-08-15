@@ -14,6 +14,28 @@ It generates **learning drafts** from a lesson's text: summaries (`SUMMARY`), fl
 - Only a draft in `DRAFT` state can be edited/published/rejected (409 in any other state).
 - The instructor waits for the generation (~5-30 s); there is no streaming yet. Automatic ingestion of a published quiz into `mod.assessments` is a later step — today the flow emits the event and the instructor creates the quiz.
 
+## Configuration
+
+**Enabling the module.** Under `/admin/configuracion?tab=modules` (the "Modules" tab). The module's row shows "Depends on: mod.courses" — its only hard dependency. This module contributes no screen of its own today: no menu entry and no panel; its entire surface is the API.
+
+![The module's row on the Modules tab, with its mod.courses dependency](../../assets/modulos/ai-content/en/ai-content-1-modulo.png)
+
+**AI provider (BYOK).** It only uses the AI Gateway's **chat** purpose: the **"Chat (AI tutor)"** block under `/admin/ia/providers` ("Integrations and API → AI providers" in the menu) or, failing that, the global default `DEFAULT_AI_CHAT_*`. Chat providers the code accepts today: OpenAI, Anthropic (Claude), Google Gemini, OpenRouter, Mistral AI, Groq and Ollama (self-hosted). Gateway and key-encryption details in [Configuration → AI](../../configuracion/ia.md). With no provider configured (or if the provider fails), generation returns **503** `AI_CONTENT_PROVIDER_ERROR`.
+
+![Where the chat key used by the generator goes](../../assets/modulos/ai-content/en/ai-content-2-proveedores.png)
+
+**No variables of its own, no per-tenant settings and no Enterprise license requirement.**
+
+## Step by step
+
+The whole flow is API-driven (instructor, tenant_admin or super_admin role), under the `/modules/ai-content` prefix:
+
+1. **Generate**: `POST /modules/ai-content/generate` with `{ "lessonId": "...", "courseId": "...", "type": "SUMMARY" | "FLASHCARDS" | "QUIZ" }`. The call is synchronous (~5-30 s) and returns the draft in `DRAFT` state with its telemetry (provider, model, tokens). The lesson must belong to the course and have text.
+2. **Review**: `GET /modules/ai-content/drafts` (optional filters `lessonId`, `courseId`, `status`) and `GET /modules/ai-content/drafts/:id` for the detail.
+3. **Edit** (optional): `PATCH /modules/ai-content/drafts/:id/content` with the corrected JSON; the shape is revalidated per type (`SUMMARY` → `{text}`, `FLASHCARDS` → `{cards:[{front,back}]}`, `QUIZ` → `{questions:[{prompt,options?,answer,explanation?}]}`). Only in `DRAFT` state.
+4. **Decide**: `PATCH /modules/ai-content/drafts/:id/publish` or `PATCH /modules/ai-content/drafts/:id/reject` (with an optional `reason`). Each draft is published or rejected exactly once; in any other state the transition returns 409.
+5. Publishing emits `ai-content.draft.published`. A published quiz is **not** automatically turned into a `mod.assessments` quiz today: the instructor creates it by hand from the draft's content.
+
 ## Dependencies
 
 Hard: `mod.courses` (to resolve the course and validate that the lesson belongs to it).
@@ -29,7 +51,3 @@ Prefix `/modules/ai-content` (instructor and above): `generate`, `drafts` listin
 ## Events
 
 **Emits**: `ai-content.draft.generated`, `ai-content.draft.published`, `ai-content.draft.rejected`. It consumes none.
-
-## Configuration
-
-The AI provider per tenant under Administration → AI providers; no variables of its own.
