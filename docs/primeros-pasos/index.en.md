@@ -48,7 +48,7 @@ And if your community requires prior approval, enable [registration with an appr
 
 Didacta is in **{{ didacta_channel_en|lower }}** ({{ didacta_version }}): between May and July 2026 the product matured while serving its first deployment in real production; since 31 July 2026 the repository is the whitelabel product, and in August 2026 it entered public beta.
 
-- **SemVer** versioning; every release is published as a Docker image tag. **There is no `latest` tag**: always pin a specific version.
+- **SemVer** versioning; every release is published as an immutable Docker image tag. In production, always pin a specific version: `latest` will exist only for stable releases (see [Upgrading](../instalacion/actualizacion.md)).
 - Change history in the [CHANGELOG](https://github.com/va360labs/didacta-io/blob/main/CHANGELOG.md).
 
 ## Next steps
