@@ -38,7 +38,7 @@ Esta documentación cubre todo lo necesario para instalar, operar y extender tu 
 | --- | --- |
 | **Web y demo** | [didacta.io](https://didacta.io) |
 | **Código fuente** | [github.com/va360labs/didacta-io](https://github.com/va360labs/didacta-io) |
-| **Imagen Docker** | [didactaio/community](https://hub.docker.com/r/didactaio/community) (pública) |
+| **Imagen Docker** | [ghcr.io/va360labs/didacta-community](https://github.com/va360labs/didacta-io/pkgs/container/didacta-community) (pública) |
 | **Licencia** | [Didacta Sustainable Use License v1.0](https://github.com/va360labs/didacta-io/blob/main/LICENSE) (fair-code) |
 | **Estado** | Alpha — versionado SemVer, sin tag `latest` |
 

@@ -1,6 +1,6 @@
 # Instalación y despliegue
 
-Didacta Community se instala en tu propia infraestructura a partir de la imagen Docker oficial [`didactaio/community`](https://hub.docker.com/r/didactaio/community) (pública, no requiere `docker login`).
+Didacta Community se instala en tu propia infraestructura a partir de la imagen Docker oficial [`ghcr.io/va360labs/didacta-community`](https://github.com/va360labs/didacta-io/pkgs/container/didacta-community) (pública, no requiere `docker login`).
 
 ## Caminos de instalación
 
@@ -39,7 +39,7 @@ El resto de variables tienen valores por defecto razonables o las inyecta el com
 
 ## Versionado de la imagen
 
-Didacta versiona con **SemVer** y publica cada versión como tag de imagen Docker. **No existe tag `latest`**: cada instalación fija su versión con `DIDACTA_IMAGE_TAG` en `.env` y decide cuándo subir. Los tags publicados están en [Docker Hub](https://hub.docker.com/r/didactaio/community).
+Didacta versiona con **SemVer** y publica cada versión como tag **inmutable** de imagen Docker. Las etiquetas `alpha` y `beta` siguen a la última versión de su canal, y `latest` existirá solo para versiones estables. En producción, fija tu versión con `DIDACTA_IMAGE_TAG` en `.env` y decide tú cuándo subir — la política completa está en [Actualizar](actualizacion.md). Los tags publicados están en [GitHub Container Registry](https://github.com/va360labs/didacta-io/pkgs/container/didacta-community).
 
 ## Después de instalar
 

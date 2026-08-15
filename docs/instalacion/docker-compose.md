@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Instalar con Docker Compose
 
 El camino recomendado. Al terminar tendrás la plataforma completa — web + API + Postgres + Redis + buzón de correo de pruebas — corriendo en tu máquina o servidor.
@@ -17,7 +21,7 @@ cp .env.example .env
 #   openssl rand -base64 32
 
 # 3. Fija la versión de la imagen (tags publicados en Docker Hub)
-echo "DIDACTA_IMAGE_TAG=<versión>" >> .env
+echo "DIDACTA_IMAGE_TAG={{ didacta_version }}" >> .env
 
 # 4. Arranca el stack
 docker compose -f docker-compose.alpha.yml up -d

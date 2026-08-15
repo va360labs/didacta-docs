@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Reportar un error
 
 Didacta está en **alpha**: los reportes de quienes lo instalan son la principal fuente de arreglos. Esta página explica qué mirar antes de abrir una issue, qué datos hacen falta y cómo enviarlos sin filtrar información sensible.
@@ -39,7 +43,7 @@ Cualquiera de estas tres vale:
 ```bash
 # 1. La versión que responde la API (no necesita autenticación)
 curl -fsS http://localhost:4000/healthz
-# → {"status":"ok","service":"api","version":"0.0.1-alpha.114",...}
+# → {"status":"ok","service":"api","version":"{{ didacta_version }}",...}
 
 # 2. El tag de imagen que tienes desplegado
 docker compose -f docker-compose.alpha.yml images didacta
@@ -103,7 +107,7 @@ Los logs y las capturas de una instalación real llevan datos de personas y cred
 
     **Título:** El canje de código de invitación devuelve 500 si el curso ya está archivado
 
-    **Versión:** 0.0.1-alpha.114 · **Ejecución:** `docker compose -f docker-compose.alpha.yml` · **SO:** Ubuntu 22.04
+    **Versión:** {{ didacta_version }} · **Ejecución:** `docker compose -f docker-compose.alpha.yml` · **SO:** Ubuntu 22.04
 
     **Pasos:**
 
