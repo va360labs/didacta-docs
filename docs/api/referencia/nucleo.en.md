@@ -137,6 +137,22 @@ All five CRUD operations require the `feat:scim` capability (**402** without a l
 
 Auth: `Authorization: ApiKey lmsk_…`. A user JWT does not pass these endpoints: they require API key scopes.
 
+## Read access for external sites — `/integrations` (API keys)
+
+The other half of `/inscribe`: that one writes, this one reads. Meant for an external site to render a course page with Didacta's data and know whether the visitor is already a student.
+
+| Method | Route | Scope | What it does |
+|---|---|---|---|
+| GET | `/integrations/courses` | `courses:read` | Courses filterable by `slug`, by `status` or by `externalId` + `externalSource` (mapping from the source LMS). |
+| GET | `/integrations/courses/:courseId` | `courses:read` | The full record: metadata, instructor, totals, **syllabus module by module** and the purchase offer. **Never** a lesson's `content`. |
+| GET | `/integrations/learners/state` | `enrollments:read` | A student's state by `email`: enrollments, progress and `nextLesson` with a direct URL. `known:false` if the email belongs to nobody. |
+
+`enrollments:read` is deliberately separate from `enrollments:write`: it allows asking about **any** email in the organisation.
+
+Watch out for `hasAccess:false` + `status:"PAUSED"`: that is a **suspended** student (typically for non-payment) with intact progress, not somebody who never bought.
+
+Full guide with examples: [Selling and integrating from outside](../integraciones-externas.md).
+
 ## Outgoing webhooks — `/webhooks` (admin)
 
 | Method | Route | What it does |

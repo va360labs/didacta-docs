@@ -28,7 +28,20 @@ The same ones as `mod.billing`: under `/admin/configuracion?tab=pagos` (the **Pa
 The card shows the exact URL. For this module (recommended as an endpoint separate from billing's):
 
 - Endpoint: `https://<your-academy-domain>/api/v1/modules/subscriptions/webhook`
-- Events to select: `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`, `invoice.payment_failed`, `charge.refunded`.
+- Events to select: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`, `invoice.payment_failed`, `charge.refunded`.
+
+!!! danger "`invoice.paid` and `invoice.payment_failed` hold up the whole lifecycle"
+    They are not optional, and they are not "just for the history". If they are missing:
+
+    - **There is no cut-off for non-payment.** `invoice.payment_failed` is what marks the subscription past due, starts the grace period and eventually revokes access. Without it, whoever stops paying **keeps the membership indefinitely** and shows as active in the admin panel.
+    - **Trials never convert.** Whoever pays at the end of the trial stays stuck with the trial lesson limit.
+    - **The student sees no invoices** in their account, however many receipts Stripe has charged.
+
+    None of this raises an error in any log: an event that never arrives is never missed. If in doubt, check it the other way round — take one payment in test mode and confirm the invoice shows up in the student's account.
+
+### Payment methods
+
+Whichever you have enabled in your Stripe dashboard, same as for single-course sales. Stripe automatically filters out anything that doesn't work for recurring charges, so the list a membership buyer sees may be shorter than the one for a single course.
 
 ### Membership plans and page
 

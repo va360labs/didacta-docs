@@ -37,9 +37,31 @@ The card opens with a status banner: verified, configured but unverified, "using
 The card itself shows the exact URL. For this module:
 
 - Endpoint: `https://<your-academy-domain>/api/v1/modules/billing/webhook`
-- Events to select: `checkout.session.completed`, `checkout.session.expired`, `checkout.session.async_payment_failed`, `charge.refunded`.
+- Events to select: `checkout.session.completed`, **`checkout.session.async_payment_succeeded`**, `checkout.session.expired`, `checkout.session.async_payment_failed`, `charge.refunded`.
 
 Paste the `whsec_…` Stripe generates into the **"Webhook secret"** field.
+
+!!! danger "The five events are not optional"
+    Each one closes a path, and whichever is missing stays open silently — Stripe does not warn you about what it isn't sending you:
+
+    - **Without `async_payment_succeeded`**, a purchase paid by bank transfer or SEPA **never enrols anyone**: it waits forever. This is the most commonly forgotten one, because cards don't need it.
+    - **Without `charge.refunded`**, a refund **does not revoke access**.
+    - **Without `checkout.session.expired`**, abandoned carts pile up as eternally pending orders.
+
+## Which payment methods are accepted
+
+Whichever you have enabled **in your Stripe dashboard** (Settings → Payment methods). Didacta does not pin the list: enable PayPal or Bizum and they show up at checkout without touching anything here or waiting for a new release.
+
+Stripe filters down to what works for the amount, currency and country of the buyer.
+
+!!! info "If you enable delayed-notification methods"
+    Bank transfer, SEPA and some Klarna flows **do not confirm the charge on the spot**: the buyer finishes the form and the money arrives hours or days later. Didacta handles this — enrolment waits for the confirmed charge, not for the form — but it **requires `checkout.session.async_payment_succeeded` to be registered** on the webhook. Without that event those purchases never complete.
+
+## Discount codes
+
+The checkout screen accepts **Stripe promotion codes**. You create them once in the dashboard (Products → Coupons → Promotion codes) and they work for single-course sales and for the membership alike.
+
+This is different from the **compare-at price** on each purchase option, which is a permanent discount rendered on the course page. The code is typed by the buyer; the strikethrough is seen by everyone.
 
 ### Environment variables (instance fallback)
 

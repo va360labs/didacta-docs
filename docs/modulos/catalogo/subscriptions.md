@@ -28,7 +28,20 @@ Las mismas de `mod.billing`: en `/admin/configuracion?tab=pagos` (pestaña **Pag
 La tarjeta muestra la URL exacta. Para este módulo (recomendado como endpoint separado del de billing):
 
 - Endpoint: `https://<dominio-de-tu-academia>/api/v1/modules/subscriptions/webhook`
-- Eventos a seleccionar: `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`, `invoice.payment_failed`, `charge.refunded`.
+- Eventos a seleccionar: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`, `invoice.payment_failed`, `charge.refunded`.
+
+!!! danger "`invoice.paid` e `invoice.payment_failed` sostienen todo el ciclo de vida"
+    No son opcionales ni «para el historial». Si faltan:
+
+    - **No hay corte por impago.** `invoice.payment_failed` es lo que marca la suscripción como vencida, arranca el periodo de gracia y acaba retirando el acceso. Sin él, quien deja de pagar **conserva la membresía indefinidamente** y en el panel figura como activa.
+    - **El periodo de prueba no convierte.** Quien paga al acabar el trial se queda con el límite de clases de la prueba.
+    - **El alumno no ve ninguna factura** en su cuenta, por muchos recibos que haya cobrado Stripe.
+
+    Nada de esto da error en ningún log: el evento que no llega no se echa de menos. Si dudas, compruébalo al revés — cobra una vez en modo de prueba y mira que aparezca la factura en la cuenta del alumno.
+
+### Formas de pago
+
+Las que tengas activadas en tu panel de Stripe, igual que en la venta de cursos sueltos. Stripe filtra automáticamente las que no sirven para cobros recurrentes, así que la lista que ve el comprador de membresía puede ser más corta que la de un curso suelto.
 
 ### Planes y página de membresía
 

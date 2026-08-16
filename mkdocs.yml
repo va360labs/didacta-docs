@@ -173,6 +173,7 @@ plugins:
             Validación y tests: Validation and tests
             # API
             Autenticación: Authentication
+            Vender e integrar desde fuera: Selling and integrating from outside
             Convenciones: Conventions
             Referencia de endpoints: Endpoint reference
             Núcleo y transversales: Core and cross-cutting
@@ -279,6 +280,7 @@ nav:
   - API:
       - api/index.md
       - Autenticación: api/autenticacion.md
+      - Vender e integrar desde fuera: api/integraciones-externas.md
       - Convenciones: api/convenciones.md
       - Referencia de endpoints:
           - api/referencia/index.md

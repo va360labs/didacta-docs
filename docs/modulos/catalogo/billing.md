@@ -37,9 +37,31 @@ La tarjeta abre con un banner de estado: verificado, configurado sin verificar, 
 La propia tarjeta muestra la URL exacta. Para este módulo:
 
 - Endpoint: `https://<dominio-de-tu-academia>/api/v1/modules/billing/webhook`
-- Eventos a seleccionar: `checkout.session.completed`, `checkout.session.expired`, `checkout.session.async_payment_failed`, `charge.refunded`.
+- Eventos a seleccionar: `checkout.session.completed`, **`checkout.session.async_payment_succeeded`**, `checkout.session.expired`, `checkout.session.async_payment_failed`, `charge.refunded`.
 
 Pega el `whsec_…` que genera Stripe en el campo **«Secreto del webhook»**.
+
+!!! danger "Los cinco eventos no son opcionales"
+    Cada uno cierra un camino, y el que falte se queda abierto en silencio — Stripe no avisa de lo que no te manda:
+
+    - **Sin `async_payment_succeeded`**, una compra pagada por transferencia o SEPA **nunca llega a matricular**: se queda esperando para siempre. Este es el que más se olvida, porque con tarjeta no hace falta.
+    - **Sin `charge.refunded`**, un reembolso **no retira el acceso**.
+    - **Sin `checkout.session.expired`**, los carritos abandonados se acumulan como pedidos pendientes eternos.
+
+## Qué formas de pago acepta
+
+Las que tengas activadas **en tu panel de Stripe** (Configuración → Métodos de pago). Didacta no fija la lista: si activas PayPal o Bizum, aparecen en la pantalla de pago sin tocar nada aquí ni esperar a una versión nueva.
+
+Stripe filtra solo lo que sirve para el importe, la moneda y el país del comprador.
+
+!!! info "Si activas métodos de notificación diferida"
+    Transferencia, SEPA y algún Klarna **no confirman el cobro en el momento**: el comprador termina el formulario y el dinero llega horas o días después. Didacta lo contempla — la matrícula espera a que el cobro esté confirmado, no al formulario — pero **exige que `checkout.session.async_payment_succeeded` esté dado de alta** en el webhook. Sin ese evento, esas compras no se completan nunca.
+
+## Códigos de descuento
+
+La pantalla de pago acepta **códigos promocionales de Stripe**. Se crean una vez en el dashboard (Productos → Cupones → Códigos promocionales) y valen para la venta de cursos y para la membresía por igual.
+
+Es distinto del **precio tachado** de cada opción de compra, que es un descuento permanente que se pinta en la ficha. El código lo teclea el comprador; el tachado lo ve todo el mundo.
 
 ### Variables de entorno (fallback de instancia)
 
