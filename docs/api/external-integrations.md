@@ -128,10 +128,22 @@ Si además de escribir quieres que Didacta te avise, configura un **webhook sali
 |---|---|
 | `billing.order.completed` | Se pagó un curso suelto **en Didacta** |
 | `billing.order.refunded` | Se devolvió esa compra → retira el acceso en tu sistema |
+| `billing.order.failed` | El pago se cayó (o el diferido no llegó a cobrarse) |
 | `learning.enrollment.created` | Alguien quedó matriculado, por la vía que sea |
+| `learning.enrollment.paused` | Suspendido por impago: conserva el progreso, pierde el acceso |
+| `learning.enrollment.resumed` | Recuperó el acceso tras regularizar |
+| `learning.enrollment.cancelled` | Baja de la matrícula (reembolso, cancelación, salida de un grupo) |
 | `learning.course.completed` | Terminó el curso (para tu email de felicitación, tu CRM…) |
+| `subscriptions.invoice.paid` | **Renovación cobrada** — el único evento que distingue «sigue pagando» de «se dio de alta» |
+| `subscriptions.invoice.payment_failed` | Falló el cobro de la cuota |
+| `subscriptions.subscription.past_due` | Falló un cobro y sigue dentro (periodo de gracia): la ventana para recuperarlo |
+| `subscriptions.subscription.canceled` | Fin de la suscripción |
 
-El endpoint recibe un POST firmado. **Deduplica por la cabecera `X-Didacta-Delivery`**: ante un reintento, el mismo evento puede llegar dos veces.
+En el cuerpo, además del `data` propio del evento, llega **`learner` con el email y el nombre de la persona**. Es lo que permite cruzarlo con tu CRM: `data` solo trae el `userId`, y no hay endpoint que traduzca un `userId` a una persona.
+
+**Deduplica por la cabecera `X-Didacta-Delivery`**: ante un reintento el mismo evento puede llegar dos veces, y esa cabecera vale lo mismo en los dos envíos (el número de intento va en `X-Didacta-Attempt`).
+
+⚠️ **En Community el POST NO va firmado** — la firma HMAC es de Enterprise. Si necesitas asegurarte de que el aviso viene de tu aula, mete un token en la URL del endpoint y compruébalo, o filtra por la IP de tu instalación.
 
 ## Los tres errores que se cometen siempre
 

@@ -42,10 +42,32 @@ Límites por defecto: **100 req/min** autenticado y **30 req/min** anónimo en C
 
 Suscríbete a eventos de dominio con endpoints HTTPS propios (**`/api/v1/webhooks/endpoints`**, rol admin):
 
-- Payload: `POST` con `{ "event": "<tipo>", "data": {…} }` y header `X-Didacta-Event`.
-- Catálogo: `*`, `learning.enrollment.created`, `learning.course.completed`, `learning.lesson.completed`, `community.post.created`, `community.comment.created`, `billing.subscription.created`, `billing.subscription.cancelled`, `fundae.group.closed`, `assessments.attempt.submitted` — con suscripción por prefijo (`billing.*`).
+- Cuerpo del `POST`:
+
+  ```json
+  {
+    "event": "learning.enrollment.created",
+    "data": { "enrollmentId": "…", "userId": "…", "courseId": "…", "source": "API" },
+    "occurredAt": "2026-08-18T17:24:05.412Z",
+    "tenantId": "…",
+    "deliveryId": "wd_9f0c…",
+    "learner": {
+      "id": "…",
+      "email": "ana@ejemplo.com",
+      "name": "Ana Ruiz",
+      "externalSource": "learndash",
+      "externalId": "4471"
+    }
+  }
+  ```
+
+- **`learner` es quien te ahorra el problema de identidad**: `data` solo trae `userId`, y no hay endpoint que traduzca un `userId` a una persona (todo `/integrations` busca por email). Llega `null` cuando el evento no tiene persona detrás (p. ej. `subscriptions.invoice.refunded`).
+- `occurredAt` es cuándo **ocurrió** el evento, no cuándo se envió: tras una reentrega del outbox pueden diferir en horas.
+- Catálogo (solo eventos que alguien publica de verdad): `*`, `learning.enrollment.created`, `learning.enrollment.paused`, `learning.enrollment.resumed`, `learning.enrollment.cancelled`, `learning.course.completed`, `community.post.created`, `community.comment.created`, `billing.order.created`, `billing.order.completed`, `billing.order.failed`, `billing.order.refunded`, `subscriptions.subscription.created`, `subscriptions.subscription.activated`, `subscriptions.subscription.past_due`, `subscriptions.subscription.unpaid`, `subscriptions.subscription.canceled`, `subscriptions.invoice.paid`, `subscriptions.invoice.payment_failed`, `subscriptions.invoice.refunded`, `subscriptions.membership.activated`, `fundae.group.closed`, `assessments.attempt.submitted` — con suscripción por prefijo (`billing.*`).
+- Cabeceras: `X-Didacta-Event`, `X-Didacta-Tenant`, `X-Didacta-Attempt` y `X-Didacta-Delivery`. **Deduplica por `X-Didacta-Delivery`**: es estable entre reintentos y entre reentregas del mismo evento.
 - El secret del endpoint se devuelve **una sola vez** al crearlo.
-- **Community**: 1 endpoint por organización, máx. 3 tipos de evento, entrega directa con 1 reintento. **Enterprise** (`feat:api.webhooks.high_throughput`): 20 endpoints, eventos ilimitados, cola con backoff exponencial, **firma HMAC-SHA256** y dead-letter con reintento desde el panel.
+- **Community**: 1 endpoint por organización, máx. 3 tipos de evento —`["*"]` cuenta como uno y te suscribe a todo el catálogo—, entrega directa con 1 reintento y **sin firma**. Si necesitas autenticar el aviso en community, mete un token en la propia URL. **Enterprise** (`feat:api.webhooks.high_throughput`): 20 endpoints, eventos ilimitados, cola con backoff exponencial, **firma HMAC-SHA256** (`X-Didacta-Signature`) y dead-letter con reintento desde el panel.
+- La entrega en community es **síncrona** dentro del despacho del evento, con 5 s de timeout: responde `2xx` en cuanto recibas y procesa después.
 
 ## Otras convenciones
 

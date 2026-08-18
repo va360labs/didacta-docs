@@ -128,10 +128,22 @@ If, on top of writing, you want Didacta to notify you, configure an **outbound w
 |---|---|
 | `billing.order.completed` | A single course was paid for **inside Didacta** |
 | `billing.order.refunded` | That purchase was refunded → revoke access in your system |
+| `billing.order.failed` | The payment failed (or a deferred one never cleared) |
 | `learning.enrollment.created` | Someone got enrolled, by whatever route |
+| `learning.enrollment.paused` | Suspended for non-payment: progress kept, access gone |
+| `learning.enrollment.resumed` | Access restored after paying up |
+| `learning.enrollment.cancelled` | Enrollment ended (refund, cancellation, leaving a group) |
 | `learning.course.completed` | They finished the course (for your congratulations email, your CRM…) |
+| `subscriptions.invoice.paid` | **Renewal charged** — the only event that tells "still paying" from "signed up once" |
+| `subscriptions.invoice.payment_failed` | The recurring charge failed |
+| `subscriptions.subscription.past_due` | A charge failed and they are still in (grace period): your window to recover it |
+| `subscriptions.subscription.canceled` | End of the subscription |
 
-Your endpoint receives a signed POST. **Deduplicate on the `X-Didacta-Delivery` header**: on a retry, the same event can arrive twice.
+Besides the event's own `data`, the body carries **`learner`, with the person's email and name**. That is what lets you match it against your CRM: `data` only carries the `userId`, and there is no endpoint that turns a `userId` into a person.
+
+**Deduplicate on the `X-Didacta-Delivery` header**: on a retry the same event can arrive twice, and that header is identical in both deliveries (the attempt number travels in `X-Didacta-Attempt`).
+
+⚠️ **In Community the POST is NOT signed** — HMAC signing is an Enterprise feature. If you need to be sure the call comes from your own campus, put a token in the endpoint URL and check it, or filter by your installation's IP.
 
 ## The three mistakes everyone makes
 

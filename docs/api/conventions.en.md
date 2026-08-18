@@ -42,10 +42,32 @@ Default limits: **100 req/min** authenticated and **30 req/min** anonymous on Co
 
 Subscribe to domain events with your own HTTPS endpoints (**`/api/v1/webhooks/endpoints`**, admin role):
 
-- Payload: a `POST` with `{ "event": "<type>", "data": {…} }` and an `X-Didacta-Event` header.
-- Catalog: `*`, `learning.enrollment.created`, `learning.course.completed`, `learning.lesson.completed`, `community.post.created`, `community.comment.created`, `billing.subscription.created`, `billing.subscription.cancelled`, `fundae.group.closed`, `assessments.attempt.submitted` — with prefix subscriptions (`billing.*`).
+- `POST` body:
+
+  ```json
+  {
+    "event": "learning.enrollment.created",
+    "data": { "enrollmentId": "…", "userId": "…", "courseId": "…", "source": "API" },
+    "occurredAt": "2026-08-18T17:24:05.412Z",
+    "tenantId": "…",
+    "deliveryId": "wd_9f0c…",
+    "learner": {
+      "id": "…",
+      "email": "ana@example.com",
+      "name": "Ana Ruiz",
+      "externalSource": "learndash",
+      "externalId": "4471"
+    }
+  }
+  ```
+
+- **`learner` is what saves you the identity problem**: `data` only carries `userId`, and there is no endpoint that turns a `userId` into a person (everything under `/integrations` looks up by email). It arrives `null` when the event has no person behind it (e.g. `subscriptions.invoice.refunded`).
+- `occurredAt` is when the event **happened**, not when it was sent: after an outbox redelivery the two can be hours apart.
+- Catalog (only events something actually publishes): `*`, `learning.enrollment.created`, `learning.enrollment.paused`, `learning.enrollment.resumed`, `learning.enrollment.cancelled`, `learning.course.completed`, `community.post.created`, `community.comment.created`, `billing.order.created`, `billing.order.completed`, `billing.order.failed`, `billing.order.refunded`, `subscriptions.subscription.created`, `subscriptions.subscription.activated`, `subscriptions.subscription.past_due`, `subscriptions.subscription.unpaid`, `subscriptions.subscription.canceled`, `subscriptions.invoice.paid`, `subscriptions.invoice.payment_failed`, `subscriptions.invoice.refunded`, `subscriptions.membership.activated`, `fundae.group.closed`, `assessments.attempt.submitted` — with prefix subscriptions (`billing.*`).
+- Headers: `X-Didacta-Event`, `X-Didacta-Tenant`, `X-Didacta-Attempt` and `X-Didacta-Delivery`. **Deduplicate on `X-Didacta-Delivery`**: it is stable across retries and across redeliveries of the same event.
 - The endpoint's secret is returned **exactly once**, when you create it.
-- **Community**: 1 endpoint per organization, up to 3 event types, direct delivery with 1 retry. **Enterprise** (`feat:api.webhooks.high_throughput`): 20 endpoints, unlimited events, a queue with exponential backoff, **HMAC-SHA256 signing** and a dead-letter queue with retry from the panel.
+- **Community**: 1 endpoint per organization, up to 3 event types —`["*"]` counts as one and subscribes you to the whole catalog—, direct delivery with 1 retry and **no signature**. If you need to authenticate the call in community, put a token in the URL itself. **Enterprise** (`feat:api.webhooks.high_throughput`): 20 endpoints, unlimited events, a queue with exponential backoff, **HMAC-SHA256 signing** (`X-Didacta-Signature`) and a dead-letter queue with retry from the panel.
+- Community delivery is **synchronous** inside the event dispatch, with a 5 s timeout: answer `2xx` as soon as you receive it and process afterwards.
 
 ## Other conventions
 
