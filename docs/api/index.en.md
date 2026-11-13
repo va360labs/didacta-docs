@@ -8,7 +8,7 @@ All of Didacta's functionality is exposed through a **REST API** (NestJS + Fasti
 | --- | --- |
 | **Base URL** | `https://your-instance/api/v1` |
 | **Format** | JSON (16 MB body limit; 50 MB for uploading module ZIPs) |
-| **Authentication** | JWT Bearer (user sessions) or **API keys** (`ApiKey lmsk_…`) — see [Authentication](autenticacion.md) |
+| **Authentication** | JWT Bearer (user sessions) or **API keys** (`ApiKey lmsk_…`) — see [Authentication](authentication.md) |
 | **Interactive documentation** | Swagger UI at `/api/docs` · OpenAPI JSON at `/api/docs.json` |
 | **Versioning** | `v1` in the path; no header negotiation |
 
@@ -50,10 +50,10 @@ curl -X POST https://your-instance/api/v1/inscribe \
 | Outgoing webhooks | `/webhooks` | Managing endpoints subscribed to domain events. |
 | Platform | `/branding`, `/storage`, `/audit`, `/tenant-settings` | Branding, files, auditing, tenant settings. |
 
-The [endpoint reference](referencia/index.md) walks through every block; for exhaustive per-endpoint detail (parameters, schemas, responses), use **your own instance's Swagger** (`/api/docs`) — it always reflects the exact version you have deployed.
+The [endpoint reference](reference/index.md) walks through every block; for exhaustive per-endpoint detail (parameters, schemas, responses), use **your own instance's Swagger** (`/api/docs`) — it always reflects the exact version you have deployed.
 
 ## Next step
 
-- [Authentication](autenticacion.md) — JWT, API keys, scopes and SSO.
-- [Conventions](convenciones.md) — multi-tenancy, errors, rate limiting.
-- [Endpoint reference](referencia/index.md) — the full map of the surface.
+- [Authentication](authentication.md) — JWT, API keys, scopes and SSO.
+- [Conventions](conventions.md) — multi-tenancy, errors, rate limiting.
+- [Endpoint reference](reference/index.md) — the full map of the surface.

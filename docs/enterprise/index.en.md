@@ -2,7 +2,7 @@
 
 Enterprise adds to Community a closed set of **cross-cutting core capabilities** aimed at large organisations: identity federation, automatic provisioning, full white-label, extended auditing…
 
-The split is simple and does not change: **modules are always Community**; the only paid features are these platform capabilities. See [Editions](../primeros-pasos/ediciones.md).
+The split is simple and does not change: **modules are always Community**; the only paid features are these platform capabilities. See [Editions](../getting-started/editions.md).
 
 ## What it includes
 
@@ -26,7 +26,7 @@ In Didacta, **gating never hides anything**:
 
 ## How it is activated
 
-With a JWT license signed by VA360 LABS, pasted into **Administration → License** or pinned in the `DIDACTA_LICENSE_KEY` variable (the environment wins over the panel). The full behaviour (states, grace period, verification) is described in [License](licencia.md).
+With a JWT license signed by VA360 LABS, pasted into **Administration → License** or pinned in the `DIDACTA_LICENSE_KEY` variable (the environment wins over the panel). The full behaviour (states, grace period, verification) is described in [License](license.md).
 
 ## Purchasing
 

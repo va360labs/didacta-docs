@@ -190,6 +190,157 @@ plugins:
             Tests en local: Running tests locally
             Licencias: Licenses
 
+  # Las páginas se llamaban en español (`/instalacion/`, `/modulos/catalogo/`…)
+  # y desde nov-2026 van en inglés, igual que las URL del aula. Cada ruta
+  # vieja sigue funcionando: GitHub Pages no sabe dar un 301, así que se
+  # publica en ella una página que manda a la nueva (meta refresh + enlace
+  # canónico). Va en las dos lenguas (`/<ruta>/` y `/en/<ruta>/`). Esta
+  # tabla no se borra: hay enlaces viejos fuera (web, README, buscadores).
+  - redirects:
+      redirect_maps:
+        api/autenticacion.md: api/authentication.md
+        api/convenciones.md: api/conventions.md
+        api/integraciones-externas.md: api/external-integrations.md
+        api/referencia/administracion.md: api/reference/administration.md
+        api/referencia/aprendizaje.md: api/reference/learning.md
+        api/referencia/comunidad.md: api/reference/community.md
+        api/referencia/index.md: api/reference/index.md
+        api/referencia/nucleo.md: api/reference/core.md
+        api/referencia/pagos-directo-ia.md: api/reference/payments-live-ai.md
+        comunidad/contribuir.md: community/contributing.md
+        comunidad/licencias.md: community/licenses.md
+        comunidad/reportar-un-error.md: community/reporting-a-bug.md
+        comunidad/tests-locales.md: community/local-tests.md
+        configuracion/almacenamiento.md: configuration/storage.md
+        configuracion/base-de-datos.md: configuration/database.md
+        configuracion/branding.md: configuration/branding.md
+        configuracion/email.md: configuration/email.md
+        configuracion/ia.md: configuration/ai.md
+        configuracion/index.md: configuration/index.md
+        configuracion/telemetria.md: configuration/telemetry.md
+        configuracion/variables-de-entorno.md: configuration/environment-variables.md
+        configuracion/zoom.md: configuration/zoom.md
+        enterprise/licencia.md: enterprise/license.md
+        instalacion/actualizacion.md: installation/upgrading.md
+        instalacion/copias-de-seguridad.md: installation/backups.md
+        instalacion/docker-compose.md: installation/docker-compose.md
+        instalacion/docker-run.md: installation/docker-run.md
+        instalacion/index.md: installation/index.md
+        instalacion/recorrido-visual-ventas.md: installation/visual-walkthrough-sales.md
+        instalacion/recorrido-visual.md: installation/visual-walkthrough.md
+        instalacion/setup-wizard.md: installation/setup-wizard.md
+        instalacion/solucion-de-problemas.md: installation/troubleshooting.md
+        modulos/catalogo/access-groups.md: modules/catalog/access-groups.md
+        modulos/catalogo/ai-content.md: modules/catalog/ai-content.md
+        modulos/catalogo/ai-grader.md: modules/catalog/ai-grader.md
+        modulos/catalogo/ai-tutor.md: modules/catalog/ai-tutor.md
+        modulos/catalogo/assessments.md: modules/catalog/assessments.md
+        modulos/catalogo/billing.md: modules/catalog/billing.md
+        modulos/catalogo/certificates.md: modules/catalog/certificates.md
+        modulos/catalogo/community.md: modules/catalog/community.md
+        modulos/catalogo/courses.md: modules/catalog/courses.md
+        modulos/catalogo/fundae.md: modules/catalog/fundae.md
+        modulos/catalogo/gamification.md: modules/catalog/gamification.md
+        modulos/catalogo/hello-world.md: modules/catalog/hello-world.md
+        modulos/catalogo/index.md: modules/catalog/index.md
+        modulos/catalogo/learning.md: modules/catalog/learning.md
+        modulos/catalogo/member-registration.md: modules/catalog/member-registration.md
+        modulos/catalogo/messaging.md: modules/catalog/messaging.md
+        modulos/catalogo/migrator-learndash.md: modules/catalog/migrator-learndash.md
+        modulos/catalogo/payment-connections.md: modules/catalog/payment-connections.md
+        modulos/catalogo/referrals.md: modules/catalog/referrals.md
+        modulos/catalogo/resources.md: modules/catalog/resources.md
+        modulos/catalogo/subscriptions.md: modules/catalog/subscriptions.md
+        modulos/catalogo/surveys.md: modules/catalog/surveys.md
+        modulos/catalogo/theming.md: modules/catalog/theming.md
+        modulos/catalogo/wp-sso.md: modules/catalog/wp-sso.md
+        modulos/catalogo/zoom-live.md: modules/catalog/zoom-live.md
+        modulos/crear-un-modulo/backend.md: modules/building-a-module/backend.md
+        modulos/crear-un-modulo/base-de-datos.md: modules/building-a-module/database.md
+        modulos/crear-un-modulo/eventos-y-hooks.md: modules/building-a-module/events-and-hooks.md
+        modulos/crear-un-modulo/index.md: modules/building-a-module/index.md
+        modulos/crear-un-modulo/manifest.md: modules/building-a-module/manifest.md
+        modulos/crear-un-modulo/ui.md: modules/building-a-module/ui.md
+        modulos/crear-un-modulo/validacion.md: modules/building-a-module/validation.md
+        modulos/gestion.md: modules/managing.md
+        modulos/index.md: modules/index.md
+        modulos/modulos-de-terceros.md: modules/third-party-modules.md
+        primeros-pasos/arquitectura.md: getting-started/architecture.md
+        primeros-pasos/ediciones.md: getting-started/editions.md
+        primeros-pasos/index.md: getting-started/index.md
+        # Las de /en/: el plugin solo genera las de la lengua por defecto, así
+        # que van con la URL completa del destino.
+        en/api/autenticacion.md: https://docs.didacta.io/en/api/authentication/
+        en/api/convenciones.md: https://docs.didacta.io/en/api/conventions/
+        en/api/integraciones-externas.md: https://docs.didacta.io/en/api/external-integrations/
+        en/api/referencia/administracion.md: https://docs.didacta.io/en/api/reference/administration/
+        en/api/referencia/aprendizaje.md: https://docs.didacta.io/en/api/reference/learning/
+        en/api/referencia/comunidad.md: https://docs.didacta.io/en/api/reference/community/
+        en/api/referencia/index.md: https://docs.didacta.io/en/api/reference/
+        en/api/referencia/nucleo.md: https://docs.didacta.io/en/api/reference/core/
+        en/api/referencia/pagos-directo-ia.md: https://docs.didacta.io/en/api/reference/payments-live-ai/
+        en/comunidad/contribuir.md: https://docs.didacta.io/en/community/contributing/
+        en/comunidad/licencias.md: https://docs.didacta.io/en/community/licenses/
+        en/comunidad/reportar-un-error.md: https://docs.didacta.io/en/community/reporting-a-bug/
+        en/comunidad/tests-locales.md: https://docs.didacta.io/en/community/local-tests/
+        en/configuracion/almacenamiento.md: https://docs.didacta.io/en/configuration/storage/
+        en/configuracion/base-de-datos.md: https://docs.didacta.io/en/configuration/database/
+        en/configuracion/branding.md: https://docs.didacta.io/en/configuration/branding/
+        en/configuracion/email.md: https://docs.didacta.io/en/configuration/email/
+        en/configuracion/ia.md: https://docs.didacta.io/en/configuration/ai/
+        en/configuracion/index.md: https://docs.didacta.io/en/configuration/
+        en/configuracion/telemetria.md: https://docs.didacta.io/en/configuration/telemetry/
+        en/configuracion/variables-de-entorno.md: https://docs.didacta.io/en/configuration/environment-variables/
+        en/configuracion/zoom.md: https://docs.didacta.io/en/configuration/zoom/
+        en/enterprise/licencia.md: https://docs.didacta.io/en/enterprise/license/
+        en/instalacion/actualizacion.md: https://docs.didacta.io/en/installation/upgrading/
+        en/instalacion/copias-de-seguridad.md: https://docs.didacta.io/en/installation/backups/
+        en/instalacion/docker-compose.md: https://docs.didacta.io/en/installation/docker-compose/
+        en/instalacion/docker-run.md: https://docs.didacta.io/en/installation/docker-run/
+        en/instalacion/index.md: https://docs.didacta.io/en/installation/
+        en/instalacion/recorrido-visual-ventas.md: https://docs.didacta.io/en/installation/visual-walkthrough-sales/
+        en/instalacion/recorrido-visual.md: https://docs.didacta.io/en/installation/visual-walkthrough/
+        en/instalacion/setup-wizard.md: https://docs.didacta.io/en/installation/setup-wizard/
+        en/instalacion/solucion-de-problemas.md: https://docs.didacta.io/en/installation/troubleshooting/
+        en/modulos/catalogo/access-groups.md: https://docs.didacta.io/en/modules/catalog/access-groups/
+        en/modulos/catalogo/ai-content.md: https://docs.didacta.io/en/modules/catalog/ai-content/
+        en/modulos/catalogo/ai-grader.md: https://docs.didacta.io/en/modules/catalog/ai-grader/
+        en/modulos/catalogo/ai-tutor.md: https://docs.didacta.io/en/modules/catalog/ai-tutor/
+        en/modulos/catalogo/assessments.md: https://docs.didacta.io/en/modules/catalog/assessments/
+        en/modulos/catalogo/billing.md: https://docs.didacta.io/en/modules/catalog/billing/
+        en/modulos/catalogo/certificates.md: https://docs.didacta.io/en/modules/catalog/certificates/
+        en/modulos/catalogo/community.md: https://docs.didacta.io/en/modules/catalog/community/
+        en/modulos/catalogo/courses.md: https://docs.didacta.io/en/modules/catalog/courses/
+        en/modulos/catalogo/fundae.md: https://docs.didacta.io/en/modules/catalog/fundae/
+        en/modulos/catalogo/gamification.md: https://docs.didacta.io/en/modules/catalog/gamification/
+        en/modulos/catalogo/hello-world.md: https://docs.didacta.io/en/modules/catalog/hello-world/
+        en/modulos/catalogo/index.md: https://docs.didacta.io/en/modules/catalog/
+        en/modulos/catalogo/learning.md: https://docs.didacta.io/en/modules/catalog/learning/
+        en/modulos/catalogo/member-registration.md: https://docs.didacta.io/en/modules/catalog/member-registration/
+        en/modulos/catalogo/messaging.md: https://docs.didacta.io/en/modules/catalog/messaging/
+        en/modulos/catalogo/migrator-learndash.md: https://docs.didacta.io/en/modules/catalog/migrator-learndash/
+        en/modulos/catalogo/payment-connections.md: https://docs.didacta.io/en/modules/catalog/payment-connections/
+        en/modulos/catalogo/referrals.md: https://docs.didacta.io/en/modules/catalog/referrals/
+        en/modulos/catalogo/resources.md: https://docs.didacta.io/en/modules/catalog/resources/
+        en/modulos/catalogo/subscriptions.md: https://docs.didacta.io/en/modules/catalog/subscriptions/
+        en/modulos/catalogo/surveys.md: https://docs.didacta.io/en/modules/catalog/surveys/
+        en/modulos/catalogo/theming.md: https://docs.didacta.io/en/modules/catalog/theming/
+        en/modulos/catalogo/wp-sso.md: https://docs.didacta.io/en/modules/catalog/wp-sso/
+        en/modulos/catalogo/zoom-live.md: https://docs.didacta.io/en/modules/catalog/zoom-live/
+        en/modulos/crear-un-modulo/backend.md: https://docs.didacta.io/en/modules/building-a-module/backend/
+        en/modulos/crear-un-modulo/base-de-datos.md: https://docs.didacta.io/en/modules/building-a-module/database/
+        en/modulos/crear-un-modulo/eventos-y-hooks.md: https://docs.didacta.io/en/modules/building-a-module/events-and-hooks/
+        en/modulos/crear-un-modulo/index.md: https://docs.didacta.io/en/modules/building-a-module/
+        en/modulos/crear-un-modulo/manifest.md: https://docs.didacta.io/en/modules/building-a-module/manifest/
+        en/modulos/crear-un-modulo/ui.md: https://docs.didacta.io/en/modules/building-a-module/ui/
+        en/modulos/crear-un-modulo/validacion.md: https://docs.didacta.io/en/modules/building-a-module/validation/
+        en/modulos/gestion.md: https://docs.didacta.io/en/modules/managing/
+        en/modulos/index.md: https://docs.didacta.io/en/modules/
+        en/modulos/modulos-de-terceros.md: https://docs.didacta.io/en/modules/third-party-modules/
+        en/primeros-pasos/arquitectura.md: https://docs.didacta.io/en/getting-started/architecture/
+        en/primeros-pasos/ediciones.md: https://docs.didacta.io/en/getting-started/editions/
+        en/primeros-pasos/index.md: https://docs.didacta.io/en/getting-started/
+
 markdown_extensions:
   - admonition
   - attr_list
@@ -216,86 +367,86 @@ markdown_extensions:
 nav:
   - Inicio: index.md
   - Primeros pasos:
-      - primeros-pasos/index.md
-      - Ediciones: primeros-pasos/ediciones.md
-      - Arquitectura: primeros-pasos/arquitectura.md
+      - getting-started/index.md
+      - Ediciones: getting-started/editions.md
+      - Arquitectura: getting-started/architecture.md
   - Instalación:
-      - instalacion/index.md
-      - Docker Compose: instalacion/docker-compose.md
-      - docker run manual: instalacion/docker-run.md
-      - Asistente de configuración: instalacion/setup-wizard.md
-      - "Recorrido visual: primeros pasos": instalacion/recorrido-visual.md
-      - "Recorrido visual: notificaciones y ventas": instalacion/recorrido-visual-ventas.md
-      - Actualizar: instalacion/actualizacion.md
-      - Copias de seguridad: instalacion/copias-de-seguridad.md
-      - Solución de problemas: instalacion/solucion-de-problemas.md
+      - installation/index.md
+      - Docker Compose: installation/docker-compose.md
+      - docker run manual: installation/docker-run.md
+      - Asistente de configuración: installation/setup-wizard.md
+      - "Recorrido visual: primeros pasos": installation/visual-walkthrough.md
+      - "Recorrido visual: notificaciones y ventas": installation/visual-walkthrough-sales.md
+      - Actualizar: installation/upgrading.md
+      - Copias de seguridad: installation/backups.md
+      - Solución de problemas: installation/troubleshooting.md
   - Configuración:
-      - configuracion/index.md
-      - Variables de entorno: configuracion/variables-de-entorno.md
-      - Base de datos: configuracion/base-de-datos.md
-      - Almacenamiento: configuracion/almacenamiento.md
-      - Email: configuracion/email.md
-      - IA (BYOK): configuracion/ia.md
-      - Aula virtual (Zoom): configuracion/zoom.md
-      - Branding whitelabel: configuracion/branding.md
-      - Telemetría: configuracion/telemetria.md
+      - configuration/index.md
+      - Variables de entorno: configuration/environment-variables.md
+      - Base de datos: configuration/database.md
+      - Almacenamiento: configuration/storage.md
+      - Email: configuration/email.md
+      - IA (BYOK): configuration/ai.md
+      - Aula virtual (Zoom): configuration/zoom.md
+      - Branding whitelabel: configuration/branding.md
+      - Telemetría: configuration/telemetry.md
   - Módulos:
-      - modulos/index.md
+      - modules/index.md
       - Catálogo de módulos:
-          - modulos/catalogo/index.md
-          - Cursos y catálogo: modulos/catalogo/courses.md
-          - Player y progreso: modulos/catalogo/learning.md
-          - Quizzes y exámenes: modulos/catalogo/assessments.md
-          - Certificados: modulos/catalogo/certificates.md
-          - Grupos de acceso: modulos/catalogo/access-groups.md
-          - Inscripción de miembros: modulos/catalogo/member-registration.md
-          - SSO desde WordPress: modulos/catalogo/wp-sso.md
-          - Stripe Checkout: modulos/catalogo/billing.md
-          - Suscripciones: modulos/catalogo/subscriptions.md
-          - Conexiones de pago: modulos/catalogo/payment-connections.md
-          - Referidos: modulos/catalogo/referrals.md
-          - Comunidad: modulos/catalogo/community.md
-          - Mensajería: modulos/catalogo/messaging.md
-          - Puntos y retos: modulos/catalogo/gamification.md
-          - Biblioteca de recursos: modulos/catalogo/resources.md
-          - Encuestas y NPS: modulos/catalogo/surveys.md
-          - Tutor IA: modulos/catalogo/ai-tutor.md
-          - Corrección IA: modulos/catalogo/ai-grader.md
-          - Generador IA: modulos/catalogo/ai-content.md
-          - Aula virtual Zoom: modulos/catalogo/zoom-live.md
-          - Fundae: modulos/catalogo/fundae.md
-          - Personalización visual: modulos/catalogo/theming.md
-          - Migrador LearnDash: modulos/catalogo/migrator-learndash.md
-          - Hello World: modulos/catalogo/hello-world.md
-      - Gestionar módulos: modulos/gestion.md
-      - Módulos de terceros: modulos/modulos-de-terceros.md
+          - modules/catalog/index.md
+          - Cursos y catálogo: modules/catalog/courses.md
+          - Player y progreso: modules/catalog/learning.md
+          - Quizzes y exámenes: modules/catalog/assessments.md
+          - Certificados: modules/catalog/certificates.md
+          - Grupos de acceso: modules/catalog/access-groups.md
+          - Inscripción de miembros: modules/catalog/member-registration.md
+          - SSO desde WordPress: modules/catalog/wp-sso.md
+          - Stripe Checkout: modules/catalog/billing.md
+          - Suscripciones: modules/catalog/subscriptions.md
+          - Conexiones de pago: modules/catalog/payment-connections.md
+          - Referidos: modules/catalog/referrals.md
+          - Comunidad: modules/catalog/community.md
+          - Mensajería: modules/catalog/messaging.md
+          - Puntos y retos: modules/catalog/gamification.md
+          - Biblioteca de recursos: modules/catalog/resources.md
+          - Encuestas y NPS: modules/catalog/surveys.md
+          - Tutor IA: modules/catalog/ai-tutor.md
+          - Corrección IA: modules/catalog/ai-grader.md
+          - Generador IA: modules/catalog/ai-content.md
+          - Aula virtual Zoom: modules/catalog/zoom-live.md
+          - Fundae: modules/catalog/fundae.md
+          - Personalización visual: modules/catalog/theming.md
+          - Migrador LearnDash: modules/catalog/migrator-learndash.md
+          - Hello World: modules/catalog/hello-world.md
+      - Gestionar módulos: modules/managing.md
+      - Módulos de terceros: modules/third-party-modules.md
       - Crear un módulo:
-          - modulos/crear-un-modulo/index.md
-          - El manifest: modulos/crear-un-modulo/manifest.md
-          - Base de datos: modulos/crear-un-modulo/base-de-datos.md
-          - Backend: modulos/crear-un-modulo/backend.md
-          - Interfaz de usuario: modulos/crear-un-modulo/ui.md
-          - Eventos y hooks: modulos/crear-un-modulo/eventos-y-hooks.md
-          - Validación y tests: modulos/crear-un-modulo/validacion.md
+          - modules/building-a-module/index.md
+          - El manifest: modules/building-a-module/manifest.md
+          - Base de datos: modules/building-a-module/database.md
+          - Backend: modules/building-a-module/backend.md
+          - Interfaz de usuario: modules/building-a-module/ui.md
+          - Eventos y hooks: modules/building-a-module/events-and-hooks.md
+          - Validación y tests: modules/building-a-module/validation.md
   - API:
       - api/index.md
-      - Autenticación: api/autenticacion.md
-      - Vender e integrar desde fuera: api/integraciones-externas.md
-      - Convenciones: api/convenciones.md
+      - Autenticación: api/authentication.md
+      - Vender e integrar desde fuera: api/external-integrations.md
+      - Convenciones: api/conventions.md
       - Referencia de endpoints:
-          - api/referencia/index.md
-          - Núcleo y transversales: api/referencia/nucleo.md
-          - Administración: api/referencia/administracion.md
-          - Aprendizaje: api/referencia/aprendizaje.md
-          - Comunidad y personas: api/referencia/comunidad.md
-          - Pagos, aula e IA: api/referencia/pagos-directo-ia.md
+          - api/reference/index.md
+          - Núcleo y transversales: api/reference/core.md
+          - Administración: api/reference/administration.md
+          - Aprendizaje: api/reference/learning.md
+          - Comunidad y personas: api/reference/community.md
+          - Pagos, aula e IA: api/reference/payments-live-ai.md
   - Enterprise:
       - enterprise/index.md
       - Capabilities: enterprise/capabilities.md
-      - Licencia: enterprise/licencia.md
+      - Licencia: enterprise/license.md
       - Aprovisionamiento (SCIM): enterprise/scim.md
   - Comunidad:
-      - Reportar un error: comunidad/reportar-un-error.md
-      - Contribuir: comunidad/contribuir.md
-      - Tests en local: comunidad/tests-locales.md
-      - Licencias: comunidad/licencias.md
+      - Reportar un error: community/reporting-a-bug.md
+      - Contribuir: community/contributing.md
+      - Tests en local: community/local-tests.md
+      - Licencias: community/licenses.md

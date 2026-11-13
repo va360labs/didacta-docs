@@ -229,7 +229,7 @@ SCIM requests **count against the instance's public quota**, because a SCIM toke
 | Community | 30 requests/minute |
 | With `feat:api.rate_limit.elevated` | 300 requests/minute |
 
-They can be adjusted with `RATE_LIMIT_COMMUNITY_PUBLIC_PER_MIN` and `RATE_LIMIT_ENTERPRISE_PUBLIC_PER_MIN` (see [Environment variables](../configuracion/variables-de-entorno.md)). With no Redis configured the limiter opens up and counts nothing.
+They can be adjusted with `RATE_LIMIT_COMMUNITY_PUBLIC_PER_MIN` and `RATE_LIMIT_ENTERPRISE_PUBLIC_PER_MIN` (see [Environment variables](../configuration/environment-variables.md)). With no Redis configured the limiter opens up and counts nothing.
 
 !!! warning "The first sync is the painful one"
     `feat:scim` and `feat:api.rate_limit.elevated` are **different** capabilities. With only the first one, an initial sync of several hundred users can hit the 30 req/min ceiling and get **429**. Connectors retry, but the full import will drag; if you are migrating a large directory, buy the elevated limit too or raise it through the environment variable for the duration of the load.
@@ -276,6 +276,6 @@ Operations arriving over SCIM have no human actor: they are recorded with no aut
 ## Related
 
 - [Enterprise capabilities](capabilities.md) — what each capability unlocks.
-- [The Enterprise license](licencia.md) — how `feat:scim` gets activated.
-- [API authentication](../api/autenticacion.md) — the product's other credential schemes.
-- [Reference: core and cross-cutting](../api/referencia/nucleo.md) — the summarised SCIM route table alongside the rest of the API.
+- [The Enterprise license](license.md) — how `feat:scim` gets activated.
+- [API authentication](../api/authentication.md) — the product's other credential schemes.
+- [Reference: core and cross-cutting](../api/reference/core.md) — the summarised SCIM route table alongside the rest of the API.
