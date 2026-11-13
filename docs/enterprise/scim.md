@@ -229,7 +229,7 @@ Las peticiones SCIM **cuentan contra el cupo público** de la instancia, porque 
 | Community | 30 peticiones/minuto |
 | Con `feat:api.rate_limit.elevated` | 300 peticiones/minuto |
 
-Se ajustan con `RATE_LIMIT_COMMUNITY_PUBLIC_PER_MIN` y `RATE_LIMIT_ENTERPRISE_PUBLIC_PER_MIN` (ver [Variables de entorno](../configuracion/variables-de-entorno.md)). Sin Redis configurado, el limitador se abre y no cuenta nada.
+Se ajustan con `RATE_LIMIT_COMMUNITY_PUBLIC_PER_MIN` y `RATE_LIMIT_ENTERPRISE_PUBLIC_PER_MIN` (ver [Variables de entorno](../configuration/environment-variables.md)). Sin Redis configurado, el limitador se abre y no cuenta nada.
 
 !!! warning "La primera sincronización es la que duele"
     `feat:scim` y `feat:api.rate_limit.elevated` son capabilities **distintas**. Con solo la primera, una sincronización inicial de varios cientos de usuarios puede chocar con los 30 req/min y recibir **429**. Los conectores reintentan, pero el alta completa tardará; si vas a migrar un directorio grande, contrata también el límite elevado o súbelo por variable de entorno mientras dure la carga.
@@ -276,6 +276,6 @@ Las operaciones que llegan por SCIM no tienen actor humano: se registran sin aut
 ## Relacionado
 
 - [Capabilities Enterprise](capabilities.md) — qué desbloquea cada capability.
-- [La licencia Enterprise](licencia.md) — cómo se activa `feat:scim`.
-- [Autenticación del API](../api/autenticacion.md) — los otros esquemas de credencial del producto.
-- [Referencia: núcleo y transversales](../api/referencia/nucleo.md) — la tabla resumida de rutas SCIM junto al resto del API.
+- [La licencia Enterprise](license.md) — cómo se activa `feat:scim`.
+- [Autenticación del API](../api/authentication.md) — los otros esquemas de credencial del producto.
+- [Referencia: núcleo y transversales](../api/reference/core.md) — la tabla resumida de rutas SCIM junto al resto del API.

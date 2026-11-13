@@ -27,11 +27,11 @@ This documentation covers everything you need to install, operate and extend you
 
 ## Quick paths
 
-- **I want to try Didacta right now** → [Installing with Docker Compose](instalacion/docker-compose.md)
-- **I came here to upgrade my instance** → [Upgrading Didacta](instalacion/actualizacion.md)
-- **I am looking for a specific environment variable** → [Environment variables](configuracion/variables-de-entorno.md)
-- **I want to build a module** → [Building a module](modulos/crear-un-modulo/index.md)
-- **I want to contribute to the project** → [Contributing](comunidad/contribuir.md)
+- **I want to try Didacta right now** → [Installing with Docker Compose](installation/docker-compose.md)
+- **I came here to upgrade my instance** → [Upgrading Didacta](installation/upgrading.md)
+- **I am looking for a specific environment variable** → [Environment variables](configuration/environment-variables.md)
+- **I want to build a module** → [Building a module](modules/building-a-module/index.md)
+- **I want to contribute to the project** → [Contributing](community/contributing.md)
 
 ## About the project
 
@@ -44,4 +44,4 @@ This documentation covers everything you need to install, operate and extend you
 | **Status** | {{ didacta_channel_en }} ({{ didacta_version }}) — SemVer versioning; `latest` only for stable releases |
 
 !!! info "Fair-code"
-    Didacta is **source-available with free internal use**: audit it, modify it and deploy it for your own organisation at no cost. Commercial distribution, third-party SaaS and white-labelling require an agreement with VA360 LABS S.L. Details in [Licenses](comunidad/licencias.md).
+    Didacta is **source-available with free internal use**: audit it, modify it and deploy it for your own organisation at no cost. Commercial distribution, third-party SaaS and white-labelling require an agreement with VA360 LABS S.L. Details in [Licenses](community/licenses.md).

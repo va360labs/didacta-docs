@@ -2,7 +2,7 @@
 
 Enterprise añade a Community un conjunto cerrado de **capabilities transversales del core** pensadas para organizaciones grandes: federación de identidad, aprovisionamiento automático, marca blanca completa, auditoría extendida…
 
-La regla de reparto es simple y no cambia: **los módulos son siempre Community**; lo único de pago son estas capabilities de plataforma. Ver [Ediciones](../primeros-pasos/ediciones.md).
+La regla de reparto es simple y no cambia: **los módulos son siempre Community**; lo único de pago son estas capabilities de plataforma. Ver [Ediciones](../getting-started/editions.md).
 
 ## Qué incluye
 
@@ -26,7 +26,7 @@ En Didacta **el gating nunca oculta**:
 
 ## Cómo se activa
 
-Con una licencia JWT firmada por VA360 LABS, pegada en **Administración → Licencia** o fijada en la variable `DIDACTA_LICENSE_KEY` (el entorno gana sobre el panel). El funcionamiento completo (estados, periodo de gracia, verificación) está en [Licencia](licencia.md).
+Con una licencia JWT firmada por VA360 LABS, pegada en **Administración → Licencia** o fijada en la variable `DIDACTA_LICENSE_KEY` (el entorno gana sobre el panel). El funcionamiento completo (estados, periodo de gracia, verificación) está en [Licencia](license.md).
 
 ## Contratación
 

@@ -2,3 +2,4 @@
 mkdocs-material==9.*
 mkdocs-static-i18n==1.*
 mkdocs-macros-plugin==1.*
+mkdocs-redirects==1.*
