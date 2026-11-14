@@ -33,6 +33,9 @@ The reminder worker needs `REDIS_URL` (without Redis it does not start, with a l
 
 **License.** Nothing in this module requires an Enterprise license.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Step by step
 
 **As an admin**
@@ -43,7 +46,7 @@ The reminder worker needs `REDIS_URL` (without Redis it does not start, with a l
 
 4. Click **"Results"** on a row: you will see the NPS (promoters 9-10 minus detractors 0-6, in points), the average of each scale question and the free-text answers with no author.
 
-    ![Aggregate results: NPS, averages and anonymous free-text answers](../../assets/modulos/surveys/en/surveys-2-admin-resultados.png)
+    ![Aggregate results: NPS, averages and anonymous free-text answers](../../assets/modules/surveys/en/surveys-1-admin-results.png)
 
 5. Click **"Close"** when you want to stop accepting responses (later submissions get a 409).
 6. Two actions have no button and are API-only: creating a session's survey without waiting for the webhook (`POST /modules/surveys/admin/sessions/:sessionId`) and forcing the reminder sweep (`POST /modules/surveys/admin/reminders/run`).
@@ -52,7 +55,7 @@ The reminder worker needs `REDIS_URL` (without Redis it does not start, with a l
 
 1. Go to the class page (`/live/[id]`). If the class has an open survey and you have not answered it yet, the **"Rate this class"** card appears at the bottom, with the note that your answer is anonymous.
 
-    ![The post-class survey the student sees at the bottom of the class page](../../assets/modulos/surveys/en/surveys-3-alumno-panel.png)
+    ![The post-class survey the student sees at the bottom of the class page](../../assets/modules/surveys/en/surveys-2-student-panel.png)
 
 2. Answer by tapping the 0-10 (NPS) and 1-5 buttons (scale "(1 = poor · 5 = great)"); the free text is optional. The **"Send rating"** button only activates once every scored question is answered.
 3. After sending you will see "Thanks for your feedback! We'll take it into account for upcoming classes.". Only one submission per person is accepted; a second attempt (another tab, a double click) lands on the same thank-you state.

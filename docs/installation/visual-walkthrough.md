@@ -1,118 +1,130 @@
 # Recorrido visual: primeros pasos
 
-Esta guía recorre una instalación de Didacta **desde cero**, tal y como la vería cualquier self-hoster nuevo: se construye la imagen del release, se levanta `docker-compose.alpha.yml` sin ningún dato previo, y se completa el camino real de un operador — asistente de configuración, marca, primer curso, alta de alumnado y certificado — con una captura anotada en cada paso.
+Esta guía recorre una instalación de Didacta **desde cero**, tal y como la vería cualquier self-hoster nuevo: una instancia sin ningún dato previo y el camino real de un operador — asistente de configuración, asistente de bienvenida de la academia, primer curso, alta de alumnado y certificado — con una captura en cada paso.
 
 !!! note "De dónde salen estas capturas"
-    Se tomaron contra una instancia aislada, efímera y sin seeds, arrancada desde el tag de un release publicado. Los nombres de organización, curso y personas son de ejemplo (`Academia Demo`, `Admin Demo`, `Alumna Demo`) — sustitúyelos por los tuyos.
+    Se tomaron contra una instancia aislada, efímera y sin seeds de la versión 0.1.0-beta.18. La academia, el curso y las personas son de ejemplo (`Primer Sorbo`, `Lucía Marín`, `Elena Vidal`, dominio `primersorbo.example.com`) — sustitúyelos por los tuyos.
+
+    Una instalación nueva arranca en **modo completo** (menú lateral con todas las opciones); el [último paso](#10-el-modo-sencillo) enseña cómo pasar al **modo sencillo**, el de las aulas de Didacta Cloud.
 
 ## 1 · Primer arranque y asistente de configuración
 
-Al entrar por primera vez, Didacta redirige cualquier ruta a `/setup`. La pantalla de bienvenida resume qué vas a configurar en menos de un minuto.
+Mientras la instancia no tenga ninguna organización, Didacta redirige cualquier ruta a `/setup`. El asistente pide un **token de un solo uso** que la instancia imprime en sus logs al arrancar: ábrelo con el enlace completo `/setup?token=…` (`docker logs didacta-app | grep "Setup token"`; el instalador `install.sh` ya te lo enseña al terminar). La pantalla de bienvenida resume qué vas a configurar en menos de un minuto.
 
-![Pantalla de bienvenida del asistente de configuración](../assets/recorrido-visual/01-setup-intro.png)
+![Pantalla de bienvenida del asistente de configuración](../assets/visual-walkthrough/01-setup-welcome.png)
 
 El segundo paso pide el nombre de la organización y el dominio público (el host desde el que accedes, editable).
 
-![Paso de organización: nombre y dominio público](../assets/recorrido-visual/02-setup-organizacion.png)
+![Paso de organización: nombre y dominio público](../assets/visual-walkthrough/02-setup-organization.png)
 
 Después de elegir los módulos activos (los core vienen pre-marcados), el asistente pide los datos del primer administrador — cuenta con rol `super_admin`.
 
-![Paso de cuenta de administrador: nombre, email y contraseña](../assets/recorrido-visual/03-setup-admin.png)
+![Paso de cuenta de administrador: nombre, email y contraseña](../assets/visual-walkthrough/03-setup-admin.png)
 
 Al terminar, la organización y el administrador ya existen y la sesión queda iniciada: no hace falta volver a entrar.
 
-![Pantalla final del asistente: plataforma creada](../assets/recorrido-visual/04-setup-listo.png)
+![Pantalla final del asistente: plataforma creada](../assets/visual-walkthrough/04-setup-done.png)
 
 → Detalle completo de qué crea el asistente en [Asistente de configuración](setup-wizard.md).
 
-## 2 · Completa tu perfil
+## 2 · Asistente de bienvenida de la academia
+
+Al pulsar «Empezar», Didacta abre el asistente de bienvenida (`/welcome`): seis pasos — **Nombre**, **Logo y color**, **Primer curso**, **Alumnos**, **Cobros** y **Correo** — que dejan la academia presentable sin salir de la pantalla. Solo los dos primeros son obligatorios; el resto tiene «Ahora no».
+
+En **Logo y color** subes el logo, eliges cómo se muestra («Solo el logo» o «Logo y nombre») y el color de marca, con una vista previa de cómo lo verán tus alumnos. Todo se puede cambiar después en **Administración → Branding** (`/admin/branding`).
+
+![Asistente de bienvenida, paso «Logo y color»: logo subido, «Logo y nombre» y color de marca](../assets/visual-walkthrough/05-welcome-brand.png)
+
+En **Primer curso** escribes un título y el curso se crea en borrador; en **Alumnos** pegas correos (uno por línea) y cada persona recibe una invitación para definir su contraseña. **Cobros** y **Correo** embeben las mismas tarjetas de Stripe y SMTP de Configuración ([segunda parte del recorrido](visual-walkthrough-sales.md)). El resumen final enseña la dirección de la academia y lo que quedó pendiente.
+
+![Resumen del asistente: dirección de la academia y pasos pendientes](../assets/visual-walkthrough/06-welcome-summary.png)
+
+## 3 · Completa tu perfil
 
 La primera vez que cualquier cuenta entra (incluida la del administrador), Didacta pide completar un perfil mínimo — foto obligatoria, nombre, idioma y preferencias de notificación — antes de dejar pasar al resto de la plataforma.
 
-![Onboarding: subir foto de perfil](../assets/recorrido-visual/05-onboarding-foto.png)
+![Onboarding: subir foto de perfil](../assets/visual-walkthrough/07-onboarding-photo.png)
 
-## 3 · Inicia sesión
+Al terminar llegas a la comunidad, con la tarjeta «Primeros pasos» que marca lo que ya está hecho y lo que falta.
 
-La pantalla de acceso (`/signin`) ya lleva la marca del tenant: nombre, cifras reales (alumnado activo, cursos publicados) y el copy que configures en **Administración → Branding**.
+## 4 · La pantalla de acceso
 
-![Pantalla de acceso con la marca del tenant](../assets/recorrido-visual/06-signin.png)
+La pantalla de acceso (`/signin`) ya lleva la marca de la academia: logo, color, cifras reales (alumnado activo, cursos incluidos) y el titular que configures en **Administración → Branding**.
 
-## 4 · Personaliza tu marca
+![Pantalla de acceso con la marca de la academia](../assets/visual-walkthrough/08-signin.png)
 
-En **Administración → Branding** (`/admin/branding`) subes el logo y eliges el color de marca (`brandHue`). Se aplican al instante a la pantalla de acceso y al catálogo público.
+## 5 · Monta y publica tu primer curso
 
-![Admin → Branding: logo subido y color elegido, antes de guardar](../assets/recorrido-visual/07-branding.png)
+El asistente dejó el curso en borrador. Ábrelo desde **Formador → Mis cursos** (`/studio/courses`) → «Editar»: con «Editar» de la cabecera completas la descripción, la categoría y la portada. Dentro del curso añades secciones y, dentro de cada sección, lecciones — aquí una lección de texto.
 
-## 5 · Crea tu primer curso
+![Constructor de cursos: alta de una lección de texto](../assets/visual-walkthrough/09-course-new-lesson.png)
 
-Desde **Formador → Cursos → Nuevo curso** defines título, descripción y categoría. El *slug* (URL pública) se genera solo desde el título. El curso nace en borrador.
+Publicar exige cuatro requisitos (título, descripción, al menos una sección y una lección); la tarjeta «Antes de publicar» te dice en todo momento qué falta y pasa a «Listo para publicar» cuando está todo.
 
-![Alta de un curso nuevo, en borrador](../assets/recorrido-visual/08-curso-nuevo.png)
+![Tarjeta «Listo para publicar» con los cuatro requisitos cumplidos](../assets/visual-walkthrough/10-course-ready.png)
 
-Dentro del curso añades secciones y, dentro de cada sección, lecciones — aquí una lección de texto.
+Con «Publicar», el curso pasa a **Publicado**.
 
-![Constructor de cursos: alta de una lección de texto](../assets/recorrido-visual/09-curso-leccion-alta.png)
-
-Publicar exige cuatro requisitos (título, descripción, al menos una sección y una lección); el panel te dice en todo momento qué falta.
-
-![Checklist de publicación completo](../assets/recorrido-visual/10-curso-listo-publicar.png)
-
-Con todo listo, el curso pasa a **Publicado**.
-
-![Curso ya publicado](../assets/recorrido-visual/11-curso-publicado.png)
+![Curso ya publicado](../assets/visual-walkthrough/11-course-published.png)
 
 ## 6 · Invita a tu alumnado
 
-Sin auto-matriculación pública, la vía normal para que alguien entre a un curso es un **código de invitación**, generado desde el propio curso.
+Sin auto-matriculación pública, la vía normal para que alguien entre a un curso sin pagar es un **código de invitación**, generado desde la tarjeta «Invitaciones» del propio curso.
 
-![Código de invitación generado para el curso](../assets/recorrido-visual/12-curso-invitacion-generada.png)
+![Código de invitación generado para el curso](../assets/visual-walkthrough/12-course-invitation-code.png)
 
 !!! tip "El catálogo público (`/catalog`) es el de venta"
-    `/catalog` es la ficha pública para cursos **con precio** (mod.billing) — pensada para el visitante que compra con tarjeta sin registrarse antes. Un curso publicado sin ningún precio configurado, como el de este recorrido, no aparece ahí: sigue siendo perfectamente accesible por invitación o por el catálogo interno una vez el alumnado ha entrado. Ver [Tres formas de llenar tu academia](../getting-started/index.md#tres-formas-de-llenar-tu-academia-de-alumnos).
+    `/catalog` es la ficha pública para cursos **a la venta** — pensada para el visitante que compra con tarjeta sin registrarse antes. Un curso publicado sin precio, como el de este recorrido, no aparece ahí: sigue siendo accesible por invitación o desde el catálogo interno una vez el alumnado ha entrado. Ver [Tres formas de llenar tu academia](../getting-started/index.md#tres-formas-de-llenar-tu-academia-de-alumnos).
 
-![Catálogo público de venta vacío: este curso no tiene precio configurado](../assets/recorrido-visual/13-catalogo-publico.png)
+![Catálogo público de venta vacío: este curso no tiene precio](../assets/visual-walkthrough/13-public-catalog.png)
 
-Para dar de alta a una persona directamente, **Administración → Usuarios y roles → Invitar persona** crea la cuenta ya activa y le envía un email para que defina su contraseña.
+Para dar de alta a una persona directamente (además de las que invitaste en el asistente), **Administración → Usuarios y roles → Invitar persona** (`/admin/users/invite`) crea la cuenta y le envía un email para que defina su contraseña.
 
-![Alta de una alumna por invitación individual](../assets/recorrido-visual/14-admin-invitar-alumna.png)
+![Alta de una alumna por invitación individual](../assets/visual-walkthrough/14-admin-invite-student.png)
 
 ## 7 · La alumna entra y se matricula
 
-Desde el enlace del email, la alumna define su contraseña.
+Desde el enlace del email, la alumna define su contraseña; después entra con ella y completa su perfil (paso 3).
 
-![La alumna define su contraseña desde el enlace del email](../assets/recorrido-visual/15-alumna-definir-password.png)
+![La alumna define su contraseña desde el enlace del email](../assets/visual-walkthrough/15-student-set-password.png)
 
-Con sesión ya iniciada, `/courses` es el catálogo **interno** de la app: lista todos los cursos publicados de la organización, tengan o no precio (a diferencia del `/catalog` de venta del paso anterior).
+Con sesión iniciada, `/courses` es el catálogo **interno** de la app: lista todos los cursos publicados de la organización, tengan o no precio (a diferencia del `/catalog` de venta del paso anterior).
 
-![Catálogo interno /courses, con sesión iniciada](../assets/recorrido-visual/16-alumna-catalogo.png)
+![Catálogo interno /courses, con sesión iniciada](../assets/visual-walkthrough/16-student-catalog.png)
 
 En la ficha del curso, canjea el código de invitación que le dio la organización.
 
-![Canje del código de invitación en la ficha del curso](../assets/recorrido-visual/17-alumna-canjear-codigo.png)
+![Canje del código de invitación en la ficha del curso](../assets/visual-walkthrough/17-student-redeem-code.png)
 
-Al canjearlo queda matriculada al instante y ve su panel de progreso.
+Al canjearlo queda matriculada al instante: ve su progreso, el temario y la lección abierta. Para tipos como texto o PDF, el botón «Marcar como completada» registra la lección a mano.
 
-![Alumna matriculada: panel de progreso](../assets/recorrido-visual/18-alumna-matriculada.png)
+![Alumna matriculada: progreso, temario y lección de texto](../assets/visual-walkthrough/18-student-lesson.png)
 
-## 8 · Completa la lección y descarga el certificado
+## 8 · Completa el curso y descarga el certificado
 
-El reproductor de lección muestra el contenido y, para tipos como texto o PDF, un botón para marcarla como completada manualmente.
+Al alcanzar el umbral de finalización del curso, Didacta emite el certificado de forma automática y el botón de la cabecera cambia a «Descargar certificado».
 
-![Contenido de la lección de texto](../assets/recorrido-visual/19-alumna-leccion.png)
+![Curso completado: certificado listo para descargar](../assets/visual-walkthrough/19-student-course-completed.png)
 
-Al alcanzar el umbral de finalización del curso, Didacta emite el certificado de forma automática y el botón del hero cambia a "Descargar certificado".
+Todos los certificados del alumnado quedan también en `/my-certificates`, con número correlativo verificable, descarga en PDF y «Añadir a LinkedIn».
 
-![Curso completado: certificado listo para descargar](../assets/recorrido-visual/20-alumna-curso-completado.png)
-
-Todos los certificados del alumnado quedan también en `/my-certificates`, con número correlativo verificable.
-
-![/my-certificates con el certificado emitido](../assets/recorrido-visual/21-alumna-mis-certificados.png)
+![/my-certificates con el certificado emitido](../assets/visual-walkthrough/20-student-my-certificates.png)
 
 ## 9 · Un vistazo a Administración → Licencia
 
 Community funciona completo sin licencia. **Administración → Licencia** (`/admin/license`) muestra el estado actual y permite activar una licencia Enterprise pegando la clave — la verificación es local, sin llamadas a un servidor externo. Si el operador fijó `DIDACTA_LICENSE_KEY` por entorno, la pantalla pasa a solo lectura; ver [Licencia](../enterprise/license.md).
 
-![Admin → Licencia: estado Community, sin licencia Enterprise activa](../assets/recorrido-visual/22-admin-licencia.png)
+![Admin → Licencia: estado Community, sin licencia Enterprise activa](../assets/visual-walkthrough/21-admin-license.png)
+
+## 10 · El modo sencillo
+
+Didacta tiene dos modos de aula. El **completo** — el de una instalación nueva y el de todas las capturas anteriores — enseña todas las opciones en un menú lateral. El **sencillo** deja unas pocas pestañas arriba («Empieza aquí» —«Inicio» tras la primera venta—, «Comunidad», «Cursos», «Directos», «Alumnos», «Ventas», «Ajustes»), editores sin opciones avanzadas y todo lo demás en «Más»; es el modo con el que nacen las aulas de Didacta Cloud. Para cambiar, en **Administración → Configuración** (`/admin/settings`) pulsa **«Volver al modo sencillo»**; no se borra nada.
+
+![Configuración: tarjeta «Volver al modo sencillo»](../assets/visual-walkthrough/22-admin-simple-mode-card.png)
+
+En modo sencillo, quien administra aterriza en «Empieza aquí» (`/start`), con lo que le falta para su primera venta. Para volver, **Ajustes → «Usar el modo completo»**.
+
+![Modo sencillo: «Empieza aquí» con las pestañas arriba](../assets/visual-walkthrough/23-simple-mode-start.png)
 
 ## Qué no se ve en estas capturas
 

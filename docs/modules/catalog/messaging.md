@@ -29,24 +29,27 @@ Con entrega en **tiempo real vía SSE**, presencia, indicador de «escribiendo»
 - **Salas por espacio** — existen si `mod.community` está activo (el módulo lee sus espacios, solo lectura).
 - Ninguna función exige licencia Enterprise.
 
+!!! note "Capturas en modo sencillo"
+    Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
+
 ## Uso paso a paso
 
 **El alumno (miembro):**
 
-1. Abre `/messages` desde el ítem «Mensajes» del grupo Personas. La lista viene agrupada en «Salas», «Profesores» y «Directos», con buscador («Buscar conversaciones…»).
+1. Abre `/messages`: en modo sencillo, con el icono de mensajes de la cabecera; en modo completo, desde el ítem «Mensajes» del grupo Personas. La lista viene agrupada en «Salas», «Profesores» y «Directos», con buscador («Buscar conversaciones…»).
 
-    ![La bandeja de mensajes: salas por espacio, canal de profesores y directos](../../assets/modulos/messaging/messaging-1-bandeja.png)
+    ![La bandeja de mensajes: salas por espacio, canal de profesores y directos](../../assets/modules/messaging/messaging-1-inbox.png)
 
 2. Para un directo nuevo, pulsa el botón «Nueva conversación» (+) y busca con «Busca un miembro por nombre…»: al elegirlo se abre la conversación (o se reabre la existente — el get-or-create es idempotente).
 
-    ![Nueva conversación: buscador de miembros para abrir un directo](../../assets/modulos/messaging/messaging-2-directo.png)
+    ![Nueva conversación: buscador de miembros para abrir un directo](../../assets/modules/messaging/messaging-2-direct.png)
 
 3. El canal «Profesores» ya existe para cada alumno sin hacer nada: «Escribe tu primera consulta: el equipo de profesores la verá al momento.»
 
-    ![El canal privado del alumno con el equipo de profesores](../../assets/modulos/messaging/messaging-3-profesores.png)
+    ![El canal privado del alumno con el equipo de profesores](../../assets/modules/messaging/messaging-3-teachers.png)
 
 4. Escribe en «Escribe un mensaje…» y pulsa «Enviar». En vivo verá el indicador de escritura, «Conectado ahora» junto a quien está en línea, las marcas de lectura y el contador de no-leídos por conversación.
-5. El chat flotante (la píldora de abajo a la derecha, visible en toda la app) abre estas mismas conversaciones en un panel compacto; «Ver todos los mensajes ›» lleva a `/messages`.
+5. En modo completo, el chat flotante (la píldora de abajo a la derecha, visible en toda la app) abre estas mismas conversaciones en un panel compacto; «Ver todos los mensajes ›» lleva a `/messages`.
 
 **El staff (admin / formador):**
 

@@ -17,6 +17,9 @@ Branding visual **por organización**: logo (subido al storage o URL), modo de p
 !!! note "Qué parte es Enterprise"
     El branding básico (logo, colores, fuentes, titulares) es **Community**. Solo `customCss` y `footerHtml` con contenido requieren la capability `feat:white_label` (guardar logo y colores sin licencia funciona siempre). Ocultar la marca Didacta también es white-label.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Configuración
 
 Es un módulo **core**: siempre activo, no aparece en el interruptor de la pestaña Módulos. Todo se configura en **Administración → Branding** (`/admin/branding`), solo para `tenant_admin` y `super_admin`, con **Vista previa** en vivo y botón **Restaurar valores por defecto**:
@@ -26,7 +29,7 @@ Es un módulo **core**: siempre activo, no aparece en el interruptor de la pesta
 - **Logo y favicon**: **Subir logo al storage** (PNG, JPG, SVG o WebP, máx. 2 MB; con **Reemplazar logo** y **Eliminar**), o **URL del logo (alternativa)** (`https://…` o un endpoint relativo `/api/v1/…`), más **URL del favicon**.
 - **¿Cómo se muestra tu marca?** — el modo de logo (`logo_display_mode`, añadido en alpha.113): **Solo el logo** (`logo_only`, se ve completo a su ancho natural; para logos que ya llevan el nombre dentro) o **Logo y nombre** (`logo_and_name`; para isotipos cuadrados o sin texto). La elección manda en el sidebar del aula, `/signin` y el asistente de bienvenida.
 
-    ![Bloque de logo del panel de Branding con el selector de modo de marca](../../assets/modulos/theming/theming-2-logo-modo.png)
+    ![Bloque de logo del panel de Branding con el selector de modo de marca](../../assets/modules/theming/theming-2-logo-mode.png)
 
 - **Pantalla de acceso**: **Titular** (máx. 160 caracteres) y **Línea de apoyo (opcional)** (máx. 240) del panel de marca de `/signin`.
 - **CSS personalizado (avanzado)** (máx. 16 KB) y **Footer personalizado** (máx. 4 KB): requieren la capability Enterprise `feat:white_label`. Sin licencia se muestra la tarjeta de upgrade en su lugar, y el backend responde `402` a cualquier intento de guardarlos con contenido — enviar los campos vacíos o a `null` siempre está permitido.
@@ -43,18 +46,22 @@ Sin variables de entorno.
 4. Ajusta las fuentes y, si quieres, el **Titular** y la **Línea de apoyo (opcional)** de la pantalla de acceso.
 5. Pulsa **Guardar cambios**: el theme se persiste y se aplica a toda la organización (el resto de usuarios lo ve al recargar, porque se inyecta server-side).
 
-    ![Panel de Branding con el color de marca y la vista previa en vivo](../../assets/modulos/theming/theming-1-branding-color.png)
+    ![Panel de Branding con el color de marca y la vista previa en vivo](../../assets/modules/theming/theming-1-branding-color.png)
 
 6. (Enterprise) Con licencia `feat:white_label`, añade **CSS personalizado (avanzado)** y **Footer personalizado**.
 7. **Restaurar valores por defecto** vuelve a la identidad Didacta en un clic (pide confirmación).
 
 Si la academia es nueva, el asistente de `/welcome` te lleva por lo mismo sin entrar al panel:
 
-![Paso «Logo y color» del asistente de bienvenida con la vista previa del aula](../../assets/modulos/theming/theming-3-bienvenida-marca.png)
+![Paso «Logo y color» del asistente de bienvenida con la vista previa del aula](../../assets/modules/theming/theming-3-welcome-brand.png)
 
 El resultado se ve donde primero lo ven tus alumnos, la pantalla de acceso:
 
-![Pantalla de acceso con el logo, el color y el titular del tenant](../../assets/modulos/theming/theming-4-signin.png)
+![Pantalla de acceso con el logo, el color y el titular del tenant](../../assets/modules/theming/theming-4-signin.png)
+
+En **modo sencillo**, el logo, el modo de logo y el color están en **Ajustes → «Logo y color»** (la misma pieza que el asistente, con su vista previa); el resto del panel de Branding sigue en «Más → Branding».
+
+![Modo sencillo: Ajustes → «Logo y color»](../../assets/modules/theming/theming-5-simple-settings.png)
 
 ## Dependencias
 

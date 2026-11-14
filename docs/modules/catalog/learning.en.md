@@ -30,6 +30,9 @@ It manages the student's whole lifecycle inside a course: **enrollment** (direct
 - **Storage**: SCORM packages are stored in the instance's file backend (`/admin/settings?tab=storage`).
 - **License**: the whole module is Community; no feature requires Enterprise capabilities.
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Step-by-step usage
 
 ### Releasing content gradually — drip (instructor)
@@ -39,7 +42,7 @@ It manages the student's whole lifecycle inside a course: **enrollment** (direct
 3. Define the pace: "Release by" ("Lesson" or "Module / section"), "Every N days" and "1st unit after (days)". Click "Add schedule".
 4. Each schedule can be toggled on/off or deleted. If several apply to a student, the most permissive wins; with no schedule, every lesson is available from the start.
 
-    ![The builder's drip card with an active schedule](../../assets/modulos/learning/en/learning-1-drip.png)
+    ![The builder's drip card with an active schedule](../../assets/modules/learning/en/learning-1-drip.png)
 
 ### Enrolling students with invitations (instructor)
 
@@ -47,7 +50,7 @@ It manages the student's whole lifecycle inside a course: **enrollment** (direct
 2. Copy the short code ("Copy code") and hand it out; the card also shows the "URL token for a direct link", meant to be redeemed through the API (`POST /modules/learning/enrollments/by-link`) — today the web app has no dedicated token-redemption page.
 3. "Revoke" invalidates an invitation; the list flags "Expired" or "Exhausted" ones.
 
-    ![The invitations card with a generated code](../../assets/modulos/learning/en/learning-2-invitaciones.png)
+    ![The invitations card with a generated code](../../assets/modules/learning/en/learning-2-invitations.png)
 
 4. The student redeems the code on the course page (`/courses/<slug>`): "Do you have an invitation code?" field and "Redeem code" button. Directly enrolling another user (`POST /modules/learning/enrollments`) is for instructors/admins via the API or the user-import flows.
 
@@ -56,7 +59,7 @@ It manages the student's whole lifecycle inside a course: **enrollment** (direct
 1. From the builder, "View students" opens `/studio/courses/<id>/students`: totals, active, completed, average progress, status filters and "Export CSV".
 2. "View progress →" opens `/studio/courses/<id>/students/<enrollmentId>`: time watched per lesson, completed lessons and last activity.
 
-    ![The course's student list with progress and last login](../../assets/modulos/learning/en/learning-3-alumnos.png)
+    ![The course's student list with progress and last login](../../assets/modules/learning/en/learning-3-students.png)
 
 ### Moderating lesson comments (instructor)
 
@@ -82,7 +85,7 @@ It manages the student's whole lifecycle inside a course: **enrollment** (direct
 4. During a membership trial, lessons beyond the limit show "Available once the trial ends" with the "Pay now and unlock" option.
 5. On crossing the threshold, the course switches to "Course completed!" and, with `mod.certificates` active, "Download certificate" appears.
 
-    ![The student's course page with progress, syllabus and drip-locked lessons](../../assets/modulos/learning/en/learning-4-ficha-alumno.png)
+    ![The student's course page with progress, syllabus and drip-locked lessons](../../assets/modules/learning/en/learning-4-student-course.png)
 
 ## Dependencies
 

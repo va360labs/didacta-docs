@@ -14,6 +14,9 @@ The full cycle: click (deduplicated by code + day + **hash of the IP address** �
 - The referrer gets an in-app notification + email when they earn a commission and when a payout is settled (templates editable under Administration → Emails).
 - With the program disabled, the public endpoints behave as if it did not exist (404).
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Configuration
 
 The module belongs to the **core** category (always registered), but the **program starts disabled**: until the admin switches it on, the public endpoints return 404 and members see nothing. Nothing requires an Enterprise licence.
@@ -34,7 +37,7 @@ Everything is configured per tenant under `/admin/referrals` (**"Referral progra
 
 Button **"Save configuration"** ("Configuration saved. It only affects future accruals.").
 
-![Referral program configuration in the admin panel](../../assets/modulos/referrals/en/referrals-1-admin-config.png)
+![Referral program configuration in the admin panel](../../assets/modules/referrals/en/referrals-1-admin-settings.png)
 
 Environment variable (instance): `REFERRALS_APPROVAL_CRON` — cron of the worker approving commissions whose guarantee elapsed (`30 * * * *`, hourly).
 
@@ -45,14 +48,16 @@ Practical requirement: the program only generates commissions if the **membershi
 1. Enable the program under `/admin/referrals`: switch on **"Program active"**, adjust commission, scope and guarantee → **"Save configuration"**.
 2. The member opens `/referrals` (**"Referrals"**): the page generates their code on demand and shows **"Your link"** with the **"Copy link"** button, plus their real results — **"Clicks on your link"**, **"Attributed signups"**, **"Paid to date"** — and the **"Your commissions"** / **"Payouts received"** history. If the program requires a membership and they lack one, the page tells them what is missing.
 
-    ![Member area with their referral link and results](../../assets/modulos/referrals/en/referrals-2-miembro.png)
+    ![Member area with their referral link and results](../../assets/modules/referrals/en/referrals-2-member.png)
+
+    In simple mode, the member area is "Invite and earn" (avatar menu): how it works, their invitees (initials only) and what they have earned, with the acceptance of the programme terms before sharing the link.
 
 3. The member shares `/join?ref=THEIRCODE`. The click is recorded (deduplicated by day and hashed IP) and the code is stored in the visitor's browser (last-click, for the attribution window) — it later travels in the membership checkout metadata.
 4. When the referred person pays: attribution materialises during webhook fulfillment (first-touch, once per user; self-referral is blocked by user and by email). Every paid invoice with an amount > €0 within scope accrues a `PENDING` commission; €0 trials and 100% coupons accrue nothing.
 5. Once the guarantee elapses, the worker approves commissions on its own (`APPROVED`). The admin can also move earlier with **"Approve now"** or withdraw one with **"Revoke"** (reason required, the member will see it) in the **"Commissions"** card, with its status filter.
 6. Payout: in the **"Referrers"** card, each referrer's **"Settle"** button asks for the **external reference** of the actual payment (bank transfer, PayPal…) and marks the approved batch as `PAID` — all or nothing, no mixed currencies, and only above the minimum. v1 without Stripe Connect: the money moves outside Didacta.
 
-    ![Referrer ranking and commissions with the settle, approve and revoke actions](../../assets/modulos/referrals/en/referrals-3-admin-comisiones.png)
+    ![Referrer ranking and commissions with the settle, approve and revoke actions](../../assets/modules/referrals/en/referrals-3-admin-commissions.png)
 
 7. A refund of the source charge revokes the commission automatically while it is `PENDING`/`APPROVED`; a `PAID` one is flagged for manual clawback.
 

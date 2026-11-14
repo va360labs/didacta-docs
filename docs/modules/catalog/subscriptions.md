@@ -15,6 +15,9 @@ Suscripciones recurrentes con Stripe (`mode=subscription`), con periodicidad con
 - El checkout de membresía es **anónimo** (el visitante paga en `/join` y la cuenta se materializa con el email confirmado por Stripe) y acepta códigos de referido, que interpreta `mod.referrals`.
 - Convive con `mod.billing` en el mismo tenant (cursos one-shot y por suscripción) sin compartir tablas.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Configuración
 
 El módulo es de categoría **core**: viene activo en todos los tenants y no tiene interruptor propio. Nada de lo que sigue exige licencia Enterprise.
@@ -50,7 +53,7 @@ Todo en `/admin/membership` (**«Membresía»**). Si Stripe no está configurado
 - Tarjeta **«Planes»**: campos **«Nombre»**, **«Periodicidad»** (Mensual / Trimestral / Semestral / Anual / cada N meses), **«Moneda»**, **«Precio»**, **«Precio tachado (opcional)»**, **«Días de prueba»**, interruptor **«Preseleccionado en la página»**; botón **«Crear plan»**. El Product/Price de Stripe se crea perezosamente en el primer checkout y se **rota** al cambiar importe, moneda o periodicidad (los prices de Stripe son inmutables); renombrar el plan renombra el Product. Un plan con ventas no se borra: se desactiva.
 - Tarjeta **«Página pública»**: interruptor **«Página de compra activa»**, **«Título»**, **«Subtítulo»**, **«Grupo de acceso que concede»**, **«Mostrar el catálogo de cursos en la página»**, **«Clases visibles por curso durante el periodo de prueba»** (0 = sin límite), precios individuales de referencia por curso y testimonial opcional; botón **«Guardar configuración»**.
 
-![Administración de la membresía: planes y configuración de la página pública](../../assets/modulos/subscriptions/subscriptions-1-membresia-planes.png)
+![Administración de la membresía: planes y configuración de la página pública](../../assets/modules/subscriptions/subscriptions-1-membership-plans.png)
 
 ### Variables de entorno
 

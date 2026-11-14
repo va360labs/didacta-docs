@@ -6,13 +6,15 @@ Didacta's first start **uses no data seeds**: the instance is configured through
 
 While the instance has no tenant at all, the web app redirects **every route** to the wizard. As soon as the wizard finishes, it is gone for good: the initialization endpoint returns `409 ALREADY_INITIALIZED` if an organization already exists.
 
+The wizard is protected by a **single-use token**: when it starts with no organization, the instance prints it to its logs and the wizard can only be completed by opening `/setup?token=…` (`docker logs didacta-app | grep "Setup token"`; `install.sh` already shows the full link). That way nobody who reaches a freshly published instance before you can take the `super_admin` account. If the instance restarts before you finish, it prints a new token. In one-click deployments you can set it yourself with the `DIDACTA_SETUP_TOKEN` variable (at least 16 characters, url-safe alphabet).
+
 ## The steps
 
 1. **Welcome** — an introduction to the wizard.
 2. **Organization** — the organization name (required) and the public domain, pre-filled with the host you are connecting from. Under "Advanced settings" you can adjust the *slug* (auto-generated, DNS-safe).
 3. **Modules** — the list of available modules. **Core** modules (courses, learning, assessments…) come pre-selected and cannot be unchecked; optional ones (community, gamification, Fundae, virtual classroom…) are up to you. Everything can be changed later under **Administration → Settings → Modules**.
 4. **Your account** — name, email and password of the first administrator (**at least 12 characters**, with a strength meter).
-5. **Done** — a quick tour (Courses, Community, Administration) and a recommendation to enable MFA.
+5. **Done** — a quick tour (Courses, Community, Administration) and a recommendation to enable MFA. "Get started" opens the academy's welcome wizard (`/welcome`): name, logo and color, first course, students, payments and email.
 
 ## Exactly what it creates
 

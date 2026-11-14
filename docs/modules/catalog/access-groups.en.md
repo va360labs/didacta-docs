@@ -34,25 +34,28 @@ Everything is configured from the panel, always with an admin role (`super_admin
 - **"Tier link (payments)"** — `/admin/access-groups` → "Manage": "Tier name" field + "Save link" (`linkedTierName`). Reconciliation is triggered with the "Sync tiers from payments" button on `/admin/integrations/payment-connections` (owner: `mod.payment-connections`).
 - **"Access group it grants"** — `/admin/membership`: which group the paid membership grants. That setting belongs to `mod.subscriptions`, not to this module.
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Step-by-step usage
 
 1. Go to Administration → People & access → **Access groups** (`/admin/access-groups`).
 2. Under "New group", type the "Name", pick the "Type" and press **Create**.
 
-![Access group list with its kind, "Default" and tier-link badges](../../assets/modulos/access-groups/en/access-groups-1-lista.png)
+![Access group list with its kind, "Default" and tier-link badges](../../assets/modules/access-groups/en/access-groups-1-list.png)
 
 3. Press **Manage** on the newly created group:
     - On a "Several courses" or "One course" group, tick the published courses and press **Save courses**.
     - An "All courses" group needs no selection; turn on the "Auto-grant" switch if you also want it to enroll members in every new course.
 4. Add members by hand: search by name or email, press **Search** and then **Add** next to the user. These additions have origin `MANUAL` (*sticky*): only an admin removes them with **Remove**. Members who arrived through payments are marked with the "By tier" and "By membership" badges.
 
-!["Manage" panel of a group: selected courses and members with their origin](../../assets/modulos/access-groups/en/access-groups-2-gestion.png)
+!["Manage" panel of a group: selected courses and members with their origin](../../assets/modules/access-groups/en/access-groups-2-manage.png)
 
 5. *(Optional)* Press **Mark as default** on the group that should be granted when member registrations are approved.
 6. *(Optional, with `mod.payment-connections`)* Under "Tier link (payments)", type the "Tier name" and press **Save link**. Users whose effective tier matches join (and leave when downgraded) when you press **Sync tiers from payments** on `/admin/integrations/payment-connections`.
 7. *(Optional, with `mod.subscriptions`)* On `/admin/membership`, pick the group under "Access group it grants" so the paid membership grants and revokes it on its own.
 
-![Membership settings: "Access group it grants" selector](../../assets/modulos/access-groups/en/access-groups-3-membresia.png)
+![Membership settings: "Access group it grants" selector](../../assets/modules/access-groups/en/access-groups-3-membership.png)
 
 The member never sees "groups" on any screen: the group's courses simply show up as active enrollments in `/courses`, and disappear when no live group grants them (enrollments from any other origin are never touched).
 

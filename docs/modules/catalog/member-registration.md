@@ -39,13 +39,16 @@ Módulo de categoría **core**: siempre activo, sin interruptor en la pestaña �
 - `MEMBER_APPROVAL_EMAIL` — aprobador global.
 - `MEMBER_PURGE_CRON` (default `0 3 * * *`, diario a las 03:00 UTC) y `MEMBER_RETENTION_DAYS` (default 90) — el worker de purga GDPR.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Uso paso a paso
 
 **Preparación (admin):**
 
 1. En `/admin/settings?tab=registration`, activa «Registro habilitado…», marca las verificaciones que exiges, rellena el bot si exiges Telegram y el «Email del aprobador», y pulsa **Guardar configuración**.
 
-![Tarjeta «Registro de miembros»: verificaciones exigidas, bot de Telegram y aprobador](../../assets/modulos/member-registration/member-registration-1-config.png)
+![Tarjeta «Registro de miembros»: verificaciones exigidas, bot de Telegram y aprobador](../../assets/modules/member-registration/member-registration-1-settings.png)
 
 2. *(Opcional)* Ajusta el texto de las 4 plantillas en `/admin/emails`.
 3. Comparte la URL pública de inscripción de tu tenant: `/member-registration`.
@@ -56,14 +59,14 @@ Módulo de categoría **core**: siempre activo, sin interruptor en la pestaña �
 5. Paso «Verifica tu email»: escribe su correo, pulsa **Enviar código**, teclea el «Código de 6 dígitos» y pulsa **Verificar**.
 6. Paso «Tus datos»: nombre, contraseña (mínimo 12 caracteres) y biografía opcional — el email se pide en este paso cuando no hay paso OTP — y pulsa **Crear solicitud**. Pantalla final: «Registro pendiente de validación».
 
-![Wizard público de inscripción con sus pasos de verificación](../../assets/modulos/member-registration/member-registration-2-wizard.png)
+![Wizard público de inscripción con sus pasos de verificación](../../assets/modules/member-registration/member-registration-2-wizard.png)
 
 **La decisión (aprobador):**
 
 7. Por email: llega «Nueva inscripción pendiente — {nombre}» con los botones «Aprobar»/«Rechazar» (enlaces firmados de un solo uso, TTL 7 días) y el estado de impago si consta; al pulsar, aterriza en `/member-registration/decision` con el resultado.
 8. O desde el panel: Administración → Personas y accesos → **Solicitudes de inscripción** (`/admin/member-requests`). Cada solicitud muestra su suscripción detectada («Suscripción vigente» / «Suscripción no vigente — baja o impago»), las compras puntuales y permite **Volver a consultar**, mapear la suscripción por otro email («¿La suscripción está a otro email? Mapéala aquí»), enviar recordatorios y elegir el «Tier a asignar» (preseleccionado si coincide con la suscripción). Pulsa **Aprobar** o **Rechazar**.
 
-![Panel de solicitudes: lookup de suscripción, tier preseleccionado y decisión](../../assets/modulos/member-registration/member-registration-3-solicitudes.png)
+![Panel de solicitudes: lookup de suscripción, tier preseleccionado y decisión](../../assets/modules/member-registration/member-registration-3-requests.png)
 
 9. Aprobar activa la cuenta, asigna el grupo de acceso por defecto y envía la bienvenida; rechazar desactiva al usuario y le avisa.
 10. Mantén la lista de referencia de impagos en Administración → Ingresos → **Impagos** (`/admin/delinquents`): alta manual («Nuevo registro», «Marcar como impago») o **Importar CSV**. La inscripción usa estas marcas para avisarte de quien solicita acceso sin estar al día.

@@ -14,15 +14,18 @@ Genera **borradores formativos** a partir del texto de una lección: resúmenes 
 - Solo se puede editar/publicar/rechazar un borrador en estado `DRAFT` (409 en otro estado).
 - El formador espera la generación (~5-30 s); no hay streaming todavía. La ingestión automática del quiz publicado hacia `mod.assessments` es un paso posterior — hoy el flujo emite el evento y el formador crea el quiz.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Configuración
 
 **Activar el módulo.** En `/admin/settings?tab=modules` (pestaña «Módulos»). La fila del módulo muestra «Depende de: mod.courses» — su única dependencia dura. Este módulo no aporta hoy ninguna pantalla propia: ni entrada de menú ni panel; toda su superficie es la API.
 
-![La fila del módulo en la pestaña Módulos, con su dependencia de mod.courses](../../assets/modulos/ai-content/ai-content-1-modulo.png)
+![La fila del módulo en la pestaña Módulos, con su dependencia de mod.courses](../../assets/modules/ai-content/ai-content-1-module.png)
 
 **Proveedor de IA (BYOK).** Usa solo el propósito **chat** del AI Gateway: bloque **«Chat (tutor IA)»** de `/admin/ai/providers` (menú «Integraciones y API → Proveedores de IA») o, en su defecto, el default global `DEFAULT_AI_CHAT_*`. Proveedores de chat que acepta el código hoy: OpenAI, Anthropic (Claude), Google Gemini, OpenRouter, Mistral AI, Groq y Ollama (self-hosted). Detalle del gateway y del cifrado de claves en [Configuración → IA](../../configuration/ai.md). Sin proveedor configurado (o si el proveedor falla), la generación devuelve **503** `AI_CONTENT_PROVIDER_ERROR`.
 
-![Dónde se pone la clave de chat que usa el generador](../../assets/modulos/ai-content/ai-content-2-proveedores.png)
+![Dónde se pone la clave de chat que usa el generador](../../assets/modules/ai-content/ai-content-2-providers.png)
 
 **Sin variables propias, sin ajustes por tenant y sin exigencia de licencia Enterprise.**
 

@@ -14,15 +14,18 @@ It generates **learning drafts** from a lesson's text: summaries (`SUMMARY`), fl
 - Only a draft in `DRAFT` state can be edited/published/rejected (409 in any other state).
 - The instructor waits for the generation (~5-30 s); there is no streaming yet. Automatic ingestion of a published quiz into `mod.assessments` is a later step — today the flow emits the event and the instructor creates the quiz.
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Configuration
 
 **Enabling the module.** Under `/admin/settings?tab=modules` (the "Modules" tab). The module's row shows "Depends on: mod.courses" — its only hard dependency. This module contributes no screen of its own today: no menu entry and no panel; its entire surface is the API.
 
-![The module's row on the Modules tab, with its mod.courses dependency](../../assets/modulos/ai-content/en/ai-content-1-modulo.png)
+![The module's row on the Modules tab, with its mod.courses dependency](../../assets/modules/ai-content/en/ai-content-1-module.png)
 
 **AI provider (BYOK).** It only uses the AI Gateway's **chat** purpose: the **"Chat (AI tutor)"** block under `/admin/ai/providers` ("Integrations and API → AI providers" in the menu) or, failing that, the global default `DEFAULT_AI_CHAT_*`. Chat providers the code accepts today: OpenAI, Anthropic (Claude), Google Gemini, OpenRouter, Mistral AI, Groq and Ollama (self-hosted). Gateway and key-encryption details in [Configuration → AI](../../configuration/ai.md). With no provider configured (or if the provider fails), generation returns **503** `AI_CONTENT_PROVIDER_ERROR`.
 
-![Where the chat key used by the generator goes](../../assets/modulos/ai-content/en/ai-content-2-proveedores.png)
+![Where the chat key used by the generator goes](../../assets/modules/ai-content/en/ai-content-2-providers.png)
 
 **No variables of its own, no per-tenant settings and no Enterprise license requirement.**
 

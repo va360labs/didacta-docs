@@ -21,6 +21,9 @@ The isolation rules every module honours — never import another module's code,
 
 None of its own: no environment variables, no panel settings and no Enterprise capabilities. As a **non-core** module (category `example`), it ships registered in the instance and appears with its switch under Administration → Brand & settings → Settings, "Modules" tab (`/admin/settings?tab=modules`), where an admin can enable or disable it per tenant — its only visible surface.
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Step-by-step usage
 
 It is a template for developers; the flow lives in code, not in the panel:
@@ -32,7 +35,7 @@ It is a template for developers; the flow lives in code, not in the panel:
 5. Register it in the `registry.register([...])` array of `apps/api/src/modules/module-registry.service.ts` and follow the rest of the [Building a module](../building-a-module/index.md) guide.
 6. To see it running, open `/admin/settings?tab=modules`: "Hello World" is listed with its switch, exactly as your module will be.
 
-![The Hello World module card with its switch on the Modules tab](../../assets/modulos/hello-world/en/hello-world-1-modulos.png)
+![The Hello World module card with its switch on the Modules tab](../../assets/modules/hello-world/en/hello-world-1-modules.png)
 
 ## Data, API and events
 

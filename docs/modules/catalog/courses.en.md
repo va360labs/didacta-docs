@@ -20,19 +20,22 @@ This is the heart of the catalog: courses with a `slug`, title and status (`DRAF
 - **Environment variables**: none of its own. Cover images and SCORM packages are stored in the instance's file backend (`/admin/settings?tab=storage`, local disk or S3-compatible).
 - **License**: the whole module is Community; no feature requires Enterprise capabilities.
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Step-by-step usage
 
 ### Creating and building a course (instructor)
 
 1. At `/studio/courses` ("My courses"), click "Create new course". Fill in "Title" and "Slug" (auto-generated from the title, kebab-case: it will be the course's public URL) and, optionally, a description, "Category" and "Estimated duration (min)". Click "Create course": the course starts in `DRAFT`.
 
-    ![The instructor's "My courses" list with draft, published and archived courses](../../assets/modulos/courses/en/courses-1-mis-cursos.png)
+    ![The instructor's "My courses" list with draft, published and archived courses](../../assets/modules/courses/en/courses-1-my-courses.png)
 
 2. In the builder (`/studio/courses/<id>`), click "Add section", type the title and confirm with "Create section". Sections group related lessons.
 3. Inside each section, "Add lesson": pick the "Type" (Video, HTML, PDF, Text, Quiz or SCORM), type the title and click "Create".
 4. Click "Edit" on the lesson to load its content depending on the type: "Video URL" (YouTube, Bunny Stream or a `.mp4`/`.webm`/`.m3u8` file) with clickable "Resources and chapters", "PDF URL", "HTML", "Text", a linked quiz (see [mod.assessments](assessments.md)) or "Upload SCORM package" (a `.zip` with `imsmanifest.xml` at the root). The "Publish date (optional)" field schedules the lesson: with a future date it shows in the list but stays locked until then.
 
-    ![The course builder with sections, lessons and the publish card](../../assets/modulos/courses/en/courses-2-builder.png)
+    ![The course builder with sections, lessons and the publish card](../../assets/modules/courses/en/courses-2-builder.png)
 
 5. "Edit" in the header adjusts the metadata: description, "Category", "Estimated duration (min)", "Featured image" (the "Optimize" button recompresses it to WebP), "Featured video (URL)" and "External purchase URL" if this course is sold on an external page.
 6. Reorder sections and lessons by dragging (drag & drop); a lesson can also be moved to another section. Deletions are soft deletes: the item stops showing but students' historical progress is preserved.
@@ -44,14 +47,14 @@ This is the heart of the catalog: courses with a `slug`, title and status (`DRAF
 1. At `/admin/courses/categories`, create each category with "Name", "Color" and "Icon" and click "Create category". The preview shows the resulting chip.
 2. The builder offers this list to the instructor as the "Category" dropdown. If a category is deleted, courses that used it keep showing the name as plain text.
 
-    ![The curated categories screen with color and icon](../../assets/modulos/courses/en/courses-3-categorias.png)
+    ![The curated categories screen with color and icon](../../assets/modules/courses/en/courses-3-categories.png)
 
 ### What the student sees
 
 - The catalog (`/courses`) lists only `PUBLISHED` courses, with search and filters by topic and language.
 - The course page (`/courses/<slug>`) shows the hero (featured video > image > fallback), the description and the syllabus. An instructor or admin can open the page of an unpublished course in "Preview" mode, without enrolling.
 
-    ![The student's course catalog with category chips](../../assets/modulos/courses/en/courses-4-catalogo.png)
+    ![The student's course catalog with category chips](../../assets/modules/courses/en/courses-4-catalog.png)
 
 ## Dependencies
 

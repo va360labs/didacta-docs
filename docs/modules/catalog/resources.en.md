@@ -20,31 +20,34 @@ A library of community resources, organised into **collections** and searchable:
 - **Storage** — file resources upload to the tenant's storage, configured on the "Storage" tab of `/admin/settings` (the container's local disk or an S3-compatible bucket).
 - No environment variables of its own and no further settings. No feature requires an Enterprise license.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Step-by-step usage
 
 **The staff (admin or instructor):**
 
 1. In `/resources`, press "New collection": "Title", "Description" and "Cover" (without a cover the brand gradient is used).
 
-    ![The new-collection modal, with title, description and cover](../../assets/modulos/resources/en/resources-4-nueva-coleccion.png)
+    ![The new-collection modal, with title, description and cover](../../assets/modules/resources/en/resources-4-new-collection.png)
 
 2. Edit any collection with "Edit collection" (the button on the card); changing the cover or the text does not touch the resources.
 3. Staff can delete any resource; a collection can only be deleted once it is empty.
 
 **Any member:**
 
-1. `/resources` ("Resources", Learning group) shows the grid of collections with their resource counts.
+1. `/resources` ("Resources", Learning group; in simple mode, under "More") shows the grid of collections with their resource counts. If the academy has no collection at all, the library creates six sample ones, empty and marked "Soon": rename them, change their cover or delete them once you have your own.
 
-    ![The library: a grid of collections with covers and resource counts](../../assets/modulos/resources/en/resources-1-colecciones.png)
+    ![The library: a grid of collections with covers and resource counts](../../assets/modules/resources/en/resources-1-collections.png)
 
 2. "Share resource": "Title", "Collection", type "File" (PDF, Word, Excel, ZIP, JSON…) or "Link", and "Description (optional)".
 
-    ![Share a resource: file or link, collection and description](../../assets/modulos/resources/en/resources-2-compartir.png)
+    ![Share a resource: file or link, collection and description](../../assets/modules/resources/en/resources-2-share.png)
 
 3. Inside a collection (`/resources/<id>`), search with "Search in this collection…" — the search runs on the server, within that collection.
 4. "Download" (files) or "Open" (links): every open adds to the download counter shown on the card.
 
-    ![An open collection: resources with their download counters and the search box](../../assets/modulos/resources/en/resources-3-coleccion.png)
+    ![An open collection: resources with their download counters and the search box](../../assets/modules/resources/en/resources-3-collection.png)
 
 5. Every author can delete their own resources with the X on the card (with confirmation).
 

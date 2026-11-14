@@ -14,6 +14,9 @@ The tenant's social feed: **posts** (optionally tied to a course and a space), *
 - Publishing over the **external API** (`/community-api`, with an API key scoped `community:post` whose owner is an admin): those posts come in with `source='api'`, which is how automated content is distinguished.
 - The weekly digest is scheduled with `COMMUNITY_DIGEST_CRON` (Mondays at 09:00 UTC by default) and honours each user's opt-out.
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Configuration
 
 **Activation.** `mod.community` is a **core**-category module: it is always active and does not appear on the "Modules" tab of `Administration → Settings` (`/admin/settings`), which only lists the modules that can be disabled. If anything tries to disable it over the API, the backend rejects it with `CORE_MODULE_NOT_DISABLEABLE`.
@@ -27,7 +30,7 @@ Everything else is configured from the panel, each thing on its own screen:
 - **Weekly digest, per user** — each member controls it in `/account`, "Notifications" tab: the "Community" row ("Mentions, replies and the weekly digest.") crossed with the "Email" column.
 - **Roles** — hide/restore, pin, tags, spaces, announcements and `notifyAll` require `super_admin` or `tenant_admin`; instructors do not moderate the community.
 
-![Community spaces: the list with system spaces and the edit form](../../assets/modulos/community/en/community-3-espacios.png)
+![Community spaces: the list with system spaces and the edit form](../../assets/modules/community/en/community-3-spaces.png)
 
 Environment variables (workers):
 
@@ -46,18 +49,18 @@ Manual digest trigger (QA): `POST /modules/community/digest/run-now`, `super_adm
 2. Curate the official tags in `/admin/community/tags` so the feed and the sidebar paint them with color and icon.
 3. Publish the first post from the feed with "New conversation". Only admins see the "📣 Notify everyone by email" checkbox; ticking it reveals "Important (ignores opt-outs)" for when the message really must bypass unsubscribes.
 
-    ![The post composer with the notify options only admins can see](../../assets/modulos/community/en/community-2-composer.png)
+    ![The post composer with the notify options only admins can see](../../assets/modules/community/en/community-2-composer.png)
 
 4. Moderate from the feed itself: "Hide post" (asks for an optional reason and preserves the row), "Restore", "Pin" and "Unpin". Hiding also revokes the points the content earned if gamification is active.
 5. For announcements without a post, `/admin/broadcasts`: subject, message and "Send to everyone". The history ("Sent") shows each announcement's status and its "{sent}/{total} sent" progress.
 
-    ![Community announcements: composer and delivery history with progress](../../assets/modulos/community/en/community-4-avisos.png)
+    ![Community announcements: composer and delivery history with progress](../../assets/modules/community/en/community-4-broadcasts.png)
 
 **The student (member):**
 
 1. In `/community` press "New conversation": title, rich text, tags, `@user` mentions with autocomplete, up to 10 images and 5 files per post. "Publish".
 
-    ![The community feed: posts with tags, reactions and the spaces in the sidebar](../../assets/modulos/community/en/community-1-feed.png)
+    ![The community feed: posts with tags, reactions and the spaces in the sidebar](../../assets/modules/community/en/community-1-feed.png)
 
 2. Posts can live inside a space: spaces hang from the "Forums" sidebar group and each one lives at `/spaces/<slug>`, with sorting ("Most recent", "Oldest first", "Most commented") and a "Gallery" tab with the space's attachments.
 3. Comment (one level of replies) and react with emoji on posts and comments.

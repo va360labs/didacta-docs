@@ -20,19 +20,22 @@ Es el corazón del catálogo: cursos con `slug`, título y estado (`DRAFT` → `
 - **Variables de entorno**: ninguna propia. Las imágenes de portada y los paquetes SCORM se guardan en el backend de archivos de la instancia (`/admin/settings?tab=storage`, disco local o S3-compatible).
 - **Licencia**: todo el módulo es Community; ninguna función exige capabilities de Enterprise.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Uso paso a paso
 
 ### Crear y montar un curso (formador)
 
 1. En `/studio/courses` («Mis cursos»), pulsa «Crear curso nuevo». Rellena «Título» y «Slug» (se genera solo desde el título, en kebab-case: será la URL pública del curso) y, si quieres, descripción, «Categoría» y «Duración estimada (min)». Pulsa «Crear curso»: el curso nace en `DRAFT`.
 
-    ![Listado «Mis cursos» del formador con cursos en borrador, publicados y archivados](../../assets/modulos/courses/courses-1-mis-cursos.png)
+    ![Listado «Mis cursos» del formador con cursos en borrador, publicados y archivados](../../assets/modules/courses/courses-1-my-courses.png)
 
 2. En el builder (`/studio/courses/<id>`), pulsa «Añadir sección», escribe el título y confirma con «Crear sección». Las secciones agrupan lecciones relacionadas.
 3. Dentro de cada sección, «Añadir lección»: elige el «Tipo» (Vídeo, HTML, PDF, Texto, Quiz o SCORM), escribe el título y pulsa «Crear».
 4. Pulsa «Editar» sobre la lección para cargar su contenido según el tipo: «URL del vídeo» (YouTube, Bunny Stream o archivo `.mp4`/`.webm`/`.m3u8`) con «Recursos y capítulos» clicables, «URL del PDF», «HTML», «Texto», quiz vinculado (ver [mod.assessments](assessments.md)) o «Subir paquete SCORM» (un `.zip` con `imsmanifest.xml` en la raíz). El campo «Fecha de publicación (opcional)» programa la lección: con fecha futura aparece en el listado pero bloqueada hasta ese momento.
 
-    ![Builder del curso con secciones, lecciones y la tarjeta de publicación](../../assets/modulos/courses/courses-2-builder.png)
+    ![Builder del curso con secciones, lecciones y la tarjeta de publicación](../../assets/modules/courses/courses-2-builder.png)
 
 5. Con «Editar» en la cabecera ajustas los metadatos: descripción, «Categoría», «Duración estimada (min)», «Imagen destacada» (botón «Optimizar» la recomprime a WebP), «Vídeo destacado (URL)» y «URL de compra externa» si la venta de este curso ocurre en una página externa.
 6. Reordena secciones y lecciones arrastrando (drag & drop); una lección también puede moverse a otra sección. Los borrados son soft-delete: dejan de mostrarse pero el progreso histórico de los alumnos se conserva.
@@ -44,14 +47,14 @@ Es el corazón del catálogo: cursos con `slug`, título y estado (`DRAFT` → `
 1. En `/admin/courses/categories`, crea cada categoría con «Nombre», «Color» e «Icono» y pulsa «Crear categoría». La vista previa muestra el chip resultante.
 2. El builder ofrece este listado al formador como desplegable de «Categoría». Si se elimina una categoría, los cursos que la tenían siguen mostrando el nombre como texto plano.
 
-    ![Pantalla de categorías curadas con color e icono](../../assets/modulos/courses/courses-3-categorias.png)
+    ![Pantalla de categorías curadas con color e icono](../../assets/modules/courses/courses-3-categories.png)
 
 ### Lo que ve el alumno
 
 - El catálogo (`/courses`) lista solo los cursos `PUBLISHED`, con búsqueda y filtros por temática e idioma.
 - La ficha (`/courses/<slug>`) muestra el hero (vídeo destacado > imagen > fallback), la descripción y el temario. Un formador o admin puede abrir la ficha de un curso sin publicar en modo «Vista previa», sin matricularse.
 
-    ![Catálogo de cursos del alumno con chips de categoría](../../assets/modulos/courses/courses-4-catalogo.png)
+    ![Catálogo de cursos del alumno con chips de categoría](../../assets/modules/courses/courses-4-catalog.png)
 
 ## Dependencias
 

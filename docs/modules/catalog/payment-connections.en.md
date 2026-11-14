@@ -22,6 +22,9 @@ It creates no charges: to sell, use [mod.billing](billing.md) and [mod.subscript
 - API keys are stored **encrypted** per connection; they never come back in a GET.
 - The dashboard reads only the materialised table — it never queries the providers live.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Configuration
 
 The module belongs to the **core** category: it is always active and has no switch of its own. The whole admin screen is **super_admin only** (it shows customers' payment data). Nothing requires an Enterprise licence.
@@ -38,19 +41,19 @@ The **"Connect a payment account"** form: a **"Provider"** selector, an **"Accou
 
 Each listed connection shows its status (**"Verified"** / "Error"…), the Live or "test mode" badge and the actions **"View subscribers"**, **"Verify"** and **"Disconnect"** (which also deletes the stored key; subscriptions at the provider are untouched).
 
-![The "Connect a payment account" form and the connections list](../../assets/modulos/payment-connections/en/payment-connections-1-conectar.png)
+![The "Connect a payment account" form and the connections list](../../assets/modules/payment-connections/en/payment-connections-1-connect.png)
 
 ### Subscription control (dashboard)
 
 The **"Subscription control"** block on the same screen: a **"Sync now"** button (besides the cron), the filters **"Search by email"**, **"Provider"**, **"Status"** and **"Only not registered in Didacta"**, and a per-row **"Reminder"** button that sends the renewal email (template editable from the modal itself, per tenant).
 
-![The "Subscription control" dashboard with filters and the last sync](../../assets/modulos/payment-connections/en/payment-connections-2-dashboard.png)
+![The "Subscription control" dashboard with filters and the last sync](../../assets/modules/payment-connections/en/payment-connections-2-dashboard.png)
 
 ### Tier catalog
 
 The **"Tier catalog"** block: a **"Tier name"** field, the **"This is the free tier"** toggle, the **"Add tier"** button and **"Sync tiers from payments"** (creates tiers from the accounts' real plans and fills in each user's payment tier). Manual per-user assignment is done from **Users**.
 
-![The tier catalog with the "Sync tiers from payments" button](../../assets/modulos/payment-connections/en/payment-connections-3-tiers.png)
+![The tier catalog with the "Sync tiers from payments" button](../../assets/modules/payment-connections/en/payment-connections-3-tiers.png)
 
 ### Subscription alerts
 

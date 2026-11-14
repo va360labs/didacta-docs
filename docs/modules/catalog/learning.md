@@ -30,6 +30,9 @@ Gestiona todo el ciclo del alumno dentro de un curso: **matriculación** (direct
 - **Storage**: los paquetes SCORM se guardan en el backend de archivos de la instancia (`/admin/settings?tab=storage`).
 - **Licencia**: todo el módulo es Community; ninguna función exige capabilities de Enterprise.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Uso paso a paso
 
 ### Liberar contenido de forma escalonada — drip (formador)
@@ -39,7 +42,7 @@ Gestiona todo el ciclo del alumno dentro de un curso: **matriculación** (direct
 3. Define el ritmo: «Libera por» («Lección» o «Módulo / sección»), «Cada N días» y «1ª unidad a los (días)». Pulsa «Añadir calendario».
 4. Cada calendario puede activarse/desactivarse o eliminarse. Si a un alumno le aplican varios, gana el más permisivo; sin calendario, todas las lecciones están disponibles desde el inicio.
 
-    ![Tarjeta de drip del builder con un calendario activo](../../assets/modulos/learning/learning-1-drip.png)
+    ![Tarjeta de drip del builder con un calendario activo](../../assets/modules/learning/learning-1-drip.png)
 
 ### Matricular alumnos con invitaciones (formador)
 
@@ -47,7 +50,7 @@ Gestiona todo el ciclo del alumno dentro de un curso: **matriculación** (direct
 2. Copia el código corto («Copiar código») y repártelo; la tarjeta también muestra el «Token URL para link directo», pensado para canjearlo por API (`POST /modules/learning/enrollments/by-link`) — hoy la web no tiene página propia de canje por token.
 3. «Revocar» invalida una invitación; el listado marca las «Expirada» o «Agotada».
 
-    ![Tarjeta de invitaciones con un código generado](../../assets/modulos/learning/learning-2-invitaciones.png)
+    ![Tarjeta de invitaciones con un código generado](../../assets/modules/learning/learning-2-invitations.png)
 
 4. El alumno canjea el código en la ficha del curso (`/courses/<slug>`): campo «¿Tienes un código de invitación?» y botón «Canjear código». La matrícula directa de otro usuario (`POST /modules/learning/enrollments`) queda para formador/admin vía API o desde los flujos de importación de usuarios.
 
@@ -56,7 +59,7 @@ Gestiona todo el ciclo del alumno dentro de un curso: **matriculación** (direct
 1. Desde el builder, «Ver alumnos» abre `/studio/courses/<id>/students`: totales, activos, completados, progreso promedio, filtros por estado y «Exportar CSV».
 2. «Ver progreso →» abre `/studio/courses/<id>/students/<enrollmentId>`: tiempo visto por lección, lecciones completadas y última actividad.
 
-    ![Listado de alumnos del curso con progreso y último login](../../assets/modulos/learning/learning-3-alumnos.png)
+    ![Listado de alumnos del curso con progreso y último login](../../assets/modules/learning/learning-3-students.png)
 
 ### Moderar comentarios de lección (formador)
 
@@ -82,7 +85,7 @@ Gestiona todo el ciclo del alumno dentro de un curso: **matriculación** (direct
 4. Durante un trial de membresía, las lecciones fuera del límite muestran «Disponible cuando pase el periodo de prueba» con la opción «Pagar ahora y desbloquear».
 5. Al cruzar el umbral, el curso pasa a «¡Curso completado!» y, con `mod.certificates` activo, aparece «Descargar certificado».
 
-    ![Ficha del curso del alumno con progreso, temario y lecciones bloqueadas por drip](../../assets/modulos/learning/learning-4-ficha-alumno.png)
+    ![Ficha del curso del alumno con progreso, temario y lecciones bloqueadas por drip](../../assets/modules/learning/learning-4-student-course.png)
 
 ## Dependencias
 

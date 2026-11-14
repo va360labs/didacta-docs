@@ -20,6 +20,9 @@ Assessments with auto-grading and manual grading. Six question types: `SINGLE_CH
 - **Per-tenant settings and environment variables**: none. Everything is configured per quiz, in its editor (`/studio/quizzes/<id>`, "Settings" card): "Pass threshold (%)" (default 60), "Max attempts" (empty = no limit), "Time limit (min)", "Shuffle questions" and "Show feedback to the student".
 - **License**: the whole module is Community; no feature requires Enterprise capabilities. AI score suggestions come from [mod.ai-grader](ai-grader.md), not from this module.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Step-by-step usage
 
 ### Creating and publishing a quiz (instructor)
@@ -32,7 +35,7 @@ Assessments with auto-grading and manual grading. Six question types: `SINGLE_CH
     - Open-ended types are not auto-graded: the editor warns that the attempt will stay in `PENDING_REVIEW` until you grade it at `/studio/grading`.
 4. With at least one question, click "Publish quiz". You can mix types in the same quiz.
 
-    ![The quiz editor with settings and questions of several types](../../assets/modulos/assessments/en/assessments-1-editor.png)
+    ![The quiz editor with settings and questions of several types](../../assets/modules/assessments/en/assessments-1-editor.png)
 
 ### Taking the quiz (student)
 
@@ -45,13 +48,13 @@ Assessments with auto-grading and manual grading. Six question types: `SINGLE_CH
 
 1. `/studio/grading` ("Pending gradings") lists the attempts waiting for review, with how many answers each one needs graded. The trainer dashboard (`/studio`) shows the pending counter.
 
-    ![The instructor's pending gradings inbox](../../assets/modulos/assessments/en/assessments-3-correcciones.png)
+    ![The instructor's pending gradings inbox](../../assets/modules/assessments/en/assessments-2-grading-queue.png)
 
 2. Open the detail (`/studio/grading/<attemptId>`): auto-graded questions are flagged "Auto-graded" and open ones "Manual", with the "Student's answer", the "Points (max N)" field and a "Feedback (optional)".
 3. With [mod.ai-grader](ai-grader.md) active, "Suggest grades with AI" proposes a score and justification per question; "Apply to form" fills it in. The final call is always yours.
 4. Click "Submit grades": the student sees the result and, if they passed, the lesson is marked complete.
 
-    ![The grading detail with open answers, points and feedback](../../assets/modulos/assessments/en/assessments-4-correccion-detalle.png)
+    ![The grading detail with open answers, points and feedback](../../assets/modules/assessments/en/assessments-3-grading-detail.png)
 
 ## Dependencies
 

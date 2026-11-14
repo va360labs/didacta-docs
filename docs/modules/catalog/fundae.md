@@ -28,17 +28,20 @@ Cumplimiento regulatorio para **formación bonificable en España** (RD 694/2017
 - **Umbral de finalización**: por grupo (`umbralFinalizacionPct`, 1–100; 75 por defecto), se fija por API al crear o editar el grupo; el cálculo de finalización admite además un `umbralOverride` puntual sin tocar la configuración persistida. El panel muestra el valor aplicado como **Umbral {pct}%**.
 - Sin variables de entorno propias. Ninguna función exige licencia Enterprise.
 
+!!! note "Capturas en modo sencillo"
+    Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
+
 ## Uso paso a paso
 
 Dar de alta la acción y la empresa:
 
 1. En `/admin/fundae`, pulsa **Nueva acción** y rellena **Código de acción** (único por tenant), **Modalidad**, **Nombre**, **Fecha inicio**, **Fecha fin** y **Horas**; opcionales **Lugar**, **CIF/NIF del centro**, **UUID del curso vinculado (opcional)** y **Notas internas (no van al XML)**. Pulsa **Crear acción**.
 
-    ![Lista de acciones formativas Fundae con una acción activa](../../assets/modulos/fundae/fundae-1-acciones.png)
+    ![Lista de acciones formativas Fundae con una acción activa](../../assets/modules/fundae/fundae-1-actions.png)
 
 2. Entra en **Ver bloques** (`/admin/fundae/<id>`) y desglosa la acción con **Añadir bloque** (título, horas, modalidad, contenidos); la pantalla avisa de cuántas horas quedan hasta el máximo de la acción. Si la acción tiene curso vinculado, la sección **Participantes** lista las matrículas activas y permite descargar la **Evidencia PDF** de cada una; **Descargar ZIP de presentación** empaqueta el XML con todas las evidencias. Desde la lista, **Descargar XML** exporta el XML de la acción.
 
-    ![Detalle de la acción con los módulos formativos y los participantes](../../assets/modulos/fundae/fundae-2-accion-bloques.png)
+    ![Detalle de la acción con los módulos formativos y los participantes](../../assets/modules/fundae/fundae-2-action-detail.png)
 
 3. En `/admin/fundae/companies` (**Empresas bonificadas**), pulsa **Nueva empresa**: **NIF / CIF** (con checksum validado; inmutable después), **Razón social**, **Código Cuenta Cotización**, **Plantilla**, **Crédito Fundae (€)** y datos de contacto. Pulsa **Crear empresa**.
 4. Abre **Detalle / RLPT** (`/admin/fundae/companies/<id>`) y pulsa **Subir documento**: tipo (**Notificación inicial**, **Acuse de recibo** o **Acta de discrepancia**), fecha y el PDF o imagen (máx. 10 MB, persistido con hash SHA-256). La cabecera indica si la empresa ya cumple los 15 días naturales para iniciar grupos.

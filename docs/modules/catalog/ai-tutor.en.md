@@ -32,13 +32,16 @@ The key is encrypted with AES-256-GCM when saved and is never shown again (to ch
 
 **License.** Nothing in this module requires an Enterprise license.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Step by step
 
 **Preparation (admin)**
 
 1. Enable `mod.ai-tutor` and configure chat + embeddings under `/admin/ai/providers`.
 
-    ![The tutor's two BYOK blocks: chat and embeddings, with the encrypted key](../../assets/modulos/ai-tutor/en/ai-tutor-1-proveedores.png)
+    ![The tutor's two BYOK blocks: chat and embeddings, with the encrypted key](../../assets/modules/ai-tutor/en/ai-tutor-1-providers.png)
 
 2. Publish the course (it indexes on its own) or click **"Reindex all published courses"** if they were already published. If the bulk reindex takes long and the connection drops, it has not failed: it keeps running on the server.
 
@@ -46,7 +49,7 @@ The key is encrypted with AES-256-GCM when saved and is never shown again (to ch
 
 1. On the course page (`/courses/[slug]`), with a lesson open, the **"AI tutor"** panel sits below the player and the comments.
 
-    ![The tutor panel below the lesson: question, answer and citations](../../assets/modulos/ai-tutor/en/ai-tutor-2-panel-alumno.png)
+    ![The tutor panel below the lesson: question, answer and citations](../../assets/modules/ai-tutor/en/ai-tutor-2-student-panel.png)
 
 2. Type your question (at least 3 characters) and click **"Ask"**. The panel also sends which lesson you have in front of you and which second of the video you are at, to prioritize its fragments.
 3. The answer arrives with **"Citations"** to the lessons (with "min mm:ss" when a timed transcript exists), the token spend and the counter "You have N of 10 questions left today.". Follow-ups keep the thread's context; **"New thread"** resets it.
@@ -56,7 +59,7 @@ The key is encrypted with AES-256-GCM when saved and is never shown again (to ch
 
 1. **"Review"** tab: filter by course, status ("Unreviewed", "Correct", "Corrected"), free text or the **"Unsupported only"** check (answers the tutor gave without being able to cite any lesson: the most suspicious ones). Open one with **"Review"** and decide: **"It's fine"**, or correct it by filling in "Question it will be saved under (generalise it if the original is too personal)", "Correct answer", "Internal note (optional)" and the "Applies to every course, not just this one" check, then click **"Save correction"**.
 
-    ![The Review tab: what gets asked, what the tutor answered and the human verdict](../../assets/modulos/ai-tutor/en/ai-tutor-3-admin-revision.png)
+    ![The Review tab: what gets asked, what the tutor answered and the human verdict](../../assets/modules/ai-tutor/en/ai-tutor-3-admin-review.png)
 
 2. **"Validated knowledge"** tab: lists the answers written by the team and lets you create one by hand with "Add a validated answer" (fields "Question", "Answer", "Course" or "All courses (general question)"). Each entry shows how many times it has been used and can be "Disable"d/"Enable"d or "Delete"d. They take effect immediately, with no reindexing, and the tutor uses them ahead of the course content.
 

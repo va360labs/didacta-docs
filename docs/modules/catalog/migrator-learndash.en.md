@@ -15,6 +15,9 @@ It migrates a **WordPress + LearnDash** academy to Didacta: courses, lessons, to
 - The job runs on the backend: you can close the browser and it keeps going; the screen refreshes itself every 3 seconds.
 - It is the **real-world example of the third-party format**: it is installed as a ZIP under Administration → Module marketplace, runs in the isolated VM with sandboxed `ctx.db`/`ctx.http`/`ctx.secrets`, and its WordPress credentials are stored AES-256-GCM encrypted with a key scoped to the job.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Configuration
 
 - **Installation**: it is a marketplace module, not enabled out of the box. In **Admin → Module marketplace** (`/admin/marketplace`), **Upload package** area, drag the module's `.zip`; the instance validates the signature + bundle lint + SQL migrations before accepting.
@@ -23,7 +26,7 @@ It migrates a **WordPress + LearnDash** academy to Didacta: courses, lessons, to
 - **Wizard options** (Options step): what to migrate (**courses only** / **only students enrolled in courses** / **everything**), passwords (**send activation email**, the recommended default) and images (**copy images into Didacta**). Staging tables are retained for 30 days.
 - Nothing requires an Enterprise license.
 
-![The module marketplace with the ZIP package upload area](../../assets/modulos/migrator-learndash/en/migrator-learndash-1-marketplace.png)
+![The module marketplace with the ZIP package upload area](../../assets/modules/migrator-learndash/en/migrator-learndash-1-marketplace.png)
 
 ## Step by step
 

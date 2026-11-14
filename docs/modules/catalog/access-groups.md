@@ -34,25 +34,28 @@ Todo se configura desde el panel, siempre con rol admin (`super_admin` / `tenant
 - **«Vínculo con tier (pagos)»** — `/admin/access-groups` → «Gestionar»: campo «Nombre del tier» + «Guardar vínculo» (`linkedTierName`). La reconciliación se lanza con el botón «Sincronizar tiers desde pagos» de `/admin/integrations/payment-connections` (dueño: `mod.payment-connections`).
 - **«Grupo de acceso que concede»** — `/admin/membership`: qué grupo otorga la membresía de pago. El ajuste pertenece a `mod.subscriptions`, no a este módulo.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Uso paso a paso
 
 1. Entra en Administración → Personas y accesos → **Grupos de acceso** (`/admin/access-groups`).
 2. En «Nuevo grupo», escribe el «Nombre», elige el «Tipo» y pulsa **Crear**.
 
-![Listado de grupos de acceso con sus badges de tipo, «Por defecto» y vínculo con tier](../../assets/modulos/access-groups/access-groups-1-lista.png)
+![Listado de grupos de acceso con sus badges de tipo, «Por defecto» y vínculo con tier](../../assets/modules/access-groups/access-groups-1-list.png)
 
 3. Pulsa **Gestionar** en el grupo recién creado:
     - En un grupo «Varios cursos» o «Un curso», marca los cursos publicados y pulsa **Guardar cursos**.
     - Un grupo «Todos los cursos» no pide selección; activa el interruptor «Auto-otorga» si además quieres que matricule en cada curso nuevo.
 4. Añade miembros a mano: busca por nombre o email, pulsa **Buscar** y después **Añadir** junto al usuario. Estas altas son de origen `MANUAL` (*sticky*): solo las retira un admin con **Quitar**. Los miembros que llegaron por pagos se distinguen con los badges «Por tier» y «Por membresía».
 
-![Panel «Gestionar» de un grupo: cursos seleccionados y miembros con su origen](../../assets/modulos/access-groups/access-groups-2-gestion.png)
+![Panel «Gestionar» de un grupo: cursos seleccionados y miembros con su origen](../../assets/modules/access-groups/access-groups-2-manage.png)
 
 5. *(Opcional)* Pulsa **Marcar por defecto** en el grupo que deba concederse al aprobar inscripciones de miembros.
 6. *(Opcional, con `mod.payment-connections`)* En «Vínculo con tier (pagos)», escribe el «Nombre del tier» y pulsa **Guardar vínculo**. Los usuarios cuyo tier efectivo coincida entran (y salen al bajar de tier) al pulsar **Sincronizar tiers desde pagos** en `/admin/integrations/payment-connections`.
 7. *(Opcional, con `mod.subscriptions`)* En `/admin/membership`, elige el grupo en «Grupo de acceso que concede» para que la membresía de pago lo otorgue y lo revoque sola.
 
-![Configuración de la membresía: selector «Grupo de acceso que concede»](../../assets/modulos/access-groups/access-groups-3-membresia.png)
+![Configuración de la membresía: selector «Grupo de acceso que concede»](../../assets/modules/access-groups/access-groups-3-membership.png)
 
 El miembro no ve «grupos» en ninguna pantalla: simplemente los cursos del grupo aparecen como matrículas activas en `/courses`, y desaparecen si ningún grupo vivo los otorga (las matrículas de otro origen nunca se tocan).
 
