@@ -32,6 +32,9 @@ Toda la configuración vive **cifrada en BD por tenant** — el módulo no lee v
 
 En el lado WordPress, las constantes de `wp-config.php`: `DIDACTA_SSO_SECRET`, `DIDACTA_SSO_CALLBACK` y las opcionales `DIDACTA_SSO_AUDIENCE` (default `didacta-wp-sso`) y `DIDACTA_SSO_TTL` (segundos, default 120; Didacta rechaza tokens con TTL > 300 s).
 
+!!! note "Capturas en modo sencillo"
+    Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
+
 ## Uso paso a paso
 
 **Lado Didacta (admin):**
@@ -42,7 +45,7 @@ En el lado WordPress, las constantes de `wp-config.php`: `DIDACTA_SSO_SECRET`, `
 4. Copia la «URL de callback (pegar en wp-config.php)».
 5. Activa el interruptor «Habilitar WP-SSO» y guarda.
 
-![Pestaña WordPress de Identidad (SSO): estado, secreto, home_url y URL de callback](../../assets/modulos/wp-sso/wp-sso-1-config.png)
+![Pestaña WordPress de Identidad (SSO): estado, secreto, home_url y URL de callback](../../assets/modules/wp-sso/wp-sso-1-settings.png)
 
 **Lado WordPress** (según la instalación documentada en el propio plugin):
 

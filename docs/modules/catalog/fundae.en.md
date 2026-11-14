@@ -28,17 +28,20 @@ Regulatory compliance for **subsidised training in Spain** (Royal Decree 694/201
 - **Completion threshold**: per group (`umbralFinalizacionPct`, 1–100; 75 by default), set through the API when creating or editing the group; the completion calculation also accepts a one-off `umbralOverride` without touching the persisted config. The panel shows the applied value as **Threshold {pct}%**.
 - No environment variables of its own. Nothing requires an Enterprise license.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Step by step
 
 Register the action and the company:
 
 1. In `/admin/fundae`, click **New action** and fill in **Action code** (unique per tenant), **Delivery mode**, **Name**, **Start date**, **End date** and **Hours**; optionally **Location**, **Training center tax ID (CIF/NIF)**, **Linked course UUID (optional)** and **Internal notes (not included in the XML)**. Click **Create action**.
 
-    ![The Fundae training actions list with one active action](../../assets/modulos/fundae/en/fundae-1-acciones.png)
+    ![The Fundae training actions list with one active action](../../assets/modules/fundae/en/fundae-1-actions.png)
 
 2. Open **View blocks** (`/admin/fundae/<id>`) and break the action down with **Add block** (title, hours, delivery mode, contents); the screen shows how many hours are left up to the action's maximum. If the action has a linked course, the **Participants** section lists the active enrollments and lets you download each one's **PDF evidence**; **Download submission ZIP** bundles the XML with all the evidence files. From the list, **Download XML** exports the action's XML.
 
-    ![The action detail with training modules and participants](../../assets/modulos/fundae/en/fundae-2-accion-bloques.png)
+    ![The action detail with training modules and participants](../../assets/modules/fundae/en/fundae-2-action-detail.png)
 
 3. In `/admin/fundae/companies` (**Subsidized companies**), click **New company**: **NIF / CIF** (checksum-validated; immutable afterwards), **Company name**, **Social Security contribution account code**, **Workforce**, **FUNDAE credit (€)** and contact details. Click **Create company**.
 4. Open **Detail / RLPT** (`/admin/fundae/companies/<id>`) and click **Upload document**: type (**Initial notification**, **Acknowledgement of receipt** or **Statement of disagreement**), date and the PDF or image (max 10 MB, persisted with a SHA-256 hash). The header shows whether the company already meets the 15 calendar days required to start groups.

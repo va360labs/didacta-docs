@@ -21,6 +21,9 @@ Issuing and managing PDF certificates on course completion: **customisable templ
 - **Environment variables**: none of its own. Issued PDFs are stored in the instance's file backend (`/admin/settings?tab=storage`).
 - **License**: the whole module is Community; no feature requires Enterprise capabilities.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Step-by-step usage
 
 ### Designing the templates (instructor or admin)
@@ -29,9 +32,9 @@ Issuing and managing PDF certificates on course completion: **customisable templ
 2. Click "PDF preview" to see the result with sample data; nothing is saved until you click "Create template".
 3. Mark one template as the default ("Mark as the tenant's default template" or the "Mark as default" button): it will apply to every course without its own template. The default cannot be deleted, and deleting a template in use returns 409.
 
-    ![Certificate templates with the default one flagged](../../assets/modulos/certificates/en/certificates-1-plantillas.png)
+    ![Certificate templates with the default one flagged](../../assets/modules/certificates/en/certificates-1-templates.png)
 
-    ![The template editor with body, color, logo and signatory](../../assets/modulos/certificates/en/certificates-2-editor.png)
+    ![The template editor with body, color, logo and signatory](../../assets/modules/certificates/en/certificates-2-editor.png)
 
 4. If a specific course needs a different template, assign it from the course builder: "Certificate template" card → pick it under "Template" → "Save". The "Manage templates →" link returns to this screen.
 
@@ -41,17 +44,17 @@ Issuing and managing PDF certificates on course completion: **customisable templ
 
 ### Downloading and sharing (student)
 
-1. At `/my-certificates` ("My certificates") the student sees each certificate with its number and date ("Issued on…").
+1. At `/my-certificates` ("My certificates"; in simple mode, in the avatar menu) the student sees each certificate with its number and date ("Issued on…").
 2. "Download PDF" opens the certificate; "Add to LinkedIn" opens LinkedIn's pre-filled *Add to Profile* flow, with the public verification URL as the credential.
 3. The completed course's page also shows "Download certificate".
 
-    ![The student's "My certificates" with download and LinkedIn button](../../assets/modulos/certificates/en/certificates-3-mis-certificados.png)
+    ![The student's "My certificates" with download and LinkedIn button](../../assets/modules/certificates/en/certificates-3-my-certificates.png)
 
 ### Verifying a certificate (anyone, no account)
 
 1. The public page `/verify/<id>` shows "Verified certificate" with the number, student, course and "Issue date" — or "Revoked certificate" if it is no longer valid. It exposes no email or internal data; if the snapshot's name was an email address, it is hidden.
 
-    ![The public certificate verification page](../../assets/modulos/certificates/en/certificates-4-verificar.png)
+    ![The public certificate verification page](../../assets/modules/certificates/en/certificates-4-verify.png)
 
 ## Dependencies
 

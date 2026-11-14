@@ -19,6 +19,9 @@ On top of that, **levels** are computed on lifetime points and never go down; th
 - The **backfill** populates the ledger with historical activity: idempotent, repeatable, excluding hidden content and API posts, and it does not apply the daily cap retroactively.
 - Levels and challenges **start empty on purpose** (their names and rewards are branding decisions); only the weighting rules are seeded.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Configuration
 
 - **Activation** — `Administration → Settings`, "Modules" tab (`/admin/settings`): the toggle for "Puntos y retos" (`mod.gamification`). Disabling it removes "Leaderboard" and "Challenges" from the menu, and "Points & challenges" from the admin area.
@@ -28,7 +31,7 @@ On top of that, **levels** are computed on lifetime points and never go down; th
 - **Roles** — rules, levels, perks and the backfill: `super_admin` / `tenant_admin` only; challenges, submissions and perk requests: also `formador` (instructor).
 - No environment variables of its own. No feature requires an Enterprise license.
 
-![The points panel: the Rules tab with weights, daily caps and the history backfill](../../assets/modulos/gamification/en/gamification-1-reglas.png)
+![The points panel: the Rules tab with weights, daily caps and the history backfill](../../assets/modules/gamification/en/gamification-1-rules.png)
 
 ## Step-by-step usage
 
@@ -40,22 +43,22 @@ On top of that, **levels** are computed on lifetime points and never go down; th
 4. Publish challenges in "Challenges": title, "Points", "What needs to be done" and the "Require proof (screenshot, file or link) to be able to submit" checkbox. They start as a "Draft": press "Open" when the community should see them.
 5. Review submissions in "Submissions" ("To review" tab): "View proof", an optional comment and "Approve and award points" or "Reject". The comment is shown to the submitter.
 
-    ![Challenge submissions awaiting review, with the attached proof](../../assets/modulos/gamification/en/gamification-2-entregas.png)
+    ![Challenge submissions awaiting review, with the attached proof](../../assets/modules/gamification/en/gamification-2-submissions.png)
 
 6. Handle perk requests in "Requests": "Approve" the request, fulfil it in the real world and "Mark as done" (or "Reject" with an optional reply).
 7. If the community was already active before points existed, "Backfill now": the summary reports how many new entries came from posts, comments, resources, courses and referrals.
 
 **The student:**
 
-1. `/challenges` ("Challenges", People group): the header says how many points they have, how many are missing for the next level and which challenge gets them there fastest ("Submit the quickest challenge"). Below: "Your ladder" with the levels, "What you can spend your points on" with the perks, and "Open challenges".
+1. `/challenges` ("Challenges": in simple mode, the "Challenges" button on the "Leaderboard" tab; in full mode, the People group): the header says how many points they have, how many are missing for the next level and which challenge gets them there fastest ("Submit the quickest challenge"). Below: "Your ladder" with the levels, "What you can spend your points on" with the perks, and "Open challenges".
 
-    ![The student's challenges view: points, the level ladder and open challenges](../../assets/modulos/gamification/en/gamification-3-retos.png)
+    ![The student's challenges view: points, the level ladder and open challenges](../../assets/modules/gamification/en/gamification-3-challenges.png)
 
 2. "Submit" opens the submission modal: what they did, the proof (file or link, mandatory if the challenge requires it) and a confirmation — each challenge can be submitted **only once**. It stays "Under review" until the team resolves it.
 3. With a perk unlocked, "Request it" creates the request; the screen shows its state ("Requested", "Approved", "Done") and when it can be requested again if there is a waiting period.
 4. `/leaderboard` ("Leaderboard"): the ranking for "This month", "This week" or "All time", with "Your points", "Your rank" and "Your level" on top.
 
-    ![The community leaderboard by date range](../../assets/modulos/gamification/en/gamification-4-clasificacion.png)
+    ![The community leaderboard by date range](../../assets/modules/gamification/en/gamification-4-leaderboard.png)
 
 ## Dependencies
 

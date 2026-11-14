@@ -15,6 +15,9 @@ It also covers the **public purchase journey**: a visitor **with no account** bu
 - With no Stripe configured the module still registers itself: the public catalog returns an empty list and checkout returns 503 with a clear message. The rest of the platform is unaffected.
 - Refunds are issued from the Stripe dashboard; the `charge.refunded` webhook is processed and flags the order. Only a **full** refund moves the order to `REFUNDED` (and removes access); a partial one leaves the purchase in place.
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Configuration
 
 The module belongs to the **core** category: it is active in every tenant and has no switch of its own.
@@ -30,7 +33,7 @@ Under `/admin/settings?tab=payments` (the **Payments** tab), card **"Payments ·
 
 The card opens with a status banner: verified, configured but unverified, "using the host's global Stripe (fallback)" or "no Stripe configured — selling courses and subscriptions/membership will not work". Credentials are stored **encrypted**; the fields are write-only (they are never shown back).
 
-![The "Payments · Stripe" card with the credentials form and the status banner](../../assets/modulos/billing/en/billing-1-stripe-config.png)
+![The "Payments · Stripe" card with the credentials form and the status banner](../../assets/modules/billing/en/billing-1-stripe-settings.png)
 
 ### Webhook to register in Stripe
 
@@ -81,7 +84,7 @@ Under `/admin/billing/products` (**"Payments · Stripe products"**): the **"Link
 1. Configure Stripe under `/admin/settings?tab=payments`: save the **"Secret key"**, register the webhook in Stripe with the URL and events above, paste the **"Webhook secret"** and click **"Test connection"**.
 2. Under `/admin/billing/products`, link the course: pick the **"Course"**, paste the **"Stripe Price ID"** and click **"Link"**. Each listed product offers **"Change Price ID"**, **"Deactivate"**/**"Reactivate"** and **"Unlink"** (historical orders are kept). If Stripe is not configured, the page says so with the link "Configure Stripe in Administration → Payments".
 
-    !["Payments · Stripe products" panel with the link-a-course form](../../assets/modulos/billing/en/billing-2-productos.png)
+    !["Payments · Stripe products" panel with the link-a-course form](../../assets/modules/billing/en/billing-2-products.png)
 
 3. Selling to a student **with an account**: `/courses/<slug>` shows the **"Start this course"** box with the **"Buy"** button (if the course has several options, the **"Choose your format"** section lists them with price, discount and the "Most popular" tag). Payment opens Stripe's hosted checkout and returns to `/courses/checkout/success`.
 

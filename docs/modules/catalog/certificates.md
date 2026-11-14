@@ -21,6 +21,9 @@ Emisión y gestión de certificados PDF al completar un curso: **plantillas pers
 - **Variables de entorno**: ninguna propia. Los PDF emitidos se guardan en el backend de archivos de la instancia (`/admin/settings?tab=storage`).
 - **Licencia**: todo el módulo es Community; ninguna función exige capabilities de Enterprise.
 
+!!! note "Capturas en modo sencillo"
+    Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
+
 ## Uso paso a paso
 
 ### Diseñar las plantillas (formador o admin)
@@ -29,9 +32,9 @@ Emisión y gestión de certificados PDF al completar un curso: **plantillas pers
 2. Pulsa «Vista previa PDF» para ver el resultado con datos de ejemplo; no se guarda nada hasta que pulses «Crear plantilla».
 3. Marca una plantilla como default («Marcar como plantilla default del tenant» o el botón «Marcar default»): se aplicará a todos los cursos sin plantilla propia. La default no se puede eliminar, y borrar una plantilla en uso responde 409.
 
-    ![Plantillas de certificado con la default marcada](../../assets/modulos/certificates/certificates-1-plantillas.png)
+    ![Plantillas de certificado con la default marcada](../../assets/modules/certificates/certificates-1-templates.png)
 
-    ![Editor de plantilla con cuerpo, color, logo y firmante](../../assets/modulos/certificates/certificates-2-editor.png)
+    ![Editor de plantilla con cuerpo, color, logo y firmante](../../assets/modules/certificates/certificates-2-editor.png)
 
 4. Si un curso concreto necesita otra plantilla, asígnala desde el builder del curso: tarjeta «Plantilla de certificado» → elige en «Plantilla» → «Guardar». El enlace «Gestionar plantillas →» vuelve a esta pantalla.
 
@@ -41,17 +44,17 @@ Emisión y gestión de certificados PDF al completar un curso: **plantillas pers
 
 ### Descargar y compartir (alumno)
 
-1. En `/my-certificates` («Mis certificados») el alumno ve cada certificado con su número y fecha («Emitido el…»).
+1. En `/my-certificates` («Mis certificados»; en modo sencillo, en el menú del avatar) el alumno ve cada certificado con su número y fecha («Emitido el…»).
 2. «Descargar PDF» abre el certificado; «Añadir a LinkedIn» abre el flujo *Add to Profile* de LinkedIn pre-rellenado, con la URL de verificación pública como credencial.
 3. En la ficha del curso completado también aparece «Descargar certificado».
 
-    ![«Mis certificados» del alumno con descarga y botón de LinkedIn](../../assets/modulos/certificates/certificates-3-mis-certificados.png)
+    ![«Mis certificados» del alumno con descarga y botón de LinkedIn](../../assets/modules/certificates/certificates-3-my-certificates.png)
 
 ### Verificar un certificado (cualquiera, sin cuenta)
 
 1. La página pública `/verify/<id>` muestra «Certificado verificado» con número, alumno, curso y «Fecha de emisión» — o «Certificado revocado» si dejó de ser válido. No expone email ni datos internos; si el nombre del snapshot era un email, se oculta.
 
-    ![Página pública de verificación de un certificado](../../assets/modulos/certificates/certificates-4-verificar.png)
+    ![Página pública de verificación de un certificado](../../assets/modules/certificates/certificates-4-verify.png)
 
 ## Dependencias
 

@@ -32,13 +32,16 @@ La clave se cifra con AES-256-GCM al guardarse y nunca se vuelve a mostrar (para
 
 **Licencia.** Nada del módulo exige licencia Enterprise.
 
+!!! note "Capturas en modo sencillo"
+    Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
+
 ## Uso paso a paso
 
 **Preparación (admin)**
 
 1. Activa `mod.ai-tutor` y configura chat + embeddings en `/admin/ai/providers`.
 
-    ![Los dos bloques BYOK del tutor: chat y embeddings, con la clave cifrada](../../assets/modulos/ai-tutor/ai-tutor-1-proveedores.png)
+    ![Los dos bloques BYOK del tutor: chat y embeddings, con la clave cifrada](../../assets/modules/ai-tutor/ai-tutor-1-providers.png)
 
 2. Publica el curso (se indexa solo) o pulsa **«Reindexar todos los cursos publicados»** si ya estaban publicados. Si el reindexado masivo tarda y se corta la conexión, no ha fallado: sigue en el servidor.
 
@@ -46,7 +49,7 @@ La clave se cifra con AES-256-GCM al guardarse y nunca se vuelve a mostrar (para
 
 1. En la página del curso (`/courses/[slug]`), con una lección abierta, debajo del reproductor y de los comentarios está el panel **«Tutor IA»**.
 
-    ![El panel del tutor bajo la lección: pregunta, respuesta y citas](../../assets/modulos/ai-tutor/ai-tutor-2-panel-alumno.png)
+    ![El panel del tutor bajo la lección: pregunta, respuesta y citas](../../assets/modules/ai-tutor/ai-tutor-2-student-panel.png)
 
 2. Escribe la pregunta (mínimo 3 caracteres) y pulsa **«Preguntar»**. El panel manda también qué lección tienes delante y por qué segundo del vídeo vas, para priorizar sus fragmentos.
 3. La respuesta llega con **«Citas»** a las lecciones (con «min mm:ss» cuando hay transcripción con tiempos), el gasto en tokens y el contador «Te quedan N de 10 preguntas hoy». Los follow-ups mantienen el contexto del hilo; **«Nuevo hilo»** lo reinicia.
@@ -56,7 +59,7 @@ La clave se cifra con AES-256-GCM al guardarse y nunca se vuelve a mostrar (para
 
 1. Pestaña **«Revisión»**: filtra por curso, estado («Sin revisar», «Correctas», «Corregidas»), texto libre o el check **«Solo sin respaldo»** (respuestas que el tutor dio sin poder citar ninguna lección: las más sospechosas). Abre una con **«Revisar»** y decide: **«Está bien»**, o corrige rellenando «Pregunta con la que se guardará (generalízala si la original es muy suya)», «Respuesta correcta», «Nota interna (opcional)» y el check «Vale para todos los cursos, no solo para este», y pulsa **«Guardar corrección»**.
 
-    ![La pestaña Revisión: qué se pregunta, qué respondió el tutor y el veredicto humano](../../assets/modulos/ai-tutor/ai-tutor-3-admin-revision.png)
+    ![La pestaña Revisión: qué se pregunta, qué respondió el tutor y el veredicto humano](../../assets/modules/ai-tutor/ai-tutor-3-admin-review.png)
 
 2. Pestaña **«Conocimiento validado»**: lista las respuestas escritas por el equipo y permite crear una a mano con «Añadir una respuesta validada» (campos «Pregunta», «Respuesta», «Curso» o «Todos los cursos (duda transversal)»). Cada entrada muestra cuántas veces se ha usado y se puede «Desactivar»/«Activar» o «Borrar». Entran en caliente, sin reindexar, y el tutor las usa por encima del contenido del curso.
 

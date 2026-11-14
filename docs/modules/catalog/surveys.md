@@ -33,6 +33,9 @@ El worker de recordatorios necesita `REDIS_URL` (sin Redis no arranca, con aviso
 
 **Licencia.** Nada del módulo exige licencia Enterprise.
 
+!!! note "Capturas en modo sencillo"
+    Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
+
 ## Uso paso a paso
 
 **Como admin**
@@ -43,7 +46,7 @@ El worker de recordatorios necesita `REDIS_URL` (sin Redis no arranca, con aviso
 
 4. Pulsa **«Resultados»** en una fila: verás el NPS (promotores 9-10 menos detractores 0-6, en puntos), la media de cada pregunta de escala y las respuestas libres sin autor.
 
-    ![Resultados agregados: NPS, medias y respuestas de texto anónimas](../../assets/modulos/surveys/surveys-2-admin-resultados.png)
+    ![Resultados agregados: NPS, medias y respuestas de texto anónimas](../../assets/modules/surveys/surveys-1-admin-results.png)
 
 5. Pulsa **«Cerrar»** cuando quieras dejar de aceptar respuestas (los envíos posteriores reciben 409).
 6. Dos acciones no tienen botón y son solo API: crear la encuesta de una sesión sin esperar al webhook (`POST /modules/surveys/admin/sessions/:sessionId`) y forzar el barrido de recordatorios (`POST /modules/surveys/admin/reminders/run`).
@@ -52,7 +55,7 @@ El worker de recordatorios necesita `REDIS_URL` (sin Redis no arranca, con aviso
 
 1. Entra en la página de la clase (`/live/[id]`). Si la clase tiene encuesta abierta y aún no la respondiste, al final aparece la tarjeta **«Valora esta clase»**, con la nota de que la respuesta es anónima.
 
-    ![La encuesta post-clase que ve el alumno al final de la página de la clase](../../assets/modulos/surveys/surveys-3-alumno-panel.png)
+    ![La encuesta post-clase que ve el alumno al final de la página de la clase](../../assets/modules/surveys/surveys-2-student-panel.png)
 
 2. Responde tocando los botones 0-10 (NPS) y 1-5 (escala «1 = mal · 5 = genial»); el texto es opcional. El botón **«Enviar valoración»** solo se activa con todas las preguntas puntuables respondidas.
 3. Tras enviar verás «¡Gracias por tu respuesta! La tenemos en cuenta para las próximas clases.». Solo se acepta un envío por persona; un segundo intento (otra pestaña, doble clic) termina en el mismo agradecimiento.

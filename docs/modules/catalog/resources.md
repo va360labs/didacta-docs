@@ -20,31 +20,34 @@ Biblioteca de recursos de la comunidad, organizados en **colecciones** y buscabl
 - **Storage** — los recursos de tipo archivo suben al storage del tenant, que se configura en la pestaña «Storage» de `/admin/settings` (disco local del contenedor o bucket S3-compatible).
 - Sin variables de entorno propias ni más ajustes. Ninguna función exige licencia Enterprise.
 
+!!! note "Capturas en modo sencillo"
+    Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
+
 ## Uso paso a paso
 
 **El staff (admin o formador):**
 
 1. En `/resources`, pulsa «Nueva colección»: «Título», «Descripción» y «Portada» (sin portada se usa el degradado de marca).
 
-    ![El modal de nueva colección, con título, descripción y portada](../../assets/modulos/resources/resources-4-nueva-coleccion.png)
+    ![El modal de nueva colección, con título, descripción y portada](../../assets/modules/resources/resources-4-new-collection.png)
 
 2. Edita cualquier colección con «Editar colección» (el botón de la tarjeta); cambiar la portada o el texto no toca los recursos.
 3. Puede borrar cualquier recurso; una colección solo se elimina si está vacía.
 
 **Cualquier miembro:**
 
-1. `/resources` («Recursos», grupo Aprendizaje) muestra la parrilla de colecciones con su número de recursos.
+1. `/resources` («Recursos», grupo Aprendizaje; en modo sencillo, en «Más») muestra la parrilla de colecciones con su número de recursos. Si la academia no tiene ninguna colección, la biblioteca crea seis de ejemplo, vacías y marcadas «Pronto»: renómbralas, cámbiales la portada o bórralas cuando tengas las tuyas.
 
-    ![La biblioteca: parrilla de colecciones con portada y número de recursos](../../assets/modulos/resources/resources-1-colecciones.png)
+    ![La biblioteca: parrilla de colecciones con portada y número de recursos](../../assets/modules/resources/resources-1-collections.png)
 
 2. «Compartir recurso»: «Título», «Colección», tipo «Archivo» (PDF, Word, Excel, ZIP, JSON…) o «Enlace», y «Descripción (opcional)».
 
-    ![Compartir recurso: archivo o enlace, colección y descripción](../../assets/modulos/resources/resources-2-compartir.png)
+    ![Compartir recurso: archivo o enlace, colección y descripción](../../assets/modules/resources/resources-2-share.png)
 
 3. Dentro de una colección (`/resources/<id>`), busca con «Buscar en esta colección…» — la búsqueda corre en el servidor, dentro de esa colección.
 4. «Descargar» (archivos) o «Abrir» (enlaces): cada apertura suma al contador de descargas que se ve en la tarjeta.
 
-    ![Una colección abierta: recursos con su contador de descargas y el buscador](../../assets/modulos/resources/resources-3-coleccion.png)
+    ![Una colección abierta: recursos con su contador de descargas y el buscador](../../assets/modules/resources/resources-3-collection.png)
 
 5. Cada autor puede eliminar lo suyo con la X de la tarjeta (con confirmación).
 

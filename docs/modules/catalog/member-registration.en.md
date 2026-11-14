@@ -39,13 +39,16 @@ A **core**-category module: always active, with no switch in the "Modules" tab. 
 - `MEMBER_APPROVAL_EMAIL` — global approver.
 - `MEMBER_PURGE_CRON` (default `0 3 * * *`, daily at 03:00 UTC) and `MEMBER_RETENTION_DAYS` (default 90) — the GDPR purge worker.
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Step-by-step usage
 
 **Setup (admin):**
 
 1. On `/admin/settings?tab=registration`, turn on "Registration enabled…", check the verifications you require, fill in the bot if you require Telegram plus the "Approver email", and press **Save settings**.
 
-!["Member registration" card: required verifications, Telegram bot and approver](../../assets/modulos/member-registration/en/member-registration-1-config.png)
+!["Member registration" card: required verifications, Telegram bot and approver](../../assets/modules/member-registration/en/member-registration-1-settings.png)
 
 2. *(Optional)* Adjust the copy of the 4 templates on `/admin/emails`.
 3. Share your tenant's public sign-up URL: `/member-registration`.
@@ -56,14 +59,14 @@ A **core**-category module: always active, with no switch in the "Modules" tab. 
 5. "Verify your email" step: they type their address, press **Send code**, enter the "6-digit code" and press **Verify**.
 6. "Your details" step: name, password (at least 12 characters) and an optional bio — the email is asked for in this step when there is no OTP step — then they press **Create request**. Final screen: "Registration pending validation".
 
-![Public sign-up wizard with its verification steps](../../assets/modulos/member-registration/en/member-registration-2-wizard.png)
+![Public sign-up wizard with its verification steps](../../assets/modules/member-registration/en/member-registration-2-wizard.png)
 
 **The decision (approver):**
 
 7. By email: "Nueva inscripción pendiente — {name}" arrives with the "Approve"/"Reject" buttons (signed single-use links, 7-day TTL) and the overdue status if there is one; clicking lands on `/member-registration/decision` with the outcome.
 8. Or from the panel: Administration → People & access → **Enrollment requests** (`/admin/member-requests`). Each request shows its detected subscription ("Active subscription" / "Subscription not active — canceled or past due"), one-off purchases, and lets you **Check again**, map the subscription under another email ("Is the subscription under another email? Map it here"), send reminders and pick the "Tier to assign" (preselected when it matches the subscription). Press **Approve** or **Reject**.
 
-![Requests panel: subscription lookup, preselected tier and decision](../../assets/modulos/member-registration/en/member-registration-3-solicitudes.png)
+![Requests panel: subscription lookup, preselected tier and decision](../../assets/modules/member-registration/en/member-registration-3-requests.png)
 
 9. Approving activates the account, assigns the default access group and sends the welcome email; rejecting deactivates the user and notifies them.
 10. Keep the overdue reference list under Administration → Revenue → **Overdue payments** (`/admin/delinquents`): manual entry ("New record", "Mark as overdue") or **Import CSV**. Registration uses these flags to warn you when someone requests access without being up to date.

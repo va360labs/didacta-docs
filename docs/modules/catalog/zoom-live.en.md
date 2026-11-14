@@ -13,7 +13,7 @@ Live classes over Zoom's **Server-to-Server OAuth** API. The instructor schedule
 
 ## How it works
 
-- With no credentials configured, the module uses a **deterministic stub** — the whole flow can be tested without a Zoom account.
+- Without Zoom credentials, the classroom does not make up links: in production, creating a session returns "Paste the link to your video call (Zoom, Google Meet or Teams) or connect your Zoom account in Settings." (`ZOOM_NOT_CONFIGURED`). In **simple mode**, the "Live" form accepts the link of your own video call. The development **deterministic stub** (to test the flow without a Zoom account) only works outside production or with `ZOOM_ALLOW_STUB=true`.
 - Webhooks are processed with an **idempotent log** keyed by `event_id` (Zoom retries up to 3 times) and a verified HMAC signature; this includes Zoom's endpoint validation handshake.
 - Zoom participants who match no user (guests, a different email address) are kept with their Zoom identity for manual reconciliation.
 - The typical attendance sync error is a missing `report:read:admin` scope on the Zoom app; it is recorded on the session so the instructor knows why there is no data.
@@ -22,10 +22,15 @@ Live classes over Zoom's **Server-to-Server OAuth** API. The instructor schedule
 ## Configuration
 
 - **Enabling or disabling the module**: `/admin/settings`, **Modules** tab — a per-organization switch.
-- **Zoom credentials, per tenant**: `/admin/settings`, **Virtual classroom** tab (contributed by the module; it disappears if you disable it). Fields **Account ID**, **Client ID**, **Client Secret** and **Webhook Secret Token**, with **Save credentials**, **Test credentials** and **Delete credentials** buttons. They are stored encrypted (AES-256-GCM) and never returned in plain text; without credentials the module falls back to the development stub.
+- **Zoom credentials, per tenant**: `/admin/settings`, **Virtual classroom** tab (contributed by the module; it disappears if you disable it). Fields **Account ID**, **Client ID**, **Client Secret** and **Webhook Secret Token**, with **Save credentials**, **Test credentials** and **Delete credentials** buttons. They are stored encrypted (AES-256-GCM) and never returned in plain text; without credentials, see the previous point.
 - **Webhook**: the endpoint is `https://your-domain/api/v1/webhooks/zoom`. Zoom's **Secret Token** is pasted into the same panel form — it is **no longer** the `ZOOM_WEBHOOK_SECRET` environment variable (that one was global while the S2S credentials were already per tenant).
 - **Environment (workers)**: `ZOOM_REMINDER_CRON`, `ZOOM_REMINDER_HOURS_BEFORE`, `ZOOM_ATTENDANCE_SYNC_CRON` control reminders and attendance reconciliation (they require Redis). The defaults table and the Zoom App Marketplace setup live in [Configuring Zoom](../../configuration/zoom.md).
 - Nothing in this module requires an Enterprise license.
+
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
+![The "Virtual classroom" Settings tab with the Zoom Server-to-Server credentials form](../../assets/modules/zoom-live/en/zoom-live-1-credentials.png)
 
 ## Step by step
 
@@ -38,7 +43,7 @@ As an instructor (or admin):
 5. **Edit** only allows changing title, date, duration, time zone and agenda; the host, course and lesson are fixed at creation. **Cancel** notifies everyone registered.
 6. At class time, click **Start** (or **Start (host)** from the class page).
 
-![The instructor's virtual classroom list with a scheduled class](../../assets/modulos/zoom-live/en/zoom-live-2-aula-virtual.png)
+![The instructor's virtual classroom list with a scheduled class](../../assets/modules/zoom-live/en/zoom-live-2-live-sessions.png)
 
 As a student:
 
@@ -47,7 +52,7 @@ As a student:
 3. The **Join the class** / **Join now** button only appears if you are registered; the click seals your entry as attendance evidence. You get a reminder 2 hours beforehand.
 4. Once the class ends, **Watch recording** appears for registered attendees as soon as Zoom delivers the recording.
 
-![The class page with the registration button and the session status](../../assets/modulos/zoom-live/en/zoom-live-3-clase-alumno.png)
+![The class page with the registration button and the session status](../../assets/modules/zoom-live/en/zoom-live-3-student-class.png)
 
 Attendance (staff, on the same class page):
 
@@ -55,7 +60,7 @@ Attendance (staff, on the same class page):
 2. **Sync with Zoom** reconciles against the Report API; each row shows how strong the evidence is.
 3. The **Mark** button cycles the manual override: **Present** → **Absent** → back to the automatic calculation.
 
-![The class attendance panel with sync and manual marking](../../assets/modulos/zoom-live/en/zoom-live-4-asistencia.png)
+![The class attendance panel with sync and manual marking](../../assets/modules/zoom-live/en/zoom-live-4-attendance.png)
 
 ## Dependencies
 

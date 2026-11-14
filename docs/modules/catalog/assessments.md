@@ -20,6 +20,9 @@ Evaluaciones con autocorrección y corrección manual. Seis tipos de pregunta: `
 - **Ajustes por tenant y variables de entorno**: ninguno. Toda la configuración es por quiz, en su editor (`/studio/quizzes/<id>`, tarjeta «Configuración»): «Umbral de aprobación (%)» (default 60), «Máx. intentos» (vacío = sin límite), «Límite de tiempo (min)», «Barajar preguntas» y «Mostrar feedback al alumno».
 - **Licencia**: todo el módulo es Community; ninguna función exige capabilities de Enterprise. Las sugerencias de nota con IA son de [mod.ai-grader](ai-grader.md), no de este módulo.
 
+!!! note "Capturas en modo sencillo"
+    Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
+
 ## Uso paso a paso
 
 ### Crear y publicar un quiz (formador)
@@ -32,7 +35,7 @@ Evaluaciones con autocorrección y corrección manual. Seis tipos de pregunta: `
     - Los tipos abiertos no se autocorrigen: el editor avisa de que el intento quedará en `PENDING_REVIEW` hasta corregirlo en `/studio/grading`.
 4. Con al menos una pregunta, pulsa «Publicar quiz». Puedes mezclar tipos en un mismo quiz.
 
-    ![Editor del quiz con configuración y preguntas de varios tipos](../../assets/modulos/assessments/assessments-1-editor.png)
+    ![Editor del quiz con configuración y preguntas de varios tipos](../../assets/modules/assessments/assessments-1-editor.png)
 
 ### Responder el quiz (alumno)
 
@@ -45,13 +48,13 @@ Evaluaciones con autocorrección y corrección manual. Seis tipos de pregunta: `
 
 1. `/studio/grading` («Correcciones pendientes») lista los intentos esperando revisión, con cuántas respuestas hay por corregir en cada uno. El panel del formador (`/studio`) muestra el contador de pendientes.
 
-    ![Bandeja de correcciones pendientes del formador](../../assets/modulos/assessments/assessments-3-correcciones.png)
+    ![Bandeja de correcciones pendientes del formador](../../assets/modules/assessments/assessments-2-grading-queue.png)
 
 2. Entra al detalle (`/studio/grading/<attemptId>`): las preguntas autocorregidas aparecen marcadas «Auto-corregida» y las abiertas «Manual», con la «Respuesta del alumno», el campo «Puntos (max N)» y un «Feedback (opcional)».
 3. Con [mod.ai-grader](ai-grader.md) activo, «Sugerir notas con IA» propone nota y justificación por pregunta; «Aplicar al formulario» la vuelca. La decisión final siempre es tuya.
 4. Pulsa «Enviar calificación»: el alumno ve el resultado y, si aprobó, la lección queda completada.
 
-    ![Detalle de corrección con respuestas abiertas, puntos y feedback](../../assets/modulos/assessments/assessments-4-correccion-detalle.png)
+    ![Detalle de corrección con respuestas abiertas, puntos y feedback](../../assets/modules/assessments/assessments-3-grading-detail.png)
 
 ## Dependencias
 

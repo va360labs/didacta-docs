@@ -13,13 +13,16 @@ AI-assisted grading for the open-ended questions in [mod.assessments](assessment
 - "Apply" on a suggestion only marks it as applied for auditing — the real score is set through the manual grading in assessments (`POST attempts/:id/grade`), keeping a single grading path.
 - Suggestions are persisted so they can be reviewed later without spending tokens.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Configuration
 
 **Enabling the module.** Under `/admin/settings?tab=modules` (the "Modules" tab). The module contributes the **"Grading"** entry to the Instructor group of the sidebar (`/studio/grading`). If the module is disabled, the manual grading page keeps working: AI suggestions simply do not load.
 
 **AI provider (BYOK).** It only uses the AI Gateway's **chat** purpose: the **"Chat (AI tutor)"** block under `/admin/ai/providers` ("Integrations and API → AI providers" in the menu) or, failing that, the global default `DEFAULT_AI_CHAT_*`. Chat providers the code accepts today: OpenAI, Anthropic (Claude), Google Gemini, OpenRouter, Mistral AI, Groq and Ollama (self-hosted). Gateway and key-encryption details in [Configuration → AI](../../configuration/ai.md). With no provider configured (or if the provider fails), the suggestions request returns **502** `AI_GRADER_PROVIDER_ERROR`; manual grading is unaffected.
 
-![The chat BYOK block that powers grading suggestions](../../assets/modulos/ai-grader/en/ai-grader-3-proveedores.png)
+![The chat BYOK block that powers grading suggestions](../../assets/modules/ai-grader/en/ai-grader-3-providers.png)
 
 **Rubrics.** There is no rubric editing screen yet: they are managed through the API (`GET`/`PUT`/`DELETE /modules/ai-grader/questions/:questionId/rubric`, instructor role and above). Validations on save: instructions from 10 to 2000 characters, 1 to 8 criteria, each criterion with a name, a description and an integer weight (1-100), and the weights summing to the question's points.
 
@@ -35,13 +38,13 @@ AI-assisted grading for the open-ended questions in [mod.assessments](assessment
 
 1. Open **"Grading"** in the menu (Instructor group): the "Pending gradings" page lists attempts with open answers waiting for review, with the "Pending" badge and "N answers to grade".
 
-    ![The instructor's queue of pending gradings](../../assets/modulos/ai-grader/en/ai-grader-1-pendientes.png)
+    ![The instructor's queue of pending gradings](../../assets/modules/ai-grader/en/ai-grader-1-pending.png)
 
 2. Enter an attempt (`/studio/grading/[id]`): you will see each question with the "Student's answer" and, for the open-ended ones, the "Points (max N)" and "Feedback (optional)" fields.
 3. In the **"AI grading assistant"** block, click **"Suggest grades with AI"**. One suggestion is generated per open question with a rubric; the notice sums it up: "N suggestions generated.", "N questions without a rubric." and "Tokens: N.".
 4. Each suggestion appears under its question with the **"AI suggestion"** badge, the proposed score ("X/Y pts · provider"), the overall feedback and the per-criterion breakdown with its justification.
 
-    ![The attempt detail with the AI suggestion broken down per criterion](../../assets/modulos/ai-grader/en/ai-grader-2-detalle.png)
+    ![The attempt detail with the AI suggestion broken down per criterion](../../assets/modules/ai-grader/en/ai-grader-2-detail.png)
 
 5. Click **"Apply to the form"** to copy the score and feedback into the grading fields — you can edit them before submitting. Applying only marks the suggestion for auditing. **"Re-generate"** forces a new model call and replaces the suggestion; without regenerating, re-entering the attempt serves the persisted one without spending tokens.
 6. Click **"Submit grades"**: the grade is issued by mod.assessments (the single grading path), the student sees the result and the lesson is marked complete if they passed.

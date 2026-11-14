@@ -29,24 +29,27 @@ With **real-time delivery over SSE**, presence, a typing indicator, read receipt
 - **Rooms per space** — they exist if `mod.community` is active (the module reads its spaces, read-only).
 - No feature requires an Enterprise license.
 
+!!! note "Screenshots in simple mode"
+    The screenshots on this page come from an academy in **simple mode** (tabs at the top). Screens without a tab of their own live under **"More"**, with the same name as in the administration menu; in **full mode** they open from the side menu. Routes (`/admin/…`, `/studio/…`) are the same in both modes.
+
 ## Step-by-step usage
 
 **The student (member):**
 
-1. Open `/messages` from the "Messages" item in the People group. The list comes grouped into "Rooms", "Teachers" and "Direct messages", with a search box ("Search conversations…").
+1. Open `/messages`: in simple mode, with the messages icon in the header; in full mode, from the "Messages" item in the People group. The list comes grouped into "Rooms", "Teachers" and "Direct messages", with a search box ("Search conversations…").
 
-    ![The messages inbox: rooms per space, the teachers channel and direct messages](../../assets/modulos/messaging/en/messaging-1-bandeja.png)
+    ![The messages inbox: rooms per space, the teachers channel and direct messages](../../assets/modules/messaging/en/messaging-1-inbox.png)
 
 2. For a new DM, press the "New conversation" button (+) and search with "Search for a member by name…": picking someone opens the conversation (or reopens the existing one — get-or-create is idempotent).
 
-    ![New conversation: the member search box that opens a direct message](../../assets/modulos/messaging/en/messaging-2-directo.png)
+    ![New conversation: the member search box that opens a direct message](../../assets/modules/messaging/en/messaging-2-direct.png)
 
 3. The "Teachers" channel already exists for every student, no setup needed: "Write your first question: the teaching team will see it right away."
 
-    ![The student's private channel with the teaching team](../../assets/modulos/messaging/en/messaging-3-profesores.png)
+    ![The student's private channel with the teaching team](../../assets/modules/messaging/en/messaging-3-teachers.png)
 
 4. Type in "Write a message…" and press "Send". Live, they'll see the typing indicator, "Online now" next to who is connected, read receipts and the per-conversation unread counter.
-5. The floating chat (the pill at the bottom right, visible across the whole app) opens these same conversations in a compact panel; "See all messages ›" leads to `/messages`.
+5. In full mode, the floating chat (the pill at the bottom right, visible across the whole app) opens these same conversations in a compact panel; "See all messages ›" leads to `/messages`.
 
 **The staff (admin / instructor):**
 

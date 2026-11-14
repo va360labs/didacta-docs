@@ -21,6 +21,9 @@ Las reglas de aislamiento que todo módulo respeta —no importar código de otr
 
 Ninguna propia: ni variables de entorno, ni ajustes en el panel, ni capabilities Enterprise. Como módulo **no-core** (categoría `example`), viene registrado en la instancia y aparece con su interruptor en Administración → Marca y ajustes → Configuración, pestaña «Módulos» (`/admin/settings?tab=modules`), donde un admin puede activarlo o desactivarlo por tenant — su única superficie visible.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Uso paso a paso
 
 Es una plantilla para desarrolladores; el flujo es de código, no de panel:
@@ -32,7 +35,7 @@ Es una plantilla para desarrolladores; el flujo es de código, no de panel:
 5. Regístralo en el `registry.register([...])` de `apps/api/src/modules/module-registry.service.ts` y sigue el resto de la guía [Crear un módulo](../building-a-module/index.md).
 6. Para verlo en marcha, entra en `/admin/settings?tab=modules`: «Hello World» aparece listado con su interruptor, igual que aparecerá tu módulo.
 
-![La tarjeta del módulo Hello World con su interruptor en la pestaña Módulos](../../assets/modulos/hello-world/hello-world-1-modulos.png)
+![La tarjeta del módulo Hello World con su interruptor en la pestaña Módulos](../../assets/modules/hello-world/hello-world-1-modules.png)
 
 ## Datos, API y eventos
 

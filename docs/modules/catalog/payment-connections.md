@@ -22,6 +22,9 @@ No crea cobros: para vender están [mod.billing](billing.md) y [mod.subscription
 - Las claves API se guardan **cifradas** por conexión; jamás salen en un GET.
 - El dashboard lee solo la tabla materializada — nunca consulta a los proveedores en vivo.
 
+!!! note "Capturas en modo sencillo"
+    Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
+
 ## Configuración
 
 El módulo es de categoría **core**: viene activo siempre y no tiene interruptor propio. Toda la pantalla de administración es exclusiva de **super_admin** (muestra datos de pago de clientes). Nada exige licencia Enterprise.
@@ -38,19 +41,19 @@ Formulario **«Conectar una cuenta de pago»**: selector **«Proveedor»**, camp
 
 Cada conexión listada muestra su estado (**«Verificada»** / «Error»…), la insignia Live o «Modo test» y las acciones **«Ver suscriptores»**, **«Verificar»** y **«Desconectar»** (borra también la clave guardada; las suscripciones en el proveedor no se tocan).
 
-![Formulario «Conectar una cuenta de pago» y lista de conexiones](../../assets/modulos/payment-connections/payment-connections-1-conectar.png)
+![Formulario «Conectar una cuenta de pago» y lista de conexiones](../../assets/modules/payment-connections/payment-connections-1-connect.png)
 
 ### Control de suscripciones (dashboard)
 
 Bloque **«Control de suscripciones»** en la misma pantalla: botón **«Sincronizar ahora»** (además del cron), filtros **«Buscar por email»**, **«Proveedor»**, **«Estado»** y **«Solo no registrados en Didacta»**, y por fila el botón **«Recordatorio»**, que envía el email de renovación (plantilla editable desde el propio modal, por tenant).
 
-![Dashboard «Control de suscripciones» con filtros y última sincronización](../../assets/modulos/payment-connections/payment-connections-2-dashboard.png)
+![Dashboard «Control de suscripciones» con filtros y última sincronización](../../assets/modules/payment-connections/payment-connections-2-dashboard.png)
 
 ### Catálogo de tiers
 
 Bloque **«Catálogo de tiers»**: campo **«Nombre del tier»**, interruptor **«Es el tier gratuito»**, botón **«Añadir tier»** y **«Sincronizar tiers desde pagos»** (crea tiers a partir de los planes reales de las cuentas y rellena el tier de pago de cada usuario). La asignación manual por usuario se hace desde **Usuarios**.
 
-![Catálogo de tiers con el botón «Sincronizar tiers desde pagos»](../../assets/modulos/payment-connections/payment-connections-3-tiers.png)
+![Catálogo de tiers con el botón «Sincronizar tiers desde pagos»](../../assets/modules/payment-connections/payment-connections-3-tiers.png)
 
 ### Avisos de suscripción
 

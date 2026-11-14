@@ -6,13 +6,15 @@ El primer arranque de Didacta **no usa seeds de datos**: la instancia se configu
 
 Mientras la instancia no tenga ningún tenant, la web redirige **cualquier ruta** al asistente. En cuanto el asistente termina, deja de estar disponible para siempre: el endpoint de inicialización responde `409 ALREADY_INITIALIZED` si ya existe una organización.
 
+El asistente está protegido por un **token de un solo uso**: al arrancar sin ninguna organización, la instancia lo imprime en sus logs y solo se puede terminar abriendo `/setup?token=…` (`docker logs didacta-app | grep "Setup token"`; `install.sh` ya enseña el enlace completo). Así nadie que llegue antes que tú a una instancia recién publicada puede quedarse con la cuenta `super_admin`. Si la instancia se reinicia antes de terminar, imprime un token nuevo. En despliegues de un clic puedes fijarlo tú con la variable `DIDACTA_SETUP_TOKEN` (mínimo 16 caracteres, alfabeto url-safe).
+
 ## Los pasos
 
 1. **Bienvenida** — presentación del asistente.
 2. **Organización** — nombre de la organización (obligatorio) y dominio público, pre-rellenado con el host desde el que accedes. En «Configuración avanzada» puedes ajustar el *slug* (autogenerado, apto para DNS).
 3. **Módulos** — lista de módulos disponibles. Los módulos **core** (cursos, aprendizaje, evaluaciones…) aparecen pre-marcados y no se pueden desmarcar; los opcionales (comunidad, gamificación, Fundae, aula virtual…) se activan o no a tu gusto. Todo se puede cambiar después en **Administración → Configuración → Módulos**.
 4. **Tu cuenta** — nombre, email y contraseña del primer administrador (**mínimo 12 caracteres**, con medidor de fuerza).
-5. **Listo** — tour rápido (Cursos, Comunidad, Administración) y recomendación de activar MFA.
+5. **Listo** — tour rápido (Cursos, Comunidad, Administración) y recomendación de activar MFA. «Empezar» abre el asistente de bienvenida de la academia (`/welcome`): nombre, logo y color, primer curso, alumnos, cobros y correo.
 
 ## Qué crea exactamente
 

@@ -14,6 +14,9 @@ El feed social del tenant: **posts** (opcionalmente ligados a un curso y a un es
 - Publicación por **API externa** (`/community-api`, con API key de scope `community:post` cuyo dueño sea admin): los posts entran con `source='api'` — así se distingue el contenido automatizado.
 - El digest semanal se programa con `COMMUNITY_DIGEST_CRON` (lunes 09:00 UTC por defecto) y respeta el opt-out por usuario.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Configuración
 
 **Activación.** `mod.community` es de categoría **core**: está siempre activo y no aparece en la pestaña «Módulos» de `Administración → Configuración` (`/admin/settings`), que solo lista los módulos desactivables. Si algo intenta desactivarlo por API, el backend lo rechaza con `CORE_MODULE_NOT_DISABLEABLE`.
@@ -27,7 +30,7 @@ Todo lo demás se configura desde el panel, cada cosa en su pantalla:
 - **Digest semanal, por usuario** — cada miembro lo controla en `/account`, pestaña «Notificaciones»: fila «Comunidad» («Menciones, respuestas y resumen semanal.») cruzada con la columna «Email».
 - **Roles** — ocultar/restaurar, fijar, tags, espacios, avisos y `notifyAll` exigen `super_admin` o `tenant_admin`; el formador no modera la comunidad.
 
-![Espacios de comunidad: lista con los espacios de sistema y el formulario de edición](../../assets/modulos/community/community-3-espacios.png)
+![Espacios de comunidad: lista con los espacios de sistema y el formulario de edición](../../assets/modules/community/community-3-spaces.png)
 
 Variables de entorno (workers):
 
@@ -46,18 +49,18 @@ Disparo manual del digest (QA): `POST /modules/community/digest/run-now`, solo `
 2. Cura los tags oficiales en `/admin/community/tags` para que el feed y el sidebar los pinten con color e icono.
 3. Publica el primer post desde el feed con «Nueva conversación». Solo el admin ve el checkbox «📣 Avisar a todos por email»; al marcarlo aparece «Importante (ignora las bajas)» para saltarse el opt-out cuando de verdad toca.
 
-    ![El composer de publicación con las opciones de aviso que solo ve el admin](../../assets/modulos/community/community-2-composer.png)
+    ![El composer de publicación con las opciones de aviso que solo ve el admin](../../assets/modules/community/community-2-composer.png)
 
 4. Modera desde el propio feed: «Ocultar post» (pide un motivo opcional y la fila se conserva), «Restaurar», «Fijar» y «Desfijar». Ocultar también revoca los puntos que dio el contenido si la gamificación está activa.
 5. Para comunicados sin post, `/admin/broadcasts`: asunto, mensaje y «Enviar a todos». El historial («Envíos») muestra el estado y el progreso «{sent}/{total} enviados» de cada aviso.
 
-    ![Avisos a la comunidad: compositor y historial de envíos con progreso](../../assets/modulos/community/community-4-avisos.png)
+    ![Avisos a la comunidad: compositor y historial de envíos con progreso](../../assets/modules/community/community-4-broadcasts.png)
 
 **El alumno (miembro):**
 
 1. En `/community` pulsa «Nueva conversación»: título, texto enriquecido, tags, menciones `@usuario` con autocomplete, hasta 10 imágenes y 5 archivos por publicación. «Publicar».
 
-    ![El feed de la comunidad: posts con tags, reacciones y los espacios en el sidebar](../../assets/modulos/community/community-1-feed.png)
+    ![El feed de la comunidad: posts con tags, reacciones y los espacios en el sidebar](../../assets/modules/community/community-1-feed.png)
 
 2. Puede publicar dentro de un espacio: cuelgan del grupo «Foros» del sidebar y cada uno vive en `/spaces/<slug>`, con orden («Más recientes», «Más antiguas», «Más comentadas») y pestaña «Galería» con los adjuntos del espacio.
 3. Comenta (un nivel de respuesta) y reacciona con emoji sobre posts y comentarios.

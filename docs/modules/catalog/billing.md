@@ -15,6 +15,9 @@ Incluye además el **viaje de compra pública**: un visitante **sin cuenta** com
 - Sin Stripe configurado el módulo se registra igualmente: el catálogo público devuelve lista vacía y el checkout responde 503 con mensaje claro. El resto de la plataforma no se ve afectado.
 - Los reembolsos se lanzan desde el dashboard de Stripe; el webhook `charge.refunded` sí se procesa y marca la orden. Solo el reembolso **total** pasa la orden a `REFUNDED` (y retira el acceso); uno parcial no toca la compra.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Configuración
 
 El módulo es de categoría **core**: viene activo en todos los tenants y no tiene interruptor propio.
@@ -30,7 +33,7 @@ En `/admin/settings?tab=payments` (pestaña **Pagos**), tarjeta **«Pagos · Str
 
 La tarjeta abre con un banner de estado: verificado, configurado sin verificar, «Usando Stripe global del host (fallback)» o «Sin Stripe configurado — la venta de cursos sueltos y las suscripciones/membresía no funcionan». Las credenciales se guardan **cifradas**; los campos son write-only (nunca se re-muestran).
 
-![Tarjeta «Pagos · Stripe» con el formulario de credenciales y el banner de estado](../../assets/modulos/billing/billing-1-stripe-config.png)
+![Tarjeta «Pagos · Stripe» con el formulario de credenciales y el banner de estado](../../assets/modules/billing/billing-1-stripe-settings.png)
 
 ### Webhook a dar de alta en Stripe
 
@@ -81,7 +84,7 @@ En `/admin/billing/products` (**«Pagos · Productos Stripe»**): el formulario 
 1. Configura Stripe en `/admin/settings?tab=payments`: guarda la **«Clave secreta»**, da de alta el webhook en Stripe con la URL y los eventos de arriba, pega el **«Secreto del webhook»** y pulsa **«Probar conexión»**.
 2. En `/admin/billing/products`, vincula el curso: elige el **«Curso»**, pega el **«Stripe Price ID»** y pulsa **«Vincular»**. Cada producto listado ofrece **«Cambiar Price ID»**, **«Desactivar»**/**«Reactivar»** y **«Desvincular»** (las órdenes históricas se conservan). Si Stripe no está configurado, la página lo avisa con el enlace «Configura Stripe en Administración → Pagos».
 
-    ![Panel «Pagos · Productos Stripe» con el formulario de vincular curso](../../assets/modulos/billing/billing-2-productos.png)
+    ![Panel «Pagos · Productos Stripe» con el formulario de vincular curso](../../assets/modules/billing/billing-2-products.png)
 
 3. Venta al alumno **con cuenta**: en `/courses/<slug>` aparece la caja **«Empieza este curso»** con el botón **«Comprar»** (si el curso tiene varias opciones, la sección **«Elige tu formato»** las lista con su precio, descuento y la etiqueta «El más elegido»). El pago abre el checkout hosted de Stripe y vuelve a `/courses/checkout/success`.
 

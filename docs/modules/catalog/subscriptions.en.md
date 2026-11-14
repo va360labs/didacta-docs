@@ -15,6 +15,9 @@ Recurring subscriptions with Stripe (`mode=subscription`), with a configurable b
 - The membership checkout is **anonymous** (the visitor pays at `/join` and the account is materialised with the email confirmed by Stripe) and accepts referral codes, which `mod.referrals` interprets.
 - It coexists with `mod.billing` in the same tenant (one-off and subscription courses) without sharing tables.
 
+!!! note "Screenshots in full mode"
+    The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
+
 ## Configuration
 
 The module belongs to the **core** category: it is active in every tenant and has no switch of its own. Nothing below requires an Enterprise licence.
@@ -50,7 +53,7 @@ Everything under `/admin/membership` (**"Membership"**). If Stripe is not config
 - **"Plans"** card: fields **"Name"**, **"Billing interval"** (monthly / quarterly / semi-annual / annual / every N months), **"Currency"**, **"Price"**, **"Strikethrough price (optional)"**, **"Trial days"**, toggle **"Preselected on the page"**; button **"Create plan"**. The Stripe Product/Price is created lazily on the first checkout and **rotated** when the amount, currency or period changes (Stripe prices are immutable); renaming the plan renames the Product. A plan with sales is never deleted: it is deactivated.
 - **"Public page"** card: toggle **"Purchase page active"**, **"Title"**, **"Subtitle"**, **"Access group it grants"**, **"Show the course catalog on the page"**, **"Lessons visible per course during the trial period"** (0 = no limit), per-course reference prices and an optional testimonial; button **"Save configuration"**.
 
-![Membership administration: plans and public page configuration](../../assets/modulos/subscriptions/en/subscriptions-1-membresia-planes.png)
+![Membership administration: plans and public page configuration](../../assets/modules/subscriptions/en/subscriptions-1-membership-plans.png)
 
 ### Environment variables
 

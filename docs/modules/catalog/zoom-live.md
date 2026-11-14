@@ -13,21 +13,24 @@ Clases en directo con la API **Server-to-Server OAuth** de Zoom. El formador pro
 
 ## Cómo funciona
 
-- Sin credenciales configuradas, el módulo usa un **stub determinístico** — se puede probar todo el flujo sin cuenta de Zoom.
+- Sin credenciales de Zoom, el aula no inventa enlaces: en producción, crear una sesión responde «Pega el enlace de tu videollamada (Zoom, Google Meet o Teams) o conecta tu cuenta de Zoom en Ajustes» (`ZOOM_NOT_CONFIGURED`). En **modo sencillo**, el formulario de «Directos» acepta el enlace de una videollamada propia. El **stub determinístico** de desarrollo (para probar el flujo sin cuenta de Zoom) solo funciona fuera de producción o con `ZOOM_ALLOW_STUB=true`.
 - Los webhooks se procesan con **log idempotente** por `event_id` (Zoom reintenta hasta 3 veces) y firma HMAC verificada; incluye el handshake de validación de endpoint de Zoom.
 - Los participantes de Zoom que no casan con ningún usuario (invitados, otro email) se conservan con su identidad de Zoom para conciliación manual.
 - El error típico del sync de asistencia es que falte el scope `report:read:admin` en la app de Zoom; queda registrado en la sesión para que el formador sepa por qué no hay datos.
 - Al terminar la clase, `mod.surveys` puede lanzar automáticamente la encuesta post-clase.
 
+!!! note "Capturas en modo completo"
+    Las capturas de esta página son del **modo completo** (menú lateral), el de una instalación nueva. En **modo sencillo** las mismas rutas siguen disponibles desde «Más», salvo las pantallas que ese modo sustituye por una versión simplificada (el editor de cursos, Ajustes, Ventas, Alumnos, Directos, la comunidad y Referidos); para usarlas tal como se ven aquí, cambia al modo completo en **Ajustes → «Usar el modo completo»**.
+
 ## Configuración
 
 - **Activar o desactivar el módulo**: `/admin/settings`, pestaña **Módulos** — interruptor por organización.
-- **Credenciales Zoom, por tenant**: `/admin/settings`, pestaña **Aula virtual** (la aporta el módulo; desaparece si lo desactivas). Campos **Account ID**, **Client ID**, **Client Secret** y **Webhook Secret Token**, con botones **Guardar credenciales**, **Probar credenciales** y **Borrar credenciales**. Se guardan cifradas (AES-256-GCM) y nunca se devuelven en claro; sin credenciales, el módulo cae al stub de desarrollo.
+- **Credenciales Zoom, por tenant**: `/admin/settings`, pestaña **Aula virtual** (la aporta el módulo; desaparece si lo desactivas). Campos **Account ID**, **Client ID**, **Client Secret** y **Webhook Secret Token**, con botones **Guardar credenciales**, **Probar credenciales** y **Borrar credenciales**. Se guardan cifradas (AES-256-GCM) y nunca se devuelven en claro; sin credenciales, mira el punto anterior.
 - **Webhook**: el endpoint es `https://tu-dominio/api/v1/webhooks/zoom`. El **Secret Token** de Zoom se pega en el mismo formulario del panel — ya **no** es la variable de entorno `ZOOM_WEBHOOK_SECRET` (era global y las credenciales ya eran per-tenant).
 - **Entorno (workers)**: `ZOOM_REMINDER_CRON`, `ZOOM_REMINDER_HOURS_BEFORE`, `ZOOM_ATTENDANCE_SYNC_CRON` controlan recordatorios y reconciliación de asistencia (requieren Redis). La tabla de valores por defecto y el alta de la app en el Zoom App Marketplace están en [Configurar Zoom](../../configuration/zoom.md).
 - Ninguna función del módulo exige licencia Enterprise.
 
-![Pestaña «Aula virtual» de Configuración con el formulario de credenciales Zoom Server-to-Server](../../assets/modulos/zoom-live/zoom-live-1-credenciales.png)
+![Pestaña «Aula virtual» de Configuración con el formulario de credenciales Zoom Server-to-Server](../../assets/modules/zoom-live/zoom-live-1-credentials.png)
 
 ## Uso paso a paso
 
@@ -40,7 +43,7 @@ Como formador (o admin):
 5. **Editar** solo permite cambiar título, fecha, duración, zona y agenda; el host, el curso y la lección quedan fijos desde la creación. **Cancelar** avisa a los inscritos.
 6. A la hora de la clase, pulsa **Iniciar** (o **Iniciar (host)** desde la página de la clase).
 
-![Lista de sesiones del aula virtual del formador con una clase programada](../../assets/modulos/zoom-live/zoom-live-2-aula-virtual.png)
+![Lista de sesiones del aula virtual del formador con una clase programada](../../assets/modules/zoom-live/zoom-live-2-live-sessions.png)
 
 Como alumno:
 
@@ -49,7 +52,7 @@ Como alumno:
 3. El botón **Unirme a la clase** / **Unirme ahora** solo aparece si estás inscrito; el clic sella tu entrada como evidencia de asistencia. Recibirás recordatorio 2 horas antes.
 4. Cuando la clase termina, **Ver grabación** aparece para los inscritos en cuanto Zoom entrega la grabación.
 
-![Página de la clase con el botón de inscripción y el estado de la sesión](../../assets/modulos/zoom-live/zoom-live-3-clase-alumno.png)
+![Página de la clase con el botón de inscripción y el estado de la sesión](../../assets/modules/zoom-live/zoom-live-3-student-class.png)
 
 Asistencia (staff, en la misma página de la clase):
 
@@ -57,7 +60,7 @@ Asistencia (staff, en la misma página de la clase):
 2. **Sincronizar con Zoom** reconcilia contra la Report API; cada fila indica la confianza de la evidencia.
 3. El botón **Marcar** cicla el override manual: **Presente** → **Ausente** → vuelta al cálculo automático.
 
-![Panel de asistencia de la clase con la sincronización y el marcado manual](../../assets/modulos/zoom-live/zoom-live-4-asistencia.png)
+![Panel de asistencia de la clase con la sincronización y el marcado manual](../../assets/modules/zoom-live/zoom-live-4-attendance.png)
 
 ## Dependencias
 
