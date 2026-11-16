@@ -10,7 +10,9 @@ Evaluaciones con autocorrección y corrección manual. Seis tipos de pregunta: `
 
 - El quiz nace en `DRAFT`, se le añaden preguntas y se publica (exige al menos una).
 - El alumno ve una **vista sin soluciones** (`preview`), inicia un intento, responde y entrega; el motor corrige lo automático y, si hay preguntas abiertas, el intento queda en `PENDING_REVIEW` hasta que el formador califica desde su panel.
-- Un intento caducado por límite de tiempo responde `ATTEMPT_EXPIRED` **410**.
+- Un intento caducado por límite de tiempo responde `ATTEMPT_EXPIRED` **410**; pasar el máximo de intentos, `MAX_ATTEMPTS_REACHED` 409; entregar dos veces el mismo intento, `ATTEMPT_ALREADY_SUBMITTED` 409; y un quiz sin publicar, `QUIZ_NOT_PUBLISHED` 422.
+- **La lección del intento la decide el quiz, no el cliente.** Al iniciar un intento, la lección sale de la lección a la que está vinculado el quiz (`lessonId` del quiz); el `lessonId` que mande un cliente se ignora, para que aprobar un quiz fácil no dé por completado el examen final.
+- **Esta es la única vía que cierra una lección de tipo Quiz.** Al aprobar (también al corregir a mano), `mod.learning` marca la lección como completada con origen `ASSESSMENT`, que queda como evidencia verificable (la que usa Fundae para las horas); la API pública de progreso rechaza el `completed: true` de una lección Quiz con `LESSON_COMPLETION_NOT_SELF_REPORTABLE` 422.
 - La vista del formador incluye `isCorrect` en las opciones; la del alumno, jamás.
 - Con [mod.ai-grader](ai-grader.md) activo, el formador recibe sugerencias de nota con justificación por criterio para las preguntas abiertas.
 
@@ -58,7 +60,7 @@ Evaluaciones con autocorrección y corrección manual. Seis tipos de pregunta: `
 
 ## Dependencias
 
-- Dura: `mod.courses`. Opcional: `mod.learning` (autocompleta la lección de tipo QUIZ al aprobar).
+- Dura: `mod.courses`. Opcional: `mod.learning` (autocompleta la lección de tipo QUIZ al aprobar, vía un puente del host que escucha `assessments.attempt.passed`).
 
 ## Modelo de datos
 

@@ -71,6 +71,21 @@ el log del contenedor, corrige la causa y vuelve a arrancar.
     - El schema nunca se modifica fuera de migraciones versionadas. `prisma db push` está reservado a entornos de desarrollo.
     - No saltes versiones sin leer las notas de cada release intermedia: los breaking changes llevan siempre nota de migración.
 
+## Cambios a tener en cuenta al subir desde una beta anterior
+
+Lo que ha cambiado de comportamiento entre `0.1.0-beta.1` y la última versión y puede sorprenderte al actualizar (las notas de cada release tienen el detalle):
+
+| Desde | Qué cambia | Qué hacer |
+| --- | --- | --- |
+| beta.10 | **`/metrics` exige `METRICS_TOKEN`** en producción (antes, sin token, quedaba público). | Define el token y pásaselo a Prometheus. |
+| beta.10 | **En producción la API no arranca con una clave de cifrado efímera**: si no hay `TENANT_SETTINGS_ENC_KEY` y el fichero de la clave no se puede leer ni crear, aborta. | Monta `/app/data` como volumen escribible o fija la clave. |
+| beta.12 | **La clave maestra de cifrado sale de `STORAGE_ROOT`** (ese árbol se servía por HTTP) al directorio de secretos (`/app/data/secrets`, o `SECRETS_DIR`). Al arrancar, una clave en la ubicación antigua se **mueve sola** y el log avisa de que hay que **rotarla**. | Rota la clave con `node apps/api/dist/maintenance/rotate-cipher-key.cli.js --help`. Ver [Variables de entorno](../configuration/environment-variables.md). |
+| beta.14 | `TRUSTED_PROXY_HOPS` (por defecto `1`): de cuántos proxies tuyos te fías para la IP del cliente. | Si no hay proxy delante de la API, `0`; si hay más de uno, súbelo. |
+| beta.15 | **Las URL del aula pasan a inglés** (`/admin/settings`, `/studio/courses`, `/join`, `/catalog`…); las de antes responden `308` hacia las nuevas. | Actualiza tus marcadores y enlaces externos cuando puedas. |
+| beta.23 | La imagen arranca sin descargar los motores de Prisma (antes necesitaba red en cada arranque). | Nada. |
+
+Los módulos nuevos (`mod.payouts`, `mod.retention`, `mod.soporte`) crean sus tablas con las migraciones; `mod.payouts` no hace nada salvo que definas `PAYMENTS_PLATFORM_STRIPE_SECRET_KEY` y `mod.soporte` y `mod.retention`, como todos los módulos, están **encendidos por defecto** mientras la academia no los apague (desde Módulos).
+
 ## Rollback
 
 1. Restaura la copia:

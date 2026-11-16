@@ -26,7 +26,7 @@ Corrección asistida por IA para las preguntas abiertas de [mod.assessments](ass
 
 **Rúbricas.** No hay pantalla de edición de rúbricas todavía: se gestionan por API (`GET`/`PUT`/`DELETE /modules/ai-grader/questions/:questionId/rubric`, rol formador+). Validaciones al guardar: instrucciones de 10 a 2000 caracteres, de 1 a 8 criterios, cada criterio con nombre, descripción y peso entero (1-100), y la suma de pesos igual a los puntos de la pregunta.
 
-**Sin variables propias, sin ajustes por tenant y sin exigencia de licencia Enterprise.**
+**Sin variables propias, sin ajustes por tenant y sin exigencia de licencia Enterprise.** Permisos del manifest: `ai-grader.rubric.read/write` y `ai-grader.suggestion.read/write`.
 
 ## Uso paso a paso
 
@@ -59,8 +59,8 @@ Opcional: `mod.assessments` (de donde salen intentos, respuestas y preguntas).
 
 ## API
 
-Prefijo `/modules/ai-grader` (formador+): gestión de rúbricas y ciclo de sugerencia. Detalle en [Referencia → Pagos, aula e IA](../../api/reference/payments-live-ai.md#ia).
+Prefijo `/modules/ai-grader` (formador+): gestión de rúbricas y ciclo de sugerencia (`attempts/:attemptId/suggest`, `attempts/:attemptId/suggestions` y `suggestions/:id/apply`). Detalle en [Referencia → Pagos, aula e IA](../../api/reference/payments-live-ai.md#ia).
 
 ## Eventos
 
-**Emite**: `ai-grader.suggestion.generated`, `ai-grader.suggestion.failed`. No consume.
+**Emite**: `ai-grader.suggestion.generated` (por cada sugerencia guardada: `suggestionId`, `attemptId`, `answerId`, `questionId`, `proposedScore`, `provider`, `model`) y `ai-grader.suggestion.failed` (cuando el proveedor falla o su respuesta no se puede leer: `attemptId`, `answerId`, `questionId`, `reason` = `provider` o `unparseable`). Reutilizar una sugerencia ya guardada no publica nada. No consume.

@@ -10,7 +10,9 @@ Assessments with auto-grading and manual grading. Six question types: `SINGLE_CH
 
 - The quiz starts as `DRAFT`, questions are added and then it is published (at least one is required).
 - The student sees a **solution-free view** (`preview`), starts an attempt, answers and submits; the engine grades the automatic part and, if there are open-ended questions, the attempt stays in `PENDING_REVIEW` until the instructor grades it from their panel.
-- An attempt that has run out of time returns `ATTEMPT_EXPIRED` **410**.
+- An attempt that expired by time limit answers `ATTEMPT_EXPIRED` **410**; going over the maximum attempts answers `MAX_ATTEMPTS_REACHED` 409; submitting the same attempt twice, `ATTEMPT_ALREADY_SUBMITTED` 409; and an unpublished quiz, `QUIZ_NOT_PUBLISHED` 422.
+- **The attempt's lesson is decided by the quiz, not the client.** When an attempt starts, the lesson comes from the lesson the quiz is linked to (the quiz's `lessonId`); any `lessonId` a client sends is ignored, so passing an easy quiz cannot mark the final exam as completed.
+- **This is the only route that closes a Quiz lesson.** On passing (also when graded by hand), `mod.learning` marks the lesson completed with origin `ASSESSMENT`, which is kept as verifiable evidence (the one Fundae uses for hours); the public progress API rejects `completed: true` for a Quiz lesson with `LESSON_COMPLETION_NOT_SELF_REPORTABLE` 422.
 - The instructor's view includes `isCorrect` on the options; the student's view never does.
 - With [mod.ai-grader](ai-grader.md) enabled, the instructor gets per-criterion score suggestions with justifications for the open-ended questions.
 
@@ -58,7 +60,7 @@ Assessments with auto-grading and manual grading. Six question types: `SINGLE_CH
 
 ## Dependencies
 
-- Hard: `mod.courses`. Optional: `mod.learning` (auto-completes the QUIZ lesson on passing).
+- Hard: `mod.courses`. Optional: `mod.learning` (auto-completes the QUIZ lesson on passing, through a host bridge that listens to `assessments.attempt.passed`).
 
 ## Data model
 

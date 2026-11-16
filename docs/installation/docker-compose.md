@@ -8,7 +8,19 @@ El camino recomendado. Al terminar tendrás la plataforma completa — web + API
 
 El stack lo define `docker-compose.alpha.yml`, la experiencia self-host canónica del repositorio.
 
-## Instalación
+## Instalar con un comando
+
+Si solo quieres verlo funcionando, el instalador hace los cinco pasos de abajo por ti (necesita Docker con Compose v2 y `curl` o `wget`):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/va360labs/didacta-io/main/install.sh | bash
+```
+
+Crea la carpeta `./didacta` (cámbiala con `DIDACTA_DIR`), descarga el compose, **genera `AUTH_SECRET`** y lo guarda en el `.env` (si ya hay uno, no lo toca), fija `DIDACTA_IMAGE_TAG` a la versión del instalador, arranca el stack, espera a que `/healthz` responda y termina imprimiendo el **enlace del asistente** (`http://localhost:3000/setup?token=…`, válido una sola vez), así que no hace falta ir a buscar el token a los logs. Si lo prefieres, léelo antes de ejecutarlo: `curl -fsSL <url> -o install.sh && less install.sh && bash install.sh`.
+
+Variables opcionales del instalador: `DIDACTA_DIR`, `DIDACTA_IMAGE_TAG`, `DIDACTA_COMPOSE_FILE` (un compose local), `WEB_PORT`, `API_PORT`, `MAILPIT_UI_PORT`, y — para **convivir con otra instalación en la misma máquina** — `DIDACTA_PROJECT` (nombre del proyecto de compose), `DIDACTA_COMPOSE_EXTRA` (un fichero de override) y `DIDACTA_NAME_SUFFIX` (sufijo de los nombres de contenedor, por ejemplo `-2`: los `container_name` son globales del host y el nombre de proyecto no los aísla).
+
+## Instalación a mano
 
 ```bash
 # 1. Descarga el compose y la plantilla de entorno
@@ -20,7 +32,7 @@ cp .env.example .env
 # Edita .env y rellena AUTH_SECRET con un secreto largo y aleatorio:
 #   openssl rand -base64 32
 
-# 3. Fija la versión de la imagen (tags publicados en Docker Hub)
+# 3. Fija la versión de la imagen (tags publicados en GitHub Container Registry)
 echo "DIDACTA_IMAGE_TAG={{ didacta_version }}" >> .env
 
 # 4. Arranca el stack
@@ -43,7 +55,7 @@ En el primer arranque el contenedor de la app aplica automáticamente las **migr
 
 ## Primer acceso
 
-1. Abre `http://localhost:3000`. La primera vez te llevará al **asistente de configuración** (`/setup`): ahí creas la organización (tenant) y la cuenta del primer administrador.
+1. Abre el enlace del asistente: `http://localhost:3000/setup?token=…`. El token sale en los logs del contenedor (`docker compose -f docker-compose.alpha.yml logs didacta | grep "Setup token"`) o lo imprime `install.sh`; sin él, el asistente no deja terminar el alta. Ahí creas la organización (tenant) y la cuenta del primer administrador.
 2. Entra con esa cuenta y configura tu marca en **Administración → Branding** (logo, colores, textos de la pantalla de acceso).
 3. El correo saliente apunta por defecto al buzón de pruebas Mailpit (`http://localhost:8025`). Para producción configura tu SMTP real en **Administración → Configuración → Notificaciones**.
 
@@ -55,11 +67,34 @@ El compose declara cuatro volúmenes nombrados que sobreviven a `down`/`up` y re
 | --- | --- |
 | `postgres_data` | Toda la base de datos. |
 | `redis_data` | Cola persistente (`appendonly yes`) — outbox + jobs. |
-| `didacta_data` | Storage local de la aplicación: uploads de cursos, certificados y evidencias **más la clave de cifrado autogenerada** para datos at-rest. |
+| `didacta_data` (`/app/data`) | Storage local de la aplicación (`/app/data/storage`: uploads de cursos, certificados y evidencias), **la clave de cifrado autogenerada** para datos at-rest (`/app/data/secrets`, **fuera** del árbol que se sirve por HTTP) y la contraseña autogenerada del rol `didacta_app`. |
 | `minio_data` | Solo con el profile `s3`. Buckets de MinIO. |
 
 !!! danger "`down -v` borra los datos"
     `docker compose down -v` elimina los volúmenes y, por tanto, la base de datos y los ficheros. Para detener sin borrar usa `docker compose down` **sin** `-v`.
+
+## Pasar más variables al contenedor
+
+El servicio `didacta` del compose **solo recibe las variables que declara en su bloque `environment`** (no lleva `env_file`): `NODE_ENV`, `ADMIN_DATABASE_URL`, `REDIS_URL`, `AUTH_SECRET`, `TENANT_SETTINGS_ENC_KEY`, `AUDIT_REPORT_HMAC_KEY`, `METRICS_TOKEN`, `STORAGE_*`, `SMTP_FROM`, `DIDACTA_LICENSE_KEY` y `DIDACTA_DEV_BYPASS`, entre otras. Una variable que escribas en `.env` y no esté ahí **no llega a la aplicación** (de ahí que el SMTP apunte siempre a Mailpit, y que haya que descomentar las `S3_*`). Para añadir otras (`WEB_PUBLIC_URL`, `SMTP_HOST`/`SMTP_PORT`, `STRIPE_*`, `SUPPORT_OPERATOR_ALERT_EMAIL`…), crea un fichero de override y pásalo con `-f`:
+
+```yaml
+# docker-compose.override.yml
+services:
+  didacta:
+    environment:
+      WEB_PUBLIC_URL: https://campus.ejemplo.com
+      SMTP_HOST: smtp.tu-proveedor.com
+      SMTP_PORT: '587'
+```
+
+```bash
+docker compose -f docker-compose.alpha.yml -f docker-compose.override.yml up -d
+```
+
+(Con `-f` explícito, compose **no** carga `docker-compose.override.yml` por su cuenta.) El SMTP de la plataforma también puede configurarse por academia desde el panel, sin tocar el compose: ver [Email](../configuration/email.md).
+
+!!! warning "Producción: dos variables que conviene definir"
+    Como el compose arranca con `NODE_ENV=production`: **`/metrics` responde 401 hasta que definas `METRICS_TOKEN`** (solo hace falta si lo scrapeas) y **el export firmado del log de auditoría responde 503 hasta que definas `AUDIT_REPORT_HMAC_KEY`** (solo con esa capability Enterprise). Genera ambas con `openssl rand -hex 32`. Y pon `WEB_PUBLIC_URL`: sin ella los correos llevan enlaces a `localhost`.
 
 ## Almacenamiento de ficheros
 

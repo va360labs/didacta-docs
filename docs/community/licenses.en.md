@@ -19,7 +19,10 @@ Didacta is **fair-code, source-available**, aligned with the [faircode.io](https
 - ❌ Removing or altering copyright, license or trademark notices.
 - ❌ Using the Didacta trademarks beyond what applicable law permits.
 
-For any of these cases: **licensing@didacta.io**, or use Didacta Cloud (`cloud.didacta.io`).
+For any of these cases: **licensing@didacta.io**, or use [Didacta Cloud](../cloud/index.md), the managed edition.
+
+!!! note "If you use Didacta Cloud"
+    On Cloud you install nothing and this license is not the one that governs you: the [terms of use for creators](https://didacta.io/en/legal/terms) and the data processing agreement do. The license on this page is that of the **Community** edition, the one installed by whoever deploys it on their own server.
 
 ## Two licenses, one repository
 

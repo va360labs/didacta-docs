@@ -29,7 +29,7 @@ Endpoints for courses, enrollments and progress, learning paths, assessments, ce
 | DELETE | `/modules/courses/modules/:moduleId` | instructor+ | Soft deletes the module (with a logical cascade over its lessons). |
 | DELETE | `/modules/courses/lessons/:lessonId` | instructor+ | Soft deletes the lesson (preserving historical progress). |
 
-**Key bodies** — creating a course: `slug` (kebab-case), `title`, `description?`, `thumbnailUrl?`, `language` (default `es-ES`), `estimatedMinutes?`, `category?`. `slug` and `language` are immutable. Creating a lesson: `type` (`VIDEO|HTML|PDF|TEXT|QUIZ|SCORM`), `title`, `content` (a free-form object), `durationMinutes?`, `publishAt?` (a future date = locked).
+**Key bodies** — creating a course: `slug` (kebab-case), `title`, `description?`, `thumbnailUrl?`, `featuredVideoUrl?`, `language` (default `es-ES`), `estimatedMinutes?`, `category?`. `slug` and `language` are immutable. Editing a course (`PUT /:id`): the same fields plus `status`, `externalPurchaseUrl` (the external sales page where the course is bought) and `certificateTemplateId` (preferred certificate template; `null` uses the classroom's); `null` clears an optional field. Creating a lesson: `type` (`VIDEO|HTML|PDF|TEXT|QUIZ|SCORM`), `title`, `content` (a free-form object), `durationMinutes?`, `publishAt?` (a future date = locked).
 
 **Read gating on `GET /:id`**: instructor+ receives the full course; a student gets a 404 if it is not `PUBLISHED`, the structure with `content: null` if they are not enrolled, and `content: null` only on lessons that have not been released yet when drip is in play.
 
@@ -151,6 +151,32 @@ Endpoints for courses, enrollments and progress, learning paths, assessments, ce
 | GET | `/modules/events` · `/:id` | Bearer | Events by date range (`from`, `to`, `limit`, `order`) · detail with `registeredCount`, `isFull`, `isRegistered`. |
 | POST | `/modules/events` | instructor+ | Creates an event: `title`, `startAt`, `endAt`, `location?`, `capacity?`. |
 | POST | `/modules/events/:id/register` · `unregister` | Bearer | Registration (if it is full: `{ registered: false, reason: 'full' }`) · cancellation. |
+
+## Video
+
+Protected playback of the lessons' Bunny Stream videos, their protection and —on Didacta Cloud— upload from the browser.
+
+| Method | Route | Auth | What it does |
+|---|---|---|---|
+| GET | `/video/bunny/:libraryId/:guid/play-url` | Bearer | Playback URL of a video. If the classroom **protects** that library: a signed URL that **expires after 30 minutes**, 403 if the person cannot see the video and 429 if they exceed the cap of distinct videos per account. If it does not protect it: the unsigned embed URL. |
+| GET | `/admin/video-protection` | admin | Protection state: switch, per-account cap, watermark and Bunny libraries (whether they have a key and what the last check said). **Never returns a key.** |
+| PUT | `/admin/video-protection/settings` | admin | Turns protection on or off and adjusts `enabled`, `watermark`, `maxVideosPerHour` and `maxVideosPerDay`. Omitted fields keep their value. |
+| PUT | `/admin/video-protection/token-key` | admin | Stores (encrypted) a library's "Token authentication key": `{ libraryId, tokenKey }`. With it and protection on, that library's URLs come out signed and expire. |
+| POST | `/admin/video-protection/check` | admin | A real signature check against Bunny using one of the classroom's own videos (`{ libraryId }`). Always 200 with `outcome`: `ok`, `not_enforced`, `rejected`, `video_unavailable`, `unreachable`, `no_key` or `no_video`. |
+
+**Video upload (Cloud)** — `/video/uploads` (instructor or admin, `VIDEO_UPLOAD_FORBIDDEN` otherwise). It only exists if the operator configures Bunny Stream (`BUNNY_STREAM_API_KEY`); without it, it answers 404. The classroom and the user always come from the session.
+
+| Method | Route | What it does |
+|---|---|---|
+| GET | `/video/uploads/quota` | Video hours used and available for the classroom, and its limits. |
+| POST | `/video/uploads` | Prepares an upload to a lesson: `{ lessonId, fileName, mimeType, sizeBytes, durationSeconds }`. Checks the limits, creates the video in Bunny and returns `{ asset, upload }` with the **TUS** signature to upload it from the browser. |
+| GET | `/video/uploads?lessonId=` | Videos uploaded to a lesson (live ones, newest first). |
+| GET | `/video/uploads/:id` | A video's state (uploading, processing, ready, failed). |
+| POST | `/video/uploads/:id/signature` | A fresh signature to resume a half-finished upload. |
+| DELETE | `/video/uploads/:id` | Cancels an upload or deletes a video no lesson uses (204). A video in use gives **409**: remove it from the lesson first. |
+| POST | `/video/bunny/webhook` | Bunny Stream notices about a video's state. Authenticated by **Bunny's signature** (`x-bunnystream-signature`), not by a session; 401 `VIDEO_WEBHOOK_SIGNATURE_INVALID`. |
+
+Upload error codes (`code`) come from the video service; the operator's side is in [Instance and control plane](instance-operations.md#video-pool-routes-cloud).
 
 ## Fundae — `/modules/fundae` (all admin; the instructor role has no access)
 

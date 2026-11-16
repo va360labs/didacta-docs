@@ -2,12 +2,15 @@
 
 This page is for when **the shop, the website or the CRM live elsewhere** and Didacta provides the classroom: a WordPress site that wants to stop rendering its course pages with LearnDash, a custom CMS that charges with its own Stripe, an n8n flow that enrols people when an order comes in.
 
-Two complementary APIs, both authenticated with a tenant API key:
+Three complementary APIs, all authenticated with a tenant API key:
 
 | | What for | Scopes |
 |---|---|---|
 | **`/inscribe`** — write | Grant and revoke access after a payment you collected | `enrollments:write`, `courses:read` |
 | **`/integrations`** — read | Render the course page with real data and know whether the visitor already bought | `courses:read`, `enrollments:read` |
+| **`/integrations/orders`** — history | Store the purchases made in your shop on the student's profile and read them back | `orders:write`, `orders:read` |
+
+And, in the opposite direction, Didacta can **notify you** of what happens in the classroom through [outgoing webhooks](webhooks.md#outgoing-webhooks).
 
 ## First things first: this is called from your server
 
@@ -34,7 +37,19 @@ curl -H "Authorization: ApiKey lmsk_..." \
 
 Note the scheme: `ApiKey`, not `Bearer`.
 
-### Why `enrollments:read` is separate
+The scopes a key can carry are a closed catalog:
+
+| Scope | Grants |
+|---|---|
+| `enrollments:write` | Enrol and unenrol (`/inscribe`) |
+| `enrollments:read` | Query the state of any email (`/integrations/learners/state`) |
+| `courses:read` | Read the catalog and access groups |
+| `orders:write` | Store external purchases (`POST /integrations/orders`) |
+| `orders:read` | Read the purchase history of any email (`GET /integrations/learners/orders`) |
+| `community:post` | Post in the community (`POST /community-api/posts`) |
+| `agent:*` | Those of the [agent gateway](mcp.md): they do not work for these APIs |
+
+### Why `enrollments:read` and `orders:read` are separate
 
 `enrollments:read` allows asking about **any email in the organisation**. Something that only needs to render a sales page has no business querying your entire student base, or the other way round. If your integration only reads the catalogue, give it `courses:read` and nothing else.
 
@@ -120,9 +135,44 @@ This is the half everyone leaves for later and never comes back to. Without it, 
 
 It is deliberately conservative: it **only cancels API-origin enrolments**. If that person is also a member or has the course through an access group, that access is **left alone** — you refunded their purchase, you didn't take away what they already had by another route.
 
+## Storing the purchase history on the profile
+
+If the shop charges through its own gateway and grants access with `/inscribe`, it can also **leave the order on the student's profile**: the history then lives in one place, and both screens —the classroom's and the shop's— say the same thing.
+
+```bash
+curl -X POST https://your-classroom.example.com/api/v1/integrations/orders \
+  -H "Authorization: ApiKey lmsk_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+        "email": "ana@example.com",
+        "source": "shop.example.com",
+        "reference": "ORD-260818-0042",
+        "status": "PAID",
+        "amountCents": 4770,
+        "currency": "eur",
+        "placedAt": "2026-11-16T10:15:00Z",
+        "lines": [{ "name": "Sample course", "amountCents": 4770 }],
+        "orderUrl": "https://shop.example.com/account/orders/42"
+      }'
+```
+
+- **It is idempotent on `(source, reference)`**: a webhook from your shop gets retried, and the retry updates the row instead of duplicating it. `source` identifies the shop (there can be more than one) and `reference` is the order number **in your shop**.
+- Required: `email`, `source`, `reference`, `amountCents` (an integer, in the currency's smallest unit) and `placedAt`. `status` is `PAID` (default), `REFUNDED`, `PARTIALLY_REFUNDED` or `CANCELLED`; `currency` defaults to `eur`.
+- **Omitting does not erase.** `invoice`, `orderUrl` and `refundedAt` are only written if present, so you can come back half an hour later with the invoice number without resending the whole order. To **withdraw** an invoice (voided, rectified) you must send `"invoice": null` explicitly.
+- `invoice` carries `number`, `issuedAt` and `url` (at least the number or the link). **Didacta does not issue invoices or number tax series**: it stores the number, the date and a link to the PDF served by whoever issued it.
+- If the buyer does not exist in the classroom yet, the order is stored anyway and matched by email.
+
+To read it back —for instance, for your shop's customer area—:
+
+```bash
+GET /api/v1/integrations/learners/orders?email=ana@example.com&source=shop.example.com&limit=50
+```
+
+It returns `known`, `userId` and `orders` (most recent first; `limit` from 1 to 200). **`known: false` does not mean an empty list**: an order may have arrived before `/inscribe` created the account. The person themselves sees those purchases on their profile (`GET /api/v1/me/purchases`, with their session).
+
 ## Being told what happens inside Didacta
 
-If, on top of writing, you want Didacta to notify you, configure an **outbound webhook** in Administration → Webhooks. The events that matter to an external shop:
+If, on top of writing, you want Didacta to notify you, configure an **outgoing webhook** in **Administration → Webhooks** (or through the API). The events that matter to an external shop:
 
 | Event | When |
 |---|---|
@@ -139,11 +189,11 @@ If, on top of writing, you want Didacta to notify you, configure an **outbound w
 | `subscriptions.subscription.past_due` | A charge failed and they are still in (grace period): your window to recover it |
 | `subscriptions.subscription.canceled` | End of the subscription |
 
-Besides the event's own `data`, the body carries **`learner`, with the person's email and name**. That is what lets you match it against your CRM: `data` only carries the `userId`, and there is no endpoint that turns a `userId` into a person.
+The full catalog, the body, the headers and the retries are in [Webhooks](webhooks.md#outgoing-webhooks). What matters here:
 
-**Deduplicate on the `X-Didacta-Delivery` header**: on a retry the same event can arrive twice, and that header is identical in both deliveries (the attempt number travels in `X-Didacta-Attempt`).
-
-⚠️ **In Community the POST is NOT signed** — HMAC signing is an Enterprise feature. If you need to be sure the call comes from your own campus, put a token in the endpoint URL and check it, or filter by your installation's IP.
+- Besides the event's own `data`, the body carries **`learner`, with the person's email and name**: that is what lets you match it against your CRM, because `data` only carries the `userId` and no endpoint turns it into a person.
+- **Deduplicate on the `X-Didacta-Delivery` header**: on a retry the same event can arrive twice, and that header is identical in both deliveries.
+- ⚠️ **In Community the POST is NOT signed** (HMAC signing is an Enterprise feature) and, if your endpoint is down, the notice is lost after a single retry. Put a token in the endpoint URL and check it, and do not make your integration depend **only** on webhooks: reconcile from time to time with `GET /integrations/learners/state`.
 
 ## The three mistakes everyone makes
 
@@ -154,6 +204,8 @@ Besides the event's own `data`, the body carries **`learner`, with the person's 
 ## See also
 
 - [Authentication](authentication.md) — creating and revoking API keys, available scopes.
+- [Webhooks](webhooks.md) — outgoing webhooks (event catalog, signature, retries) and the incoming ones from Stripe, Zoom and WooCommerce.
+- [AI agents and the MCP server](mcp.md) — the other API-key door: for an agent to create courses, live classes and posts.
 - [Reference: core and cross-cutting](reference/core.md) — the full route table.
 - [Access groups](../modules/catalog/access-groups.md) — how a bundle is put together.
 - [SSO from WordPress](../modules/catalog/wp-sso.md) — so the buyer enters the classroom without identifying themselves again. The mechanism is a JWT signed with a shared secret: **it works for any external site**, not just WordPress.

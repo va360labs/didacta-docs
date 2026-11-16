@@ -17,9 +17,10 @@ With `docker-compose.alpha.yml` the first two are composed automatically: **only
 **Strongly recommended in production:**
 
 - `WEB_PUBLIC_URL` — without it, every email carries links to `localhost`.
-- `TENANT_SETTINGS_ENC_KEY` — set it **before** configuring OIDC SSO, per-tenant SMTP, Stripe or Zoom S2S.
-- `METRICS_TOKEN` — if `/metrics` is reachable from the internet.
-- `AUDIT_REPORT_HMAC_KEY` — the embedded fallback is public (it is in the repository).
+- `TENANT_SETTINGS_ENC_KEY` — set it **before** configuring OIDC SSO, per-tenant SMTP, Stripe or Zoom S2S (or, at the very least, back up the auto-generated key file).
+- `METRICS_TOKEN` — **required in production**: without it `/metrics` answers 401.
+- `AUDIT_REPORT_HMAC_KEY` — required in production to export the signed audit log (without it the export answers 503).
+- `TRUSTED_PROXY_HOPS` — if there is a number of proxies other than one in front of the API.
 - `WEB_PUBLIC_ALLOWED_HOSTS` — if SSO is enabled.
 - `POSTGRES_PASSWORD` and `MINIO_ROOT_PASSWORD` set to something other than the `didacta_dev` default.
 
@@ -37,12 +38,14 @@ With `docker-compose.alpha.yml` the first two are composed automatically: **only
 | `RLS_ENFORCEMENT` | No | `on` | api | Row-Level Security enforcement at runtime: `off` \| `warn` \| `on`. In `warn`/`on`, every query with a tenant context travels with `set_config('app.current_tenant_id')`; queries without a context are logged at warning (`warn`) or error (`on`) level. Isolation is real because `DATABASE_URL` connects with the `didacta_app` role (without `BYPASSRLS`) by default — see § Database. |
 | `LOG_DB_QUERIES` | No | — | api | With `true`, Prisma logs every SQL query. Very verbose; debugging only. |
 | `DIDACTA_CNAME_TARGET` | No | `cname.didacta.io` | api | CNAME target shown to the admin by the custom domains UI. |
+| `DIDACTA_SETUP_TOKEN` | No | random on every start | api | Initial sign-up token: protects `POST /setup/init` while the instance is blank. If undefined, Didacta generates a random one on every start and prints it in the container logs (`docker compose logs didacta`). Set it only if whoever deploys can show the `/setup?token=…` link without opening the logs (the `deploy/` templates do). At least 16 characters, only `A-Z a-z 0-9 _ -`; one that does not comply is ignored with a warning. |
+| `DIDACTA_ALLOW_UNKNOWN_HOSTS` | No | `false` | web | Escape hatch to go back to serving the app on **any** host. By default, a host that belongs to no academy answers 404 (anti-phishing with DNS wildcards). See [Branding → Own domain](branding.md#own-domain). |
 
 ## 2. Public URLs and API ↔ Web routing
 
 | Name | Required | Default | Component | Description |
 |---|---|---|---|---|
-| `WEB_PUBLIC_URL` | Strongly recommended in prod | cascade (see note) | api, worker | Public base URL of the frontend. It builds every absolute link in emails (password resets, invitations, reminders, digests…). Cascade: this variable → the request's `X-Forwarded-*` headers → `http://localhost:3000`. |
+| `WEB_PUBLIC_URL` | Strongly recommended in prod | cascade (see note) | api, worker | Public base URL of the frontend. It builds every absolute link in emails (password resets, invitations, reminders, digests…). Cascade: the academy's **verified primary domain** (if it has one; it includes the platform subdomain that provisioning creates) → this variable (the deployment's address, a fallback when the academy has no domain) → the request's `X-Forwarded-*` headers → `http://localhost:3000`. |
 | `WEB_PUBLIC_ALLOWED_HOSTS` | No | — | api | CSV allowlist of hosts for redirects that carry session tokens (SSO / WP-SSO callbacks). Without it, the request host is never used to redirect tokens — it protects against open redirects. Format: `domain1.com,domain2.com`. |
 | `PUBLIC_API_URL` | No | falls back to the web base | api | Public base URL of the API. Used by branded emails (assets/logos served from the API) and as a fallback for the OIDC `redirect_uri` and the SAML URLs. |
 | `PUBLIC_BASE_URL` | No | `''` (relative path) | api | Absolute base that local storage prefixes to `/api/v1/storage/file/…` so file URLs are absolute. |
@@ -77,6 +80,8 @@ With `docker-compose.alpha.yml` the first two are composed automatically: **only
 | `LESSON_UNLOCK_CRON` | No | `*/10 * * * *` | worker | Cron for the unlocked-lesson notifier (drip content). |
 | `PAYMENT_SUBSCRIBERS_SYNC_CRON` | No | `*/15 * * * *` | worker | Cron that syncs subscribers from the payment connections. |
 | `REFERRALS_APPROVAL_CRON` | No | `30 * * * *` | worker | Cron for automatic referral approval. |
+| `RETENTION_CRON` | No | `*/5 * * * *` | worker | Cron of the [mod.retention](../modules/catalog/retention.md) sweep (automated messages), in UTC. |
+| `GAMIFICATION_ANNIVERSARY_CRON` | No | `0 8 * * *` | worker | Cron of the anniversary celebrations of [mod.gamification](../modules/catalog/gamification.md) (UTC). |
 | `SURVEYS_REMINDER_CRON` | No | `*/15 * * * *` | worker | Cron for the post-class survey reminder. |
 | `SURVEYS_REMINDER_DELAY_HOURS` | No | `24` | worker | Hours after the class before the survey reminder is sent. |
 | `SURVEYS_HASH_SECRET` | No | falls back to `AUTH_SECRET` | api | Secret used to hash identifiers in survey responses (anonymisation). |
@@ -88,14 +93,18 @@ With `docker-compose.alpha.yml` the first two are composed automatically: **only
 | `AUTH_SECRET` | **Yes** | — | api, worker | Signing secret for JWTs (access + refresh), enrollment tickets and unsubscribe tokens. **At least 32 characters**: the app throws at startup if it is missing or shorter. Generate it with `openssl rand -base64 32`. Changing it invalidates every session. |
 | `AUTH_URL` | No | `https://didacta.local` | api | JWT issuer (`iss`). Also the default base for Stripe checkout success/cancel URLs. |
 | `AUTH_SIGNUP_ENABLED` | No | `false` | api, web | Enables public sign-up (`POST /auth/signup` + the `/signup` page). Closed by design: real accounts come in through registration or an admin invitation. Only set it to `true` in dev/E2E stacks. |
-| `TENANT_SETTINGS_ENC_KEY` | Critical if you use integrations | — (cascade) | api, compose | AES-256 key, **64 hex characters**, encrypting per-tenant secrets at rest (OIDC client secret, per-tenant SMTP, Stripe keys, Zoom S2S, Telegram bot; the SCIM token does not use it — only a SHA-256 hash of it is stored). Cascade: this variable → the `${STORAGE_ROOT}/.didacta-secret-key` file (auto-generated, `0600`) → an ephemeral in-memory key (secrets are lost on restart). Generate it with `openssl rand -hex 32`. **Never rotate it without a re-encryption plan.** |
-| `TENANT_SETTINGS_ENC_KEY_FILE` | No | `${STORAGE_ROOT}/.didacta-secret-key` | api | Alternative path for the master key file, so the key and the storage can live on different volumes. |
+| `TENANT_SETTINGS_ENC_KEY` | Critical if you use integrations | — (cascade) | api, compose | AES-256 key, **64 hex characters**, encrypting per-tenant secrets at rest (OIDC client secret, per-tenant SMTP, Stripe keys, Zoom S2S, Telegram bot; the SCIM token does not use it — only a SHA-256 hash of it is stored). Cascade: this variable → `TENANT_SETTINGS_ENC_KEY_FILE` → the `.didacta-secret-key` file in the secrets directory (auto-generated, `0600`; see `SECRETS_DIR`). **In production, if there is no variable and the file can be neither read nor created, the API does not start** (it used to start with an ephemeral key). The key does **not** live inside `STORAGE_ROOT`: that tree is served over HTTP, and an old installation that had it there moves it on its own at startup and logs a warning that it must be rotated. Generate it with `openssl rand -hex 32`. **Do not change it by hand**: to rotate it use `node apps/api/dist/maintenance/rotate-cipher-key.cli.js --help` (it re-encrypts what is stored; keys can also be passed as `ROTATE_OLD_KEY` / `ROTATE_NEW_KEY`). |
+| `TENANT_SETTINGS_ENC_KEY_FILE` | No | `<SECRETS_DIR>/.didacta-secret-key` | api | Exact path of the master key file. An operator decision: nothing is migrated or moved. |
+| `SECRETS_DIR` | No | `secrets/` next to `STORAGE_ROOT` (e.g. `/app/data/secrets`) | api | Persistent directory, **outside `STORAGE_ROOT`**, where the auto-generated key (and only it) is stored. You only need to set it if the persistent volume is mounted exactly at `STORAGE_ROOT` (the sibling directory would not survive a redeploy): mount another volume and point here. |
 | `DIDACTA_REQUIRE_MFA_ADMIN` | No | `false` | api | Forces MFA on admins across the whole instance. Accepts `true`/`1`/`yes`/`on`. Independent of the per-tenant policy (the `feat:mfa.enforcement` Enterprise capability). |
 | `OIDC_REDIRECT_URI` | No | falls back to `PUBLIC_API_URL` | api | The `redirect_uri` sent to the OIDC IdP; it must match the one registered with the provider. |
 | `SAML_PUBLIC_API_URL` | No | falls back to `PUBLIC_API_URL` | api | Public API base for the SAML ACS callback. |
 | `SAML_SP_ENTITY_ID_BASE` | No | `<API base>/saml` | api | Base of the SAML Service Provider `entityID`. |
-| `RATE_LIMIT_COMMUNITY_AUTH_PER_MIN` | No | `100` | api | Requests per minute for authenticated users on the Community plan (Enterprise: 1000, not configurable). |
-| `RATE_LIMIT_COMMUNITY_PUBLIC_PER_MIN` | No | `30` | api | Requests per minute for anonymous traffic on Community (Enterprise: 300). Fixed 60 s window. |
+| `RATE_LIMIT_COMMUNITY_AUTH_PER_MIN` | No | `100` | api | Requests-per-minute cap **per academy** with a session on the Community plan (plus SCIM and API keys). Enterprise: 1000 by default. |
+| `RATE_LIMIT_COMMUNITY_PUBLIC_PER_MIN` | No | `30` | api | Requests per minute **per IP** without a session on Community (Enterprise: 300). Fixed 60 s window. |
+| `RATE_LIMIT_COMMUNITY_USER_PER_MIN` | No | falls back to `RATE_LIMIT_COMMUNITY_AUTH_PER_MIN` | api | **Per-user** limit with a session on Community. If undefined, the per-academy cap is the only one that applies. |
+| `RATE_LIMIT_ENTERPRISE_USER_PER_MIN` / `_AUTH_PER_MIN` / `_PUBLIC_PER_MIN` | No | `1000` / `1000` / `300` | api | Limits with the `feat:api.rate_limit.elevated` capability. **They never fall below Community's**: if you raise Community's, these rise with them, and a lower value has no effect. |
+| `RATE_LIMIT_WINDOW_SECONDS` | No | `60` | api | Fixed window of the rate limiter, in seconds. |
 
 ## 6. Email / SMTP
 
@@ -109,6 +118,7 @@ The first three work as a set: if any of `SMTP_HOST`, `SMTP_PORT` or `SMTP_FROM`
 | `SMTP_USER` | No | `''` | api | SMTP authentication user. Empty = no auth (the Mailpit case). |
 | `SMTP_PASS` | No | `''` | api | SMTP password (preferred name; the `SMTP_PASSWORD` alias exists for compatibility). |
 | `SMTP_SECURE` | No | decided by nodemailer from the port | api | Forces implicit TLS. Only the literals `'true'`/`'false'` have any effect. |
+| `SMTP_ENCRYPTION` | No | inferred from the port | api | Encryption mode: `tls` (implicit, port 465), `starttls` (587) or `none` (local MTA). Empty = by port (465 → TLS; otherwise plain with opportunistic STARTTLS). Replaces `SMTP_SECURE`, which remains as legacy. |
 | `MAILPIT_SMTP_PORT` | No | `1025` | compose | Host port of Mailpit's SMTP server. |
 | `MAILPIT_UI_PORT` | No | `8025` | compose | Host port of the Mailpit UI (loopback only: it shows **every** message, password resets included). |
 
@@ -148,14 +158,14 @@ The canonical AI configuration is **per tenant**, from the admin panel. These va
 
 ## 9. Zoom (live classes)
 
-Zoom's Server-to-Server credentials **are not environment variables**: they live encrypted per tenant (which is why `TENANT_SETTINGS_ENC_KEY` matters).
+Zoom's Server-to-Server credentials **and the webhook Secret Token are not environment variables**: they live encrypted per tenant (which is why `TENANT_SETTINGS_ENC_KEY` matters). The old global `ZOOM_WEBHOOK_SECRET` variable is no longer read.
 
 | Name | Required | Default | Component | Description |
 |---|---|---|---|---|
-| `ZOOM_WEBHOOK_SECRET` | Yes, to receive webhooks | — | api | Zoom secret token used to verify the webhook's HMAC-SHA256 signature. Without it, events are rejected. |
 | `ZOOM_REMINDER_CRON` | No | `*/5 * * * *` | worker | Cron for the live class reminder worker. |
 | `ZOOM_REMINDER_HOURS_BEFORE` | No | `2` | worker | How many hours ahead the reminder is sent. |
 | `ZOOM_ATTENDANCE_SYNC_CRON` | No | `*/10 * * * *` | worker | Cron for attendance reconciliation against the Zoom API. |
+| `ZOOM_ALLOW_STUB` | No | `false` | api | Development and tests only: allows a simulated Zoom client when there are no credentials. Do not enable it in production. |
 
 ## 10. Payments — Stripe (the billing and subscriptions modules)
 
@@ -163,7 +173,10 @@ The canonical configuration lives **per tenant** under Administration → Settin
 
 | Name | Required | Default | Component | Description |
 |---|---|---|---|---|
-| `STRIPE_SECRET_KEY` | No — instance fallback | — | api | Stripe secret key. A tenant with no credentials of its own in the panel lands here; one account per instance, shared by billing and subscriptions. |
+| `STRIPE_SECRET_KEY` | No — instance fallback | — | api | Stripe secret key. A tenant with no credentials of its own in the panel lands here **if the `STRIPE_ALLOW_GLOBAL_FALLBACK` policy allows it**; one account per instance, shared by billing and subscriptions. |
+| `STRIPE_PUBLISHABLE_KEY` | No | — | api | **Publishable** key (`pk_…`) of the **same account** as `STRIPE_SECRET_KEY`. With it the payment is rendered inside the academy's sales page (embedded Checkout, with its header and colour); without it, a redirect to Stripe's page. An academy with its own Stripe sets it under Administration → Payments next to its keys. |
+| `STRIPE_ALLOW_GLOBAL_FALLBACK` | No | undefined | api | May an academy that has **not** configured its Stripe charge with the instance keys? Undefined (recommended): **yes if the instance has a single academy; no if it has several** (inheriting the account would put one academy's students' money into the operator's account). `true`: every academy without its own Stripe charges with the instance account (several academies of the same owner on one account). `false`: none inherits it. The instance setting `billing.allowGlobalStripeFallback`, if it exists, overrides this variable. |
+| `PAYMENT_CONNECTIONS_PAST_DUE_GRACE_DAYS` | No | `0` | api | Days a subscriber of a **connected** account (Stripe, PayPal or read-only WooCommerce) keeps their tier and access group while unpaid (`past_due`/`on-hold`). `0`: non-payment gives no access. Once the term is over, access is withdrawn at the next "Sync tiers". Independent of `SUBSCRIPTIONS_GRACE_PERIOD_DAYS`, which only applies to subscriptions Didacta itself charges. |
 | `STRIPE_WEBHOOK_SECRET` | No | falls back to `SUBSCRIPTIONS_WEBHOOK_SECRET` | api | Secret of the billing webhook (`…/modules/billing/webhook`). |
 | `BILLING_SUCCESS_URL_BASE` | No | `<AUTH_URL>/courses` | api | Base of the success URL for the one-off purchase checkout. |
 | `BILLING_CANCEL_URL_BASE` | No | `<AUTH_URL>/courses` | api | Base of the cancel URL for the one-off checkout. |
@@ -204,14 +217,82 @@ The canonical configuration lives **per tenant** under Administration → Settin
 | `DIDACTA_TELEMETRY_DISABLED` | No | `false` | api | Disables the anonymous daily heartbeat. Accepts `true`/`1`/`yes`. See [Telemetry](telemetry.md). |
 | `DIDACTA_TELEMETRY_URL` | No | falls back to `DIDACTA_REGISTRY_URL` | api | Alternative heartbeat endpoint (tests, corporate proxies). Fixed 5 s timeout. |
 | `DIDACTA_REGISTRY_URL` | No | — (registration disabled) | api | Endpoint of the **identified opt-in registration** (a different level from the anonymous heartbeat). |
-| `METRICS_TOKEN` | No | — (`/metrics` open) | api | Optional bearer token for the Prometheus `/metrics` endpoint. If it is defined, it is required. |
-| `AUDIT_REPORT_HMAC_KEY` | No | embedded fallback key | api | HMAC-SHA256 master key signing exported audit reports (verifiable offline with `tools/audit-report-verify.mjs`). In production it **must** be overridden: the fallback is public. |
+| `METRICS_TOKEN` | **Yes, in production** | — | api | Bearer token of the Prometheus `/metrics` endpoint. With `NODE_ENV=production` (what the Docker image sets), **without it `/metrics` answers 401**; outside production, empty leaves it public. There is no variable to reopen it without a token: whoever scrapes from an internal network defines the token and gives it to Prometheus (`authorization.credentials`). Generate it with `openssl rand -hex 32`. |
+| `AUDIT_REPORT_HMAC_KEY` | Yes, if you export the signed audit log | — (development key outside production) | api | HMAC-SHA256 master key signing exported audit reports (capability `feat:reports.advanced_signed`; verifiable offline with `tools/audit-report-verify.mjs`). With `NODE_ENV=production` **without it the export answers 503**. With any other `NODE_ENV` it signs with a public development key and a warning is logged: that signature is not tamper-evident. Generate it with `openssl rand -hex 32`. |
 | `WEBHOOKS_TIMEOUT_MS` | No | `5000` | api, worker | Timeout of the POST to an outgoing webhook endpoint. |
 | `WEBHOOKS_COMMUNITY_MAX_ENDPOINTS` | No | `1` | api | Maximum webhook endpoints per tenant on Community (Enterprise: 20). |
 | `WEBHOOKS_COMMUNITY_MAX_EVENTS` | No | `3` | api | Maximum event types per endpoint on Community (Enterprise: unlimited). |
 | `WEBHOOKS_ENTERPRISE_MAX_ENDPOINTS` | No | `20` | api | Maximum endpoints with the `feat:api.webhooks.high_throughput` capability. |
 
-## 14. Development seed (`BOOTSTRAP_*`)
+## 14. Security, proxy and headers
+
+| Name | Required | Default | Component | Description |
+|---|---|---|---|---|
+| `TRUSTED_PROXY_HOPS` | No | `1` | api | How many of **your own** proxies sit in front of the API. Fastify drops that many trailing entries of `X-Forwarded-For` and keeps the previous one, which is the client's real IP (the audit-log IP and the public rate-limit bucket come from it). `1` = a single TLS-terminating proxy (the `deploy/` templates and docker compose). `0` = API exposed directly, no proxy: trust no XFF. |
+| `TRUSTED_PROXY_IPS` | No | — | api | IPs or CIDRs of the trusted proxies, comma-separated (`10.0.0.0/8,172.16.0.0/12`). If set, it takes precedence over `TRUSTED_PROXY_HOPS`. |
+| `WEB_CSP` | No | Didacta's own | web | Replaces the web's `Content-Security-Policy` with yours. The app already emits CSP, `nosniff`, `X-Frame-Options` and `Referrer-Policy` on its own; the proxy may add them on top. |
+| `WEB_HSTS` | No | on in production | web | `off` disables `Strict-Transport-Security`. Set it if you serve over plain HTTP: the browser remembers the header and would force HTTPS. |
+| `LESSON_IFRAME_ALLOWED_HOSTS` | No | — | api | Extra hosts (CSV) from which `<iframe>` is accepted inside an HTML lesson. YouTube, Vimeo and Bunny are already allowed; you only need it if you serve your own player. |
+| `DIDACTA_ALLOW_UNVERIFIED_MODULES` | No | `false` | api | Runs modules **without a verified signature**. **Do not enable it in production**: a module's code runs inside the API process with its same permissions and `node:vm` is not a security boundary. Only with the exact value `true`, and only to test your own module before signing it. |
+
+## 15. Platform payments (`mod.payouts`)
+
+Only for whoever operates a **platform with several academies** and collects in their own Stripe account to split the money with each creator (Didacta Cloud's mode). The switch is `PAYMENTS_PLATFORM_STRIPE_SECRET_KEY`: without it (or empty) the mode is **off** and the other variables are not even read; with it, **everything is validated at startup** and an error aborts startup naming the variable. How it works is detailed in [mod.payouts](../modules/catalog/payouts.md). Key and secret values never appear in an error message.
+
+| Name | Required | Default | Component | Description |
+|---|---|---|---|---|
+| `PAYMENTS_PLATFORM_STRIPE_SECRET_KEY` | **Switch** | — | api | Secret or restricted key (`sk_…`/`rk_…`) of the operator's account. |
+| `PAYMENTS_PLATFORM_STRIPE_WEBHOOK_SECRETS` | Yes, with the key | — | api | `whsec_…` secrets of the platform webhook (`/api/v1/modules/payouts/webhook`), 1 to 3 comma-separated, to rotate without downtime. |
+| `PAYMENTS_PLATFORM_STRIPE_PUBLISHABLE_KEY` | No | — | api | `pk_…` key of the same account: renders the payment inside the sales page. |
+| `PAYMENTS_PLATFORM_DEFAULT_FEE_BPS` | No | `500` | api | Operator's default commission in basis points (max. `3000`). Each academy can have its own. |
+| `PAYMENTS_PLATFORM_LOSSES_COLLECTOR` | No | `stripe` | api | Who bears the connected accounts' losses: `stripe` or `application`. |
+| `PAYMENTS_PLATFORM_SUPPORTED_COUNTRIES` | No | EU, EEA (NO, LI), GB, CH, US, CA | api | Countries (ISO 3166-1 alpha-2, CSV) whose creators are paid. |
+| `PAYMENTS_PLATFORM_PAYOUT_INTERVAL` | No | `weekly` | api | `daily`, `weekly`, `monthly` or `manual`: how often Stripe pays the creator's bank. |
+| `PAYMENTS_PLATFORM_PAYOUT_WEEKLY_DAY` | No | `monday` | api | Day of the week of the weekly payout. |
+| `PAYMENTS_PLATFORM_PAYOUT_DELAY_DAYS` | No | `7` | api | Days of payout delay (0–365). |
+| `PAYMENTS_PLATFORM_MIN_BALANCE` | No | `eur:5000,usd:5000,gbp:5000` | api | Minimum cushion left in the creator's account, per currency (`currency:amount in the minor unit`). |
+| `PAYMENTS_PLATFORM_ACCOUNTS_API` | No | `v2` | api | Stripe API used to create connected accounts: `v2` or `v1`. |
+| `PAYMENTS_PLATFORM_DISPLAY_NAME` | No | `Didacta` | api | Operator name in the texts the creator sees (max. 80). |
+| `PAYMENTS_PLATFORM_DEBT_ALERT_MINOR` | No | `10000` | api | Open debt (minor unit) above which the operator is warned. |
+| `PAYMENTS_PLATFORM_CARD_FEE_ESTIMATE` | No | `150+25` | api | Card fee **shown** to the creator when they set a price (`basis points+fixed`). Only an estimate: what is deducted is the actual fee of each charge. |
+| `PAYMENTS_PLATFORM_REFUND_PLATFORM_FEE` | No | `proportional` | api | `proportional` or `none`: whether the operator returns its commission, proportionally, on a refund. |
+| `PAYMENTS_PLATFORM_REFUND_CARD_FEE_BEARER` | No | `creator` | api | `creator` or `platform`: who bears the card fee that is not returned. |
+| `PAYMENTS_PLATFORM_DISPUTE_LOSS_BEARER` | No | `creator` | api | `creator` or `platform`: who bears the fee of a lost dispute. |
+| `PAYMENTS_PLATFORM_DISPUTE_WON_FEE_BEARER` | No | `creator` | api | `creator` or `platform`: who bears the fee of a won dispute (Stripe does not return it). |
+| `PAYMENTS_PLATFORM_OPERATOR_ALERT_EMAIL` | No | — | api | Operator email for money alerts; without it, log only. |
+| `PAYMENTS_PLATFORM_TAX_PROFILE_REQUIRED` | No | `true` | api | Hold transfers until the creator completes their tax details (invoice and DAC7). |
+| `PAYMENTS_PLATFORM_INVOICE_ISSUER_NAME` / `_TAX_ID` / `_VAT_ID` / `_ADDRESS_LINE1` / `_POSTAL_CODE` / `_CITY` / `_REGION` / `_COUNTRY` / `_EMAIL` | No (all or nothing) | country `ES` | api | Details of the **issuer** of the monthly commission invoice. Without name, tax ID and address nothing is invoiced and a warning is logged at startup. |
+| `PAYMENTS_PLATFORM_INVOICE_SERIES` | No | `DC` | api | Series prefix (1–6 capital letters): `DC-2026-000001`; corrective invoices `DCR-…`. |
+| `PAYMENTS_PLATFORM_INVOICE_SERVICE_NAME` | No | `Didacta Cloud` | api | Service name on the invoice. |
+| `PAYOUTS_SETTLE_CRON` | No | `* * * * *` | worker | Sales settlement sweep. |
+| `PAYOUTS_ACCOUNTS_PENDING_CRON` / `PAYOUTS_ACCOUNTS_READY_CRON` | No | `*/15 * * * *` / `20 3 * * *` | worker | Sync of pending / ready connected accounts (UTC). |
+| `PAYOUTS_RECONCILE_CRON` / `PAYOUTS_RECONCILE_DEEP_CRON` | No | `7 * * * *` / `40 3 * * *` | worker | Hourly and deep nightly reconciliation against Stripe (UTC). |
+| `PAYOUTS_INVOICES_CRON` | No | `20 6 * * *` | worker | Issuing of the monthly invoices (Madrid time). |
+
+## 16. Video upload (Didacta Cloud)
+
+Video upload from the lesson exists only when the operator connects a **Bunny Stream** library. The switch is `BUNNY_STREAM_API_KEY`: without it (or empty) upload is **off** (the lesson accepts links only, as always) and the other variables are not even read; with it, everything is validated at startup and an error aborts startup naming the variable. See [mod.courses → Lesson video](../modules/catalog/courses.md).
+
+| Name | Required | Default | Component | Description |
+|---|---|---|---|---|
+| `BUNNY_STREAM_API_KEY` | **Switch** | — | api | The library's (write) API key. |
+| `BUNNY_STREAM_LIBRARY_ID` | Yes, with the key | — | api | The library's number. |
+| `BUNNY_STREAM_CDN_HOSTNAME` | Yes, with the key | — | api | Host of the library's CDN (`vz-….b-cdn.net`), without scheme. |
+| `BUNNY_STREAM_TOKEN_KEY` | Yes, with the key | — | api | "Token authentication key" under Security: signs the embed and the CDN URLs. It cannot be the API key. |
+| `BUNNY_STREAM_WEBHOOK_SECRET` | Yes, with the key | — | api | The library's "Read-only API key": Bunny signs the webhook with it. It cannot be the write key. |
+| `BUNNY_STREAM_TUS_ENDPOINT` | No | `https://video.bunnycdn.com/tusupload` | api | Resumable upload endpoint (https). |
+| `BUNNY_STREAM_API_BASE_URL` | No | `https://video.bunnycdn.com` | api | Only for tests against a Bunny double. |
+| `GOOGLE_DRIVE_BACKUP_SA_JSON` / `GOOGLE_DRIVE_BACKUP_FOLDER_ID` | No (together) | — | api | Google service account (JSON or base64 JSON) and the Drive folder where videos are copied before being deleted from an inactive academy. Without them, the inactivity policy runs **dry**: it warns, computes and audits, but deletes and archives nothing. |
+| `VIDEO_CLOUD_OPERATOR_ALERT_EMAIL` | No | — | api | Operator email for the cost warning; without it, log only. |
+| `VIDEO_CLOUD_SYNC_CRON` / `VIDEO_CLOUD_DAILY_CRON` | No | `17 * * * *` / `40 3 * * *` | worker | Hourly sync and daily sweep of the quota and inactivity policy. |
+
+## 17. Help and suggestions (`mod.soporte`)
+
+| Name | Required | Default | Component | Description |
+|---|---|---|---|---|
+| `SUPPORT_OPERATOR_ALERT_EMAIL` | No | — | api | Email of the platform operator that receives, right away, the tickets from **whoever administers an academy** (with the screenshot attached and `Reply-To` = the creator). It goes out through the instance SMTP and, without it, through the academy's. Empty (or invalid, with a warning at startup) = whoever administers does not see the button. Members' tickets go to their academy's inbox and do not depend on it. See [mod.soporte](../modules/catalog/support.md). |
+
+## 18. Development seed (`BOOTSTRAP_*`)
 
 The **real setup wizard** (`/setup`) reads no environment variables at all: the first start is configured through the web interface. These variables belong exclusively to the programmatic development seed (`pnpm db:seed`).
 
@@ -224,7 +305,7 @@ The **real setup wizard** (`/setup`) reads no environment variables at all: the 
 | `BOOTSTRAP_PASSWORD` | Yes, for the seed | — | seed | Admin password. Deliberately without a default, so no known credentials are ever created. |
 | `BOOTSTRAP_DOMAINS` | No | `localhost,127.0.0.1` | seed | CSV domains associated with the tenant (tenant resolution by host). |
 
-## 15. Tests and E2E (contributors)
+## 19. Tests and E2E (contributors)
 
 | Name | Default | Description |
 |---|---|---|
@@ -239,7 +320,7 @@ The **real setup wizard** (`/setup`) reads no environment variables at all: the 
 | `PROD_SMOKE` | — | Switch for the smoke tests against production (only with the exact value `1`). |
 | `PROD_TEST_EMAIL` / `PROD_TEST_PASSWORD` / `PROD_TENANT_SLUG` / `PROD_COURSE_SLUG` / `PROD_EXPECTED_COURSE` | — | Parameters of the production smoke test. |
 
-## 16. Image build variables
+## 20. Image build variables
 
 Only relevant if you build your own image with `docker build`:
 

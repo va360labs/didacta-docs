@@ -16,8 +16,10 @@ Group membership materialises as **real core enrollments** (through `mod.learnin
 - Members arrive through three routes with different owners: **MANUAL** (added by an admin or on registration approval — *sticky*, never revoked on its own), **TIER** (reconciled against `mod.payment-connections` tiers) and **MEMBERSHIP** (granted by the paid membership from `mod.subscriptions`).
 - The key design idea is **refcounting with provenance**: a course is only unenrolled when no live group grants it, and enrollments with origin `PURCHASE`, `SUBSCRIPTION` or `API` are never touched.
 - Revocation on cancellation or non-payment removes **only** the memberships whose origin is `MEMBERSHIP`. In `/admin/access-groups` and in the user dossier, those memberships are marked with the "By membership" badge.
+- **Who owns a membership.** A manual add over an already active membership of another origin **promotes** it to `MANUAL`: from then on neither a tier change nor a non-payment removes it. Conversely, a **revoked** membership that is reactivated (by a payment, for example) becomes the property of whoever reactivates it, even if it used to be `MANUAL`: that way access granted by money does not outlive the payment stopping.
+- **Refcount and refunds.** The refcount is the number of live grants (`mod_access_groups_grant` without `revoked_at`) of a course to a person across all their groups. When a course purchase is refunded, the purchase enrollment is withdrawn unless some group still grants it: in that case it goes back to origin `GROUP`.
 - Deleting a group revokes its memberships and cleans up orphaned drip schedules.
-- A group can be flagged `isDefaultForApproval` (granted when registrations are approved) or linked to a tier (`linkedTierName`).
+- A group can be flagged `isDefaultForApproval` (granted when registrations are approved; only one per tenant: flagging another unflags the previous one) or linked to a tier (`linkedTierName`). Changing or removing the tier link removes those who came in through the previous tier; whoever still qualifies comes back on the next sync.
 
 It is a first-party module **formalised as a package** (`modules/access-groups/`, with its own manifest) whose NestJS orchestration — controller, Prisma service and event bridges — lives in the host (`apps/api/src/modules/access-groups/`), the standard built-in module pattern.
 
@@ -29,7 +31,7 @@ Everything is configured from the panel, always with an admin role (`super_admin
 
 - **Create a group** — `/admin/access-groups` (Administration → People & access → "Access groups"): fields "Name", "Type" ("All courses", "Several courses", "One course") and "Description (optional)".
 - **"Mark as default"** — `/admin/access-groups`: sets `isDefaultForApproval`; that group is granted when `mod.member-registration` requests are approved.
-- **"Auto-grant" switch** — `/admin/access-groups`, only on "All courses" groups: `autoGrantNewCourses`, enrolls members in every course as it is published.
+- **"Auto-grant" switch** — `/admin/access-groups`, only on "All courses" groups: `autoGrantNewCourses` (**on** by default), enrolls members in every course as it is published.
 - **"Courses in the group"** — `/admin/access-groups` → "Manage": the course set of a "Several courses"/"One course" group, with "Save courses".
 - **"Tier link (payments)"** — `/admin/access-groups` → "Manage": "Tier name" field + "Save link" (`linkedTierName`). Reconciliation is triggered with the "Sync tiers from payments" button on `/admin/integrations/payment-connections` (owner: `mod.payment-connections`).
 - **"Access group it grants"** — `/admin/membership`: which group the paid membership grants. That setting belongs to `mod.subscriptions`, not to this module.
@@ -57,6 +59,8 @@ Everything is configured from the panel, always with an admin role (`super_admin
 
 ![Membership settings: "Access group it grants" selector](../../assets/modules/access-groups/en/access-groups-3-membership.png)
 
+From a person's profile (`/u/<id>`, "Record" → "Training" → "Access groups", admins only) you can also add them to a group with "Add" or take them out with "Remove": removing them withdraws the enrollment in the courses that only came from that group (progress is kept in case they return). "By tier" memberships are managed by the payment.
+
 The member never sees "groups" on any screen: the group's courses simply show up as active enrollments in `/courses`, and disappear when no live group grants them (enrollments from any other origin are never touched).
 
 ## Dependencies
@@ -69,7 +73,7 @@ The member never sees "groups" on any screen: the group's courses simply show up
 
 ## API
 
-Prefix `/modules/access-groups` — **everything requires admin**, reads included (they expose the roster). Details in [Reference → Learning](../../api/reference/learning.md#access-groups-modulesaccess-groups-all-admin).
+Prefix `/modules/access-groups` — **everything requires admin**, reads included (they expose the roster): list and create groups, `GET/PATCH/DELETE /:id`, `PUT /:id/courses`, `POST /:id/members`, `DELETE /:id/members/:userId` and the `GET /catalog/courses` and `GET /catalog/users` catalogs for the panel's pickers. Details in [Reference → Learning](../../api/reference/learning.md#access-groups-modulesaccess-groups-all-admin).
 
 ## Events
 

@@ -3,7 +3,7 @@
 Segunda parte del recorrido visual — continúa donde termina [Recorrido visual: primeros pasos](visual-walkthrough.md). Aquí configuramos el correo saliente y preparamos la instancia para vender: cursos sueltos y membresías.
 
 !!! note "De dónde salen estas capturas"
-    Misma instancia aislada y sin seeds de la primera parte (versión 0.1.0-beta.18, **modo completo**), arrancada sin ninguna clave de Stripe en el entorno. El SMTP apunta al Mailpit del propio `docker-compose.alpha.yml` — es un envío real, no una simulación: el correo de prueba llega de verdad al buzón.
+    Misma instancia aislada y sin seeds de la primera parte (versión 0.1.0-beta.24, **modo completo**), arrancada sin ninguna clave de Stripe en el entorno. El SMTP apunta al Mailpit del propio `docker-compose.alpha.yml` — es un envío real, no una simulación: el correo de prueba llega de verdad al buzón.
 
 ## 1 · Notificaciones (SMTP)
 

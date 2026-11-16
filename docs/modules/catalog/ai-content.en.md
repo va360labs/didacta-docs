@@ -27,7 +27,7 @@ It generates **learning drafts** from a lesson's text: summaries (`SUMMARY`), fl
 
 ![Where the chat key used by the generator goes](../../assets/modules/ai-content/en/ai-content-2-providers.png)
 
-**No variables of its own, no per-tenant settings and no Enterprise license requirement.**
+**No variables of its own, no per-tenant settings and no Enterprise license requirement.** Manifest permissions: `ai-content.generate`, `ai-content.review` and `ai-content.read`.
 
 ## Step by step
 

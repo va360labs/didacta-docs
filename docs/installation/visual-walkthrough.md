@@ -3,9 +3,9 @@
 Esta guía recorre una instalación de Didacta **desde cero**, tal y como la vería cualquier self-hoster nuevo: una instancia sin ningún dato previo y el camino real de un operador — asistente de configuración, asistente de bienvenida de la academia, primer curso, alta de alumnado y certificado — con una captura en cada paso.
 
 !!! note "De dónde salen estas capturas"
-    Se tomaron contra una instancia aislada, efímera y sin seeds de la versión 0.1.0-beta.18. La academia, el curso y las personas son de ejemplo (`Primer Sorbo`, `Lucía Marín`, `Elena Vidal`, dominio `primersorbo.example.com`) — sustitúyelos por los tuyos.
+    Se tomaron contra una instancia aislada, efímera y sin seeds de la versión 0.1.0-beta.24. La academia, el curso y las personas son de ejemplo (`Primer Sorbo`, `Lucía Marín`, `Elena Vidal`, dominio `primersorbo.example.com`) — sustitúyelos por los tuyos.
 
-    Una instalación nueva arranca en **modo completo** (menú lateral con todas las opciones); el [último paso](#10-el-modo-sencillo) enseña cómo pasar al **modo sencillo**, el de las aulas de Didacta Cloud.
+    El menú lateral lleva al final la tarjeta «Ayuda y sugerencias» ([mod.soporte](../modules/catalog/support.md)). Una instalación nueva arranca en **modo completo** (menú lateral con todas las opciones); el [último paso](#10-el-modo-sencillo) enseña cómo pasar al **modo sencillo**, el de las aulas de Didacta Cloud.
 
 ## 1 · Primer arranque y asistente de configuración
 
@@ -63,7 +63,7 @@ Publicar exige cuatro requisitos (título, descripción, al menos una sección y
 
 ![Tarjeta «Listo para publicar» con los cuatro requisitos cumplidos](../assets/visual-walkthrough/10-course-ready.png)
 
-Con «Publicar», el curso pasa a **Publicado**.
+Con «Publicar», el curso pasa a **Publicado**. Encima de la cabecera del curso está la tarjeta «Precio del curso»: mientras el curso es borrador te avisa de que hay que publicarlo antes de ponerle precio; ya publicado, «Poner a la venta» lo lleva al catálogo de venta.
 
 ![Curso ya publicado](../assets/visual-walkthrough/11-course-published.png)
 

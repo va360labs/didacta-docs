@@ -19,6 +19,7 @@ The canonical guide is [CONTRIBUTING.md](https://github.com/va360labs/didacta-io
 ## Checks before you push
 
 ```bash
+pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test

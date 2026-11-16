@@ -15,17 +15,21 @@ With **real-time delivery over SSE**, presence, a typing indicator, read receipt
 ## How it works
 
 - Uniqueness is enforced in the database: one conversation per space, one per student in the instructors channel, and one per pair of users in DMs (a canonical ordered key), which makes *get-or-create* **idempotent**.
+- Each message takes 1 to 4000 characters; `http(s)` URLs in the text are rendered as clickable links (http/https only; trailing punctuation is not part of the link).
+- The title of the instructors channel (and the fallbacks "Room", "Student", "Member") comes out in the classroom's language — es, en or pt: "Profesores", "Teachers", "Professores"; if the language cannot be read, Spanish.
 - The author's name is stored as a **snapshot** on send (it survives renames and deletions, and avoids N+1 queries).
 - The data model keeps deleted messages' bodies for auditing and the client renders them as "Message deleted"; today the API exposes no message-deletion action.
 - The SSE stream opens with an **ephemeral ticket** (~60 s) because `EventSource` does not accept headers; events: `message.created`, `typing`, `ping`.
 - A suspended or deleted account cannot use messaging even if its token is still valid (checked against the database on every call).
 - Rate limiting uses Redis and degrades to a local in-memory counter if Redis fails.
+- Other modules can read, without touching its tables, the direct messages the team has written to a person and how far they have read and when they first replied (used by `mod.retention`), and publish an automatic message that shows up instantly over SSE, like a hand-written one.
 
 ## Configuration
 
-- **Activation** — `Administration → Settings`, "Modules" tab (`/admin/settings`): the toggle for "Mensajería · salas, directos y canal de profesores" (`mod.messaging`). With the module disabled the API answers "The messaging module is not active in this community.".
+- **Activation** — `/admin/settings?tab=modules` ("Modules" tab): the toggle for "Mensajería · salas, directos y canal de profesores" (`mod.messaging`). With the module disabled the API answers "The messaging module is not active in this community.".
 - **No per-tenant settings** — the module exposes no settings screen of its own; the quotas (20 messages/min, 30 typing signals/min) are fixed in code.
 - **`REDIS_URL`** — used by realtime (pub/sub across API instances), presence and rate limiting. Without Redis messages are still persisted: rate limiting degrades to an in-memory counter and presence to a local mirror (enough with a single API instance); real-time fan-out across several instances does need Redis.
+- **Manifest permissions**: `messaging.conversation.read`, `messaging.message.write` and `messaging.moderation.write`.
 - **Rooms per space** — they exist if `mod.community` is active (the module reads its spaces, read-only).
 - No feature requires an Enterprise license.
 
@@ -67,7 +71,7 @@ Optional: `mod.community` (reading spaces for the rooms).
 
 ## API
 
-Prefix `/modules/messaging` (+ the SSE stream). Details in [Reference → Community and people](../../api/reference/community.md#messaging-modulesmessaging).
+Prefix `/modules/messaging`: `conversations` (list, messages, `typing`, `read`), `dm`, `spaces/:slug/open`, `faculty/open`, `presence`, `members` and `stream-ticket` + the SSE stream (`stream?ticket=…`). Details in [Reference → Community and people](../../api/reference/community.md#messaging-modulesmessaging).
 
 ## Events
 

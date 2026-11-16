@@ -1,6 +1,6 @@
 # Catálogo de módulos
 
-Los 24 módulos incluidos en Didacta Community, **cada uno con su página de detalle**: qué hace, cómo funciona, dependencias, modelo de datos, API, eventos y configuración. Los de categoría **core** están siempre activos; el resto se activa por organización.
+Los 27 módulos incluidos en Didacta Community, **cada uno con su página de detalle**: qué hace, cómo funciona, dependencias, modelo de datos, API, eventos y configuración. Los de categoría **core** están siempre activos; el resto se activa por organización.
 
 ## Aprendizaje (core)
 
@@ -26,7 +26,8 @@ Los 24 módulos incluidos en Didacta Community, **cada uno con su página de det
 | [Stripe Checkout](billing.md) (`mod.billing`) | Pago único de cursos, incluida la compra pública sin cuenta previa. |
 | [Suscripciones](subscriptions.md) (`mod.subscriptions`) | Recurrentes con Stripe: gracia, dunning, cancelación y la membresía de `/join`. |
 | [Conexiones de pago](payment-connections.md) (`mod.payment-connections`) | Cuentas Stripe/Woo en solo lectura, tiers, dashboard de suscripciones y espejo de pedidos. |
-| [Programa de referidos](referrals.md) (`mod.referrals`) | Comisiones sobre cobros reales con garantía y liquidación manual trazable. |
+| [Programa de referidos](referrals.md) (`mod.referrals`) | Comisiones sobre cobros reales (membresía y cursos) con garantía y liquidación manual trazable. |
+| [Cobros de plataforma](payouts.md) (`mod.payouts`) | El operador cobra en su cuenta de Stripe y reparte al creador; inerte salvo que se active el modo plataforma. |
 
 ## Comunidad y engagement
 
@@ -37,6 +38,8 @@ Los 24 módulos incluidos en Didacta Community, **cada uno con su página de det
 | [Puntos y retos](gamification.md) (`mod.gamification`) | Libro de puntos auditable: reglas con techo diario, niveles, beneficios y retos con prueba. |
 | [Biblioteca de recursos](resources.md) (`mod.resources`) | Recursos en colecciones, compartidos por la comunidad, con contador de descargas. |
 | [Encuestas y NPS](surveys.md) (`mod.surveys`) | Encuestas anónimas disparadas al terminar cada clase en directo. |
+| [Mensajes automáticos y miembros en riesgo](retention.md) (`mod.retention`) | Mensajes directos que el aula envía sola (bienvenida, recuperación, aniversario…) y lista de miembros a quienes escribir a tiempo. |
+| [Ayuda y sugerencias](support.md) (`mod.soporte`) | Tickets de soporte con captura: de los miembros al equipo del aula, y del equipo del aula al operador de la plataforma. |
 
 ## Inteligencia artificial
 

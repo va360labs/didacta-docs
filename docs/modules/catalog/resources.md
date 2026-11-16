@@ -8,7 +8,7 @@ Biblioteca de recursos de la comunidad, organizados en **colecciones** y buscabl
 
 ## Cómo funciona
 
-- La primera visita siembra **6 colecciones por defecto**; el staff puede crear más, con portada.
+- Una academia sin ninguna colección recibe, en su primera visita, **una colección neutra («General»)** en el idioma del aula (es, en o pt), editable; el staff puede crear más, con portada. Hace falta al menos una porque compartir un recurso exige elegir colección. Las aulas que ya tienen colecciones no se tocan.
 - Cualquier miembro puede **compartir recursos**; borrar puede el autor (lo suyo) o el staff (cualquiera).
 - El borrado de una colección con recursos dentro está **bloqueado a propósito** (`Restrict`, no cascade): hay que vaciarla antes — nunca se pierde contenido en silencio.
 - `POST /:id/download` registra la descarga/apertura y devuelve la URL: el contador alimenta la ordenación por popularidad.
@@ -16,7 +16,7 @@ Biblioteca de recursos de la comunidad, organizados en **colecciones** y buscabl
 ## Configuración
 
 - **Activación** — `Administración → Configuración`, pestaña «Módulos» (`/admin/settings`): interruptor de «Biblioteca de recursos» (`mod.resources`). Al desactivarlo desaparece el ítem «Recursos» del grupo Aprendizaje del menú.
-- **Colecciones** — no hay pantalla de administración aparte: las gestiona el staff (`super_admin`, `tenant_admin`, `formador`) desde la propia página `/resources`, con «Nueva colección» y el botón de editar de cada tarjeta. La primera visita siembra 6 colecciones («Workflows de clase», «Skills y agentes», «Herramientas de IA», «Plantillas y sistemas», «Guías y contratos», «Casos y resultados»), todas editables.
+- **Colecciones** — no hay pantalla de administración aparte: las gestiona el staff (`super_admin`, `tenant_admin`, `formador`) desde la propia página `/resources`, con «Nueva colección» y el botón de editar de cada tarjeta. La primera visita de un aula sin colecciones siembra una, «General» («General» / «Geral» según el idioma del aula), editable.
 - **Storage** — los recursos de tipo archivo suben al storage del tenant, que se configura en la pestaña «Storage» de `/admin/settings` (disco local del contenedor o bucket S3-compatible).
 - Sin variables de entorno propias ni más ajustes. Ninguna función exige licencia Enterprise.
 
@@ -36,9 +36,12 @@ Biblioteca de recursos de la comunidad, organizados en **colecciones** y buscabl
 
 **Cualquier miembro:**
 
-1. `/resources` («Recursos», grupo Aprendizaje; en modo sencillo, en «Más») muestra la parrilla de colecciones con su número de recursos. Si la academia no tiene ninguna colección, la biblioteca crea seis de ejemplo, vacías y marcadas «Pronto»: renómbralas, cámbiales la portada o bórralas cuando tengas las tuyas.
+1. `/resources` («Recursos», grupo Aprendizaje; en modo sencillo, en «Más») muestra la parrilla de colecciones con su número de recursos. Si la academia no tiene ninguna colección, la biblioteca crea una, «General», vacía: renómbrala o bórrala cuando tengas las tuyas. Toda colección sin recursos lleva la marca «Pronto».
 
     ![La biblioteca: parrilla de colecciones con portada y número de recursos](../../assets/modules/resources/resources-1-collections.png)
+
+    !!! note "La captura es de una biblioteca con varias colecciones"
+        Una academia nueva ya no parte de las seis colecciones de ejemplo que se ven en la captura, sino de una sola, «General».
 
 2. «Compartir recurso»: «Título», «Colección», tipo «Archivo» (PDF, Word, Excel, ZIP, JSON…) o «Enlace», y «Descripción (opcional)».
 
@@ -50,6 +53,10 @@ Biblioteca de recursos de la comunidad, organizados en **colecciones** y buscabl
     ![Una colección abierta: recursos con su contador de descargas y el buscador](../../assets/modules/resources/resources-3-collection.png)
 
 5. Cada autor puede eliminar lo suyo con la X de la tarjeta (con confirmación).
+
+## Permisos
+
+`resources.read` y `resources.manage`. Crear, editar y borrar colecciones exige rol `super_admin`, `tenant_admin` o `formador`.
 
 ## Dependencias
 

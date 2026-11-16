@@ -68,6 +68,21 @@ At startup the container applies only the **pending** migrations (`prisma migrat
     - The schema is never modified outside versioned migrations. `prisma db push` is reserved for development environments.
     - Do not skip versions without reading the notes of each release in between: breaking changes always ship with a migration note.
 
+## Changes to be aware of when upgrading from an earlier beta
+
+What has changed in behaviour between `0.1.0-beta.1` and the latest version and may surprise you when upgrading (each release's notes have the detail):
+
+| Since | What changes | What to do |
+| --- | --- | --- |
+| beta.10 | **`/metrics` requires `METRICS_TOKEN`** in production (before, without a token it was public). | Define the token and give it to Prometheus. |
+| beta.10 | **In production the API does not start with an ephemeral encryption key**: if there is no `TENANT_SETTINGS_ENC_KEY` and the key file can be neither read nor created, it aborts. | Mount `/app/data` as a writable volume or set the key. |
+| beta.12 | **The master encryption key leaves `STORAGE_ROOT`** (that tree was served over HTTP) for the secrets directory (`/app/data/secrets`, or `SECRETS_DIR`). At startup, a key in the old location is **moved on its own** and the log warns that it must be **rotated**. | Rotate the key with `node apps/api/dist/maintenance/rotate-cipher-key.cli.js --help`. See [Environment variables](../configuration/environment-variables.md). |
+| beta.14 | `TRUSTED_PROXY_HOPS` (default `1`): how many of your own proxies you trust for the client IP. | If there is no proxy in front of the API, `0`; if there is more than one, raise it. |
+| beta.15 | **The academy's URLs switch to English** (`/admin/settings`, `/studio/courses`, `/join`, `/catalog`…); the old ones answer `308` to the new ones. | Update your bookmarks and external links when you can. |
+| beta.23 | The image starts without downloading Prisma's engines (it used to need the network at every start). | Nothing. |
+
+The new modules (`mod.payouts`, `mod.retention`, `mod.soporte`) create their tables with the migrations; `mod.payouts` does nothing unless you define `PAYMENTS_PLATFORM_STRIPE_SECRET_KEY`, and `mod.soporte` and `mod.retention`, like every module, are **on by default** until the academy turns them off (under Modules).
+
 ## Rollback
 
 1. Restore the backup:

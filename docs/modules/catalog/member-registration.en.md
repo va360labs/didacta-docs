@@ -14,8 +14,10 @@ Registration creates the user as `PENDING`, kicks off a background **lookup of s
 
 ## How it works
 
-- The steps are chained with **HMAC-signed tickets** (no state in the database): the Telegram ticket authorises the OTP and the OTP's `verificationToken` authorises registration.
+- The steps are chained with **HMAC-signed tickets** using `AUTH_SECRET` (no state in the database): the Telegram ticket (15 min) authorises the OTP and the OTP's `verificationToken` (30 min) authorises registration. Each ticket carries the classroom it was issued in and is only valid there: a verification done in one classroom is useless for registering in another. The OTP code expires after 10 minutes. Without `AUTH_SECRET` the flow answers that it is not configured.
 - Approving activates the user, assigns them the **default access group** and sends the welcome email; rejecting deactivates them and sends a notice.
+- **The email links do not decide on their own.** "Approve" and "Reject" open `/member-registration/decision`, a confirmation screen ("Approve this request?"), and the decision is only applied when its button is clicked (`POST /modules/member-registration/decision`). That way the email security filters, which open every link, cannot approve or reject on the person's behalf. Whoever decides first wins: the stamp is atomic and a second attempt changes nothing.
+- Emails go out in the language of whoever receives them (Spanish, English or Portuguese) and their links point to the verified classroom domain of the tenant; `WEB_PUBLIC_URL` is only used as a last resort on single-domain installs.
 - If the tenant requires a verifier that is not operational (for example Telegram with no bot configured), registration returns a **fail-closed 503** — it never lets anyone through unverified.
 - A daily **GDPR purge** worker anonymises the Telegram data of requests that were never decided once the retention window expires (90 days by default).
 - The admin panel also supports re-running the payment lookup, deciding without the email, sending renewal reminders and managing **overdue payment flags** (with CSV import). **Manual sign-up** without OTP exists as an admin API endpoint (`POST /modules/member-registration/admin/requests`), with no dedicated panel screen.
@@ -63,7 +65,7 @@ A **core**-category module: always active, with no switch in the "Modules" tab. 
 
 **The decision (approver):**
 
-7. By email: "Nueva inscripción pendiente — {name}" arrives with the "Approve"/"Reject" buttons (signed single-use links, 7-day TTL) and the overdue status if there is one; clicking lands on `/member-registration/decision` with the outcome.
+7. By email: "Nueva inscripción pendiente — {name}" arrives with the "Approve"/"Reject" buttons (single-use links, 7-day TTL) and the overdue status if there is one; clicking lands on `/member-registration/decision`, which asks for confirmation ("Approve this request?" / "Reject this request?"): the decision is applied when you click "Approve" or "Reject" on that screen, and then the outcome is shown.
 8. Or from the panel: Administration → People & access → **Enrollment requests** (`/admin/member-requests`). Each request shows its detected subscription ("Active subscription" / "Subscription not active — canceled or past due"), one-off purchases, and lets you **Check again**, map the subscription under another email ("Is the subscription under another email? Map it here"), send reminders and pick the "Tier to assign" (preselected when it matches the subscription). Press **Approve** or **Reject**.
 
 ![Requests panel: subscription lookup, preselected tier and decision](../../assets/modules/member-registration/en/member-registration-3-requests.png)

@@ -50,7 +50,9 @@ docker logs -f didacta-app                  # bootstrap + Prisma migrations
 curl -fsS http://localhost:4000/healthz     # must return 200
 ```
 
-Then open `http://localhost:3000` and follow the [setup wizard](setup-wizard.md).
+Then open `http://localhost:3000` and follow the [setup wizard](setup-wizard.md): the link with its single-use token appears in those logs (`docker logs didacta-app | grep "Setup token"`).
+
+Behind a proxy, the image serves web and API **on a single origin** (`:3000`; the web app rewrites `/api/*`, `/healthz` and `/readyz` to the internal `:4000`), so publishing 3000 is enough. If your proxy chain is not one hop, adjust `TRUSTED_PROXY_HOPS` (see [Environment variables](../configuration/environment-variables.md#14-security-proxy-and-headers)).
 
 ## Useful optional variables
 
@@ -59,6 +61,9 @@ Then open `http://localhost:3000` and follow the [setup wizard](setup-wizard.md)
 | `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` | S3-compatible storage (MinIO, AWS, Hetzner…). |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Transactional email. Without these, emails are written to the logs but not sent. |
 | `DIDACTA_LICENSE_KEY` | Signed JWT that activates Enterprise capabilities. Without it, pure Community mode. |
-| `METRICS_TOKEN` | Bearer token protecting `/metrics` (Prometheus). Empty = public endpoint. |
+| `METRICS_TOKEN` | Bearer token protecting `/metrics` (Prometheus). With `NODE_ENV=production` it is **required**: without it, `/metrics` answers 401. |
+| `WEB_PUBLIC_URL` | Public URL of the web app (`https://campus.example.com`): the base of the links in emails. |
+| `DIDACTA_SETUP_TOKEN` | Token of the sign-up wizard; if you do not set it, it is printed in the logs. |
+| `AUDIT_REPORT_HMAC_KEY` | Signs the audit-log export (Enterprise capability); without it, 503 in production. |
 
 The one-to-one reference for every variable is in [Environment variables](../configuration/environment-variables.md).

@@ -10,6 +10,10 @@ Los errores se reportan como **issue en GitHub** con plantilla:
 
 [Abrir una issue :material-github:](https://github.com/va360labs/didacta-io/issues/new/choose){ .md-button .md-button--primary }
 
+!!! info "¿Usas Didacta Cloud?"
+
+    Esta página es para quien instala Didacta en su propio servidor. Si tu aula está en Didacta Cloud, escribe al equipo desde el botón **Ayuda y sugerencias** del aula o a `hola@didacta.io`: ver [Soporte de Cloud](../cloud/support.md).
+
 !!! danger "¿Es un problema de seguridad?"
 
     **No abras una issue pública.** Las vulnerabilidades (bypass de autenticación o de RLS, fuga de datos entre tenants, RCE, inyección SQL, escalada de privilegios…) se reportan por email a **`security@didacta.io`** siguiendo la [política de seguridad](https://github.com/va360labs/didacta-io/blob/main/SECURITY.md). Publicarlas en abierto deja expuestas a todas las instalaciones self-host hasta que haya parche.
@@ -30,7 +34,8 @@ Los errores se reportan como **issue en GitHub** con plantilla:
 | Falta una funcionalidad o quieres un cambio de comportamiento | Plantilla **✨ Feature request** |
 | Duda de uso, instalación o configuración | [Discussions](https://github.com/va360labs/didacta-io/discussions) |
 | Vulnerabilidad de seguridad | `security@didacta.io` (**nunca** issue) |
-| Uso comercial, Enterprise o Cloud | `licensing@didacta.io` |
+| Uso comercial o Enterprise | `licensing@didacta.io` |
+| Un problema en tu aula de [Didacta Cloud](../cloud/index.md) | [Soporte de Cloud](../cloud/support.md): `hola@didacta.io` o el botón «Ayuda y sugerencias» del aula |
 
 ## Datos que necesitamos
 

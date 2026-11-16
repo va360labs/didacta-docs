@@ -16,7 +16,7 @@ Didacta distinguishes two levels with different contracts:
 | Data access | The host's Prisma; it may **read** (never write) other modules' tables by declaring the dependency | Only its own tables, through a sandboxed `db` with a prefix-based SQL guard |
 | UI | In-tree, in the Didacta web app | JS bundles inside the ZIP |
 
-The 24 modules Didacta ships are first-party. The third-party level exists for the future marketplace — see [Third-party modules](third-party-modules.md).
+The 27 modules Didacta ships are first-party. The third-party level exists for the future marketplace — see [Third-party modules](third-party-modules.md).
 
 ## Isolation rules
 
@@ -50,6 +50,6 @@ A manifest declares **hard** dependencies (`dependencies.modules` — without th
 
 ## Next step
 
-- [Catalog of the 24 modules](catalog/index.md)
+- [Catalog of the 27 modules](catalog/index.md)
 - [Managing modules in your installation](managing.md)
 - [Building a module](building-a-module/index.md)

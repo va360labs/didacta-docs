@@ -7,13 +7,16 @@ Didacta Community se instala en tu propia infraestructura a partir de la imagen 
 | Camino | Para quién | Guía |
 | --- | --- | --- |
 | **Docker Compose** (recomendado) | La mayoría de instalaciones: levanta app + Postgres + Redis + buzón de correo de pruebas de una vez. | [Instalar con Docker Compose](docker-compose.md) |
+| **Un comando** (`install.sh`) | Probar o instalar en una máquina con Docker sin leer nada más: descarga el compose, genera `AUTH_SECRET`, arranca y te imprime el enlace del asistente. | [Instalar con un comando](docker-compose.md#instalar-con-un-comando) |
+| **Plataformas de un clic** (Coolify, Dokploy, Easypanel) | Quien ya usa una de ellas: el repositorio trae una plantilla por plataforma en `deploy/`. | [`deploy/README.md`](https://github.com/va360labs/didacta-io/blob/main/deploy/README.md) |
 | **docker run manual** | Operadores que ya tienen Postgres 16 y Redis 7 administrados y solo quieren el contenedor de la aplicación. | [Instalar con docker run](docker-run.md) |
 
 ## Requisitos
 
 - **Docker 24+** con Docker Compose v2 (`docker compose version`).
 - **2 GB de RAM** libres y ~2 GB de disco para imágenes y datos.
-- Puertos libres (todos configurables por variable de entorno): `3000` (web), `4000` (API), `5432` (Postgres), `6379` (Redis), `8025` (UI del buzón de correo de pruebas).
+- Puertos libres (todos configurables por variable de entorno): `3000` (web), `4000` (API), `5432` (Postgres), `6379` (Redis), `8025` (UI del buzón de correo de pruebas). Postgres, Redis, MinIO y Mailpit se publican **solo en `127.0.0.1`**.
+- **Un solo dominio**: la imagen corre la API (`:4000`) y la web (`:3000`) juntas, y la web reescribe `/api/*`, `/healthz` y `/readyz` hacia la API. En un servidor real basta con publicar el puerto 3000 detrás de tu proxy TLS: ni segundo dominio, ni CORS.
 
 !!! warning "PostgreSQL con pgvector"
     El compose oficial usa la imagen `pgvector/pgvector:pg16`. Si traes tu propio Postgres tiene que ser **16+ con la extensión `pgvector` disponible** (el tutor IA guarda embeddings en columnas `vector`). Sin ella, la app no arranca (`type "vector" does not exist`).

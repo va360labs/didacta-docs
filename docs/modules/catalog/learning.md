@@ -15,9 +15,14 @@ Gestiona todo el ciclo del alumno dentro de un curso: **matriculación** (direct
 ## Cómo funciona
 
 - Solo se puede matricular en cursos `PUBLISHED` (`COURSE_NOT_PUBLISHED` 422); una matrícula activa duplicada responde `ALREADY_ENROLLED` 409.
+- Cada matrícula guarda su **procedencia** (`source`): `ADMIN`, `CODE`, `INVITATION_LINK`, `PURCHASE`, `IMPORT`, `SUBSCRIPTION`, `API` o `GROUP` (la concede un grupo de acceso, y se retira por refcount al salir del último grupo que la daba). La procedencia decide qué se puede retirar solo y qué contenido se cierra.
+- **Automatrícula solo en cursos que no se venden.** `POST /modules/learning/enrollments/me` solo funciona si el curso no tiene página de compra externa ni se cobra dentro del aula (precio propio, suscripción al curso, o entregado con la membresía o con un tier de pago); si se vende, responde `COURSE_NOT_FREE` 403. Apuntarse a una **ruta de aprendizaje** aplica la misma regla curso a curso: no regala los cursos de pago, y no toca los que la persona ya tiene.
+- Un alumno solo puede registrar progreso en lecciones **del curso de su matrícula viva** (no cancelada ni pausada). Las lecciones de tipo `QUIZ` y `SCORM` no se pueden marcar como completadas por el cliente: las cierra el motor de evaluaciones o el runtime SCORM.
 - Cuando a un alumno le aplican varios calendarios de drip, **gana el más permisivo** (la fecha de desbloqueo más temprana). Sin calendario aplicable, todo está disponible.
 - El contenido de prueba (trial de membresía) se gatea con `TRIAL_CONTENT_LOCKED` 403, que el frontend convierte en CTA de pago.
+- Contenido cerrado por **nivel de la gamificación**: si el aula tiene `mod.gamification` activo y define un nivel mínimo para un curso o una sección (ver [gamificación](gamification.md)), las lecciones salen bloqueadas hasta alcanzarlo y la API responde `LEVEL_CONTENT_LOCKED` 403. Solo cierra lo que llega con la comunidad (grupo, membresía o automatrícula): lo que la persona tiene por su cuenta (compra, suscripción al curso, venta por API, código o invitación, importación) no se cierra nunca. Sin gamificación activa no se cierra nada.
 - Al cruzar el umbral emite `learning.course.completed` **una sola vez** — es lo que dispara la emisión de certificados.
+- **Reembolso**: el reembolso de la compra de un curso retira la matrícula (también si ya estaba completada) y revoca sus certificados, salvo que quede otra compra cobrada o un grupo que siga dando el curso (en ese caso la matrícula pasa a `GROUP`). Si la persona vuelve a comprarlo, recupera la matrícula con su estado completado.
 
 ## Configuración
 
@@ -26,7 +31,8 @@ Gestiona todo el ciclo del alumno dentro de un curso: **matriculación** (direct
 - **Drip por curso**: se configura en el builder del formador (`/studio/courses/<id>`, tarjeta «Liberación programada (drip)»), no en el panel de administración.
 - **Invitaciones por curso**: en el mismo builder, tarjeta «Invitaciones».
 - **Competencias**: el catálogo y su asignación a cursos viven en `/admin/competencies` («Competencias»).
-- **Variables de entorno**: `LESSON_UNLOCK_CRON` define la frecuencia del worker que avisa por email de lecciones desbloqueadas (patrón cron, por defecto `*/10 * * * *`). Es la única variable propia.
+- **Permanencia mínima para completar** (ajuste del módulo `mod.learning`, clave `minWatchFraction`): fracción de la duración declarada (0 a 1) que la lección debe haber estado abierta para poder darla por vista; por defecto **0** (apagado). Con el valor apagado la finalización se acepta igualmente, pero queda marcada como autodeclarada. No tiene pantalla en el panel.
+- **Variables de entorno**: `LESSON_UNLOCK_CRON` define la frecuencia del worker que avisa por email de lecciones desbloqueadas (patrón cron, por defecto `*/10 * * * *`; necesita `REDIS_URL`). Es la única variable propia.
 - **Storage**: los paquetes SCORM se guardan en el backend de archivos de la instancia (`/admin/settings?tab=storage`).
 - **Licencia**: todo el módulo es Community; ninguna función exige capabilities de Enterprise.
 
@@ -90,11 +96,11 @@ Gestiona todo el ciclo del alumno dentro de un curso: **matriculación** (direct
 ## Dependencias
 
 - Dura: `mod.courses`.
-- Opcionales: `mod.payment-connections` (tier para el drip), `mod.access-groups` (grupos para el drip), `mod.subscriptions` (estado trial + límite de lecciones).
+- Opcionales (declaradas en el manifest): `mod.payment-connections` (tier para el drip), `mod.access-groups` (grupos para el drip), `mod.subscriptions` (estado trial + límite de lecciones). Además, el host le pasa ya resueltas dos preguntas que `mod.learning` no puede leer por sí mismo: si un curso se vende (para la automatrícula) y si está cerrado por nivel (`mod.gamification`).
 
 ## Modelo de datos
 
-`mod_learning_enrollment` (matrícula única por usuario y curso) · `mod_learning_progress` · `mod_learning_invitation` · `mod_learning_drip_schedule` · `mod_learning_lesson_unlock_sub` · `mod_learning_scorm_package` · `mod_learning_scorm_attempt` · `mod_learning_lesson_comment` · `mod_learning_path` + `_path_course` + `_path_enrollment` · `mod_learning_competency` + `_course_competency`.
+`mod_learning_enrollment` (matrícula única por usuario y curso) · `mod_learning_progress` (con `completion_source`: quién dio la lección por hecha, `SELF`, `TIME`, `ASSESSMENT`, `SCORM` o `INSTRUCTOR`; las filas anteriores a esta columna quedan sin origen) · `mod_learning_invitation` · `mod_learning_drip_schedule` · `mod_learning_lesson_unlock_sub` · `mod_learning_scorm_package` · `mod_learning_scorm_attempt` · `mod_learning_lesson_comment` · `mod_learning_path` + `_path_course` + `_path_enrollment` · `mod_learning_competency` + `_course_competency`.
 
 ## API
 
@@ -102,5 +108,5 @@ Prefijo `/modules/learning` (+ `/modules/learning/paths`). Detalle completo en [
 
 ## Eventos
 
-- **Emite**: `learning.enrollment.created`, `learning.enrollment.cancelled`, `learning.progress.updated`, `learning.course.completed`, `learning.invitation.created`.
+- **Emite**: `learning.enrollment.created`, `learning.enrollment.paused`, `learning.enrollment.resumed` (solo si alguna matrícula cambió de estado de verdad; un reintento sin cambios no emite nada), `learning.enrollment.cancelled`, `learning.progress.updated`, `learning.course.completed`, `learning.invitation.created` y `scorm.attempt.completed` (al completarse un intento SCORM; conserva el prefijo `scorm.*` porque es el nombre que escucha el puente que marca la lección como vista).
 - **Consume**: `courses.course.archived`.

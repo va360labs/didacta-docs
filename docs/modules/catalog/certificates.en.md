@@ -8,9 +8,11 @@ Issuing and managing PDF certificates on course completion: **customisable templ
 
 ## How it works
 
-- Every issued certificate stores an **immutable snapshot** (student, course, date) and the SHA-256 hash of the PDF: renaming the course afterwards does not alter an already issued certificate. The PDF is regenerated on demand from the snapshot.
+- Every issued certificate stores an **immutable snapshot** (student, course, date, plus what is needed to draw it: text, color, signatory, logo, academy name and language) and the SHA-256 hash of the PDF: renaming the course afterwards does not alter an already issued certificate. Downloads serve **the issued PDF**, kept in storage; only if that object no longer exists is it drawn again from the snapshot.
+- The PDF comes out in the **student's language** (Spanish, English or Portuguese): the one on their profile and, if they have none, the classroom's; the language is kept in the snapshot so a redraw looks the same. The template preview uses the language of whoever is viewing it.
 - Two uniqueness constraints: `(tenant, number)` guarantees sequential numbering and `(tenant, enrollment)` prevents issuing twice for the same enrollment.
-- **Public verification** (`/modules/certificates/verify/:id`) returns `{ number, studentName, courseTitle, issuedAt, valid }` without ever exposing an email address or internal data. The data model accounts for revocation (`revoked_at`): a revoked certificate verifies with `valid: false` and the public page flags it "Revoked certificate" — although today there is no revoke operation in the API or the panel.
+- **Public verification** (`/modules/certificates/verify/:id`, no session; the credential is the UUID itself) returns `{ number, studentName, courseTitle, issuedAt, valid }` without ever exposing an email address or internal data.
+- **Revocation**: there is no button or endpoint to revoke by hand. The only path today is a **refund** of the course purchase: if the student does not keep access some other way (another paid purchase, or an access group that still grants the course), their enrollment is cancelled —even if it was already completed— and their certificates are revoked with reason `refund`. A revoked row is not deleted: `revoked_at` and `revoke_reason` are stamped, the certificate disappears from "My certificates" and public verification answers `valid: false` ("Revoked certificate"). If the person buys the course again, the refund revocation is undone; a revocation for any other reason is left alone.
 - The template editor has a **PDF preview** with sample data, persisting nothing.
 
 ## Configuration
@@ -40,12 +42,12 @@ Issuing and managing PDF certificates on course completion: **customisable templ
 
 ### Issuing is automatic
 
-1. When the student crosses the completion threshold, `mod.learning` emits `learning.course.completed` and the certificate is issued on its own: immutable snapshot, the tenant's sequential number and a PDF with the course's template (or the default). There is no "issue" button: if you need to re-issue, the PDF is regenerated on demand from the snapshot when downloaded.
+1. When the student crosses the completion threshold, `mod.learning` emits `learning.course.completed` and the certificate is issued on its own: immutable snapshot, the tenant's sequential number and a PDF with the course's template (or the default). There is no "issue" button; two simultaneous completions neither duplicate nor overwrite the certificate.
 
 ### Downloading and sharing (student)
 
 1. At `/my-certificates` ("My certificates"; in simple mode, in the avatar menu) the student sees each certificate with its number and date ("Issued on…").
-2. "Download PDF" opens the certificate; "Add to LinkedIn" opens LinkedIn's pre-filled *Add to Profile* flow, with the public verification URL as the credential.
+2. "Download PDF" opens the certificate; "Add to LinkedIn" opens LinkedIn's pre-filled *Add to Profile* flow: credential name (the course), organization (the academy's name), credential ID (the certificate number), issue year and month and, as the URL, the public verification page `/verify/<id>`. Didacta does not write to LinkedIn: it only opens the pre-filled form and the person confirms it.
 3. The completed course's page also shows "Download certificate".
 
     ![The student's "My certificates" with download and LinkedIn button](../../assets/modules/certificates/en/certificates-3-my-certificates.png)
@@ -65,7 +67,7 @@ Issuing and managing PDF certificates on course completion: **customisable templ
 | Table | What it stores |
 | --- | --- |
 | `mod_certificates_template` | Templates: body, color, logo, signatory, default flag. |
-| `mod_certificates_issued` | Issued certificates: number, SHA-256 hash, JSON snapshot, storage key, revocation. |
+| `mod_certificates_issued` | Issued certificates: number, SHA-256 hash, JSON snapshot, storage key, revocation (`revoked_at`, `revoke_reason`). |
 
 ## API
 
@@ -73,5 +75,5 @@ Prefix `/modules/certificates`: the student's own (`me`, detail, download), temp
 
 ## Events
 
-- **Emits**: `certificates.issued`, `certificates.revoked`.
+- **Emits** (manifest): `certificates.issued` and `certificates.revoked`. The latter is published when a student's valid certificates in a course are revoked (today, the refund revocation) with `{ userId, courseId, reason, revokedCount }`; if nothing valid was left to revoke, nothing is published. Undoing the revocation on a repurchase emits nothing.
 - **Consumes**: `learning.course.completed` (automatic issuing).

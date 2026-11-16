@@ -4,14 +4,14 @@
 
 ## Qué hace
 
-Branding visual **por organización**: logo (subido al storage o URL), modo de presentación de la marca (solo logo / logo y nombre), favicon, color primario expresado como **hue + saturación HSL**, familias tipográficas display y body, CSS custom sanitizado, footer HTML y los titulares de las pantallas de acceso.
+Branding visual **por organización**: logo (subido al storage o URL), modo de presentación de la marca (solo logo / logo y nombre), favicon (subido o por URL), color primario expresado como **hue + saturación HSL**, familias tipográficas display y body, CSS custom sanitizado, footer HTML y los titulares de las pantallas de acceso. Además define cómo se presenta la academia en su comunidad: **portada**, **descripción** y **enlaces sociales**.
 
 ## Cómo funciona
 
 - El theme se carga **server-side** en el layout raíz de la web e inyecta variables CSS que sobrescriben los design tokens base: cambiar el hue propaga automáticamente a los 10 escalones de la escala de marca (`brand-50…900`) — no hay que tocar token a token.
-- Las fuentes están limitadas a una **whitelist** de Google Fonts (Sora, Inter, Manrope, Space Grotesk, DM Sans, Plus Jakarta Sans…).
+- Las fuentes están limitadas a una **whitelist** de Google Fonts. Titulares: Sora, Inter, Manrope, Space Grotesk, DM Sans, Plus Jakarta Sans, Outfit y Lexend. Cuerpo: Inter, Manrope, DM Sans, IBM Plex Sans, Source Sans 3, Plus Jakarta Sans, Outfit y Nunito Sans.
 - El CSS custom se **sanitiza** y se limita a 16 KB; el footer HTML solo admite etiquetas básicas.
-- El logo se sirve por un endpoint **público** (necesario en `/signin`, antes de autenticar) con caché de 5 minutos.
+- El logo, el favicon y la portada se sirven por endpoints **públicos** (necesarios en `/signin` y en la comunidad, antes de autenticar), el logo con caché de 5 minutos.
 - Los defaults son la identidad Didacta (hue 213, saturación 70, Sora + Inter); `reset` vuelve a ellos.
 
 !!! note "Qué parte es Enterprise"
@@ -24,13 +24,14 @@ Branding visual **por organización**: logo (subido al storage o URL), modo de p
 
 Es un módulo **core**: siempre activo, no aparece en el interruptor de la pestaña Módulos. Todo se configura en **Administración → Branding** (`/admin/branding`), solo para `tenant_admin` y `super_admin`, con **Vista previa** en vivo y botón **Restaurar valores por defecto**:
 
-- **Color de marca**: deslizadores **Matiz (hue)** (0–360) y **Saturación** (0–100), con la escala `brand-50…900` resultante a la vista.
+- **Color de marca**: deslizadores **Matiz (hue)** (0–360) y **Saturación** (0–100), con la escala `brand-50…900` resultante a la vista, o el campo **Código de color (hex)**: pega el de tu marca (p. ej. `#1E5AA8`) y de él se toman matiz y saturación (la luminosidad de cada escalón la pone la escala).
 - **Tipografía**: **Fuente de titulares (display)** y **Fuente del cuerpo (body)**, cada una con su whitelist.
-- **Logo y favicon**: **Subir logo al storage** (PNG, JPG, SVG o WebP, máx. 2 MB; con **Reemplazar logo** y **Eliminar**), o **URL del logo (alternativa)** (`https://…` o un endpoint relativo `/api/v1/…`), más **URL del favicon**.
+- **Logo y favicon**: **Subir logo al storage** (PNG, JPG, SVG o WebP, máx. 2 MB; con **Reemplazar logo** y **Eliminar**), o **URL del logo (alternativa)** (`https://…` o un endpoint relativo `/api/v1/…`), más el favicon: **Subir favicon** / **Reemplazar favicon** (PNG, JPG, SVG o WebP, idealmente cuadrado, máx. 1 MB; sin ICO), **Usar el logo como favicon**, o una **URL del favicon** https.
 - **¿Cómo se muestra tu marca?** — el modo de logo (`logo_display_mode`, añadido en alpha.113): **Solo el logo** (`logo_only`, se ve completo a su ancho natural; para logos que ya llevan el nombre dentro) o **Logo y nombre** (`logo_and_name`; para isotipos cuadrados o sin texto). La elección manda en el sidebar del aula, `/signin` y el asistente de bienvenida.
 
     ![Bloque de logo del panel de Branding con el selector de modo de marca](../../assets/modules/theming/theming-2-logo-mode.png)
 
+- **Tu academia en la comunidad**: lo que ven los miembros en la tarjeta de la academia junto al feed. **Portada** (**Subir una portada**; JPG, PNG, WebP o SVG, hasta 10 MB, imagen horizontal tipo 1600 × 800; se recomprime a WebP, salvo el SVG; sustituye a la banda de color), **Descripción** (hasta 280 caracteres; vacía, se usa el titular de la pantalla de acceso) y **Enlaces** (como mucho 5: WhatsApp, Telegram, Instagram, YouTube, TikTok, Facebook, LinkedIn, X o web; solo `https://`, y cada red solo acepta sus dominios —un «WhatsApp» que apunte a otro dominio se rechaza—; al pegar el enlace sale el icono de su red).
 - **Pantalla de acceso**: **Titular** (máx. 160 caracteres) y **Línea de apoyo (opcional)** (máx. 240) del panel de marca de `/signin`.
 - **CSS personalizado (avanzado)** (máx. 16 KB) y **Footer personalizado** (máx. 4 KB): requieren la capability Enterprise `feat:white_label`. Sin licencia se muestra la tarjeta de upgrade en su lugar, y el backend responde `402` a cualquier intento de guardarlos con contenido — enviar los campos vacíos o a `null` siempre está permitido.
 
@@ -59,7 +60,7 @@ El resultado se ve donde primero lo ven tus alumnos, la pantalla de acceso:
 
 ![Pantalla de acceso con el logo, el color y el titular del tenant](../../assets/modules/theming/theming-4-signin.png)
 
-En **modo sencillo**, el logo, el modo de logo y el color están en **Ajustes → «Logo y color»** (la misma pieza que el asistente, con su vista previa); el resto del panel de Branding sigue en «Más → Branding».
+En **modo sencillo**, el logo, el modo de logo y el color están en **Ajustes → «Logo y color»** (la misma pieza que el asistente, con su vista previa), junto con la portada, la descripción y los enlaces de la academia; el resto del panel de Branding sigue en «Más → Branding».
 
 ![Modo sencillo: Ajustes → «Logo y color»](../../assets/modules/theming/theming-5-simple-settings.png)
 
@@ -73,8 +74,8 @@ Ninguna.
 
 ## API
 
-Prefijo `/modules/theming` (`me`, `me/reset`, `me/logo`, logo público). Detalle en [Referencia → Comunidad y personas](../../api/reference/community.md#theming-modulestheming).
+Prefijo `/modules/theming` (`me`, `me/reset`, `me/logo`, `me/favicon`, `me/cover`, y los públicos `tenants/:tenantId/logo`, `…/favicon` y `…/cover`). Detalle en [Referencia → Comunidad y personas](../../api/reference/community.md#theming-modulestheming).
 
 ## Eventos
 
-**Emite**: `theming.logo.uploaded`. No consume.
+**Emite**: `theming.logo.uploaded` y `theming.favicon.uploaded` (al subir el logo o el favicon; mismo payload: `tenantId`, `contentType` y `size`). No consume.

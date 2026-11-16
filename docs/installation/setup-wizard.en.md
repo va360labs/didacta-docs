@@ -11,10 +11,13 @@ The wizard is protected by a **single-use token**: when it starts with no organi
 ## The steps
 
 1. **Welcome** — an introduction to the wizard.
-2. **Organization** — the organization name (required) and the public domain, pre-filled with the host you are connecting from. Under "Advanced settings" you can adjust the *slug* (auto-generated, DNS-safe).
+2. **Organization** — the organization name (required), the **academy language** (Spanish, English or Brazilian Portuguese; the wizard proposes your browser's; see [Languages](../configuration/languages.md)) and the public domain, pre-filled with the host you are connecting from. Under "Advanced settings" you can adjust the *slug* (auto-generated, DNS-safe).
 3. **Modules** — the list of available modules. **Core** modules (courses, learning, assessments…) come pre-selected and cannot be unchecked; optional ones (community, gamification, Fundae, virtual classroom…) are up to you. Everything can be changed later under **Administration → Settings → Modules**.
 4. **Your account** — name, email and password of the first administrator (**at least 12 characters**, with a strength meter).
 5. **Done** — a quick tour (Courses, Community, Administration) and a recommendation to enable MFA. "Get started" opens the academy's welcome wizard (`/welcome`): name, logo and color, first course, students, payments and email.
+
+!!! note "Two blocking wizards on first access"
+    The administrator meets two: the **profile** one (`/onboarding`: photo, name, language and notices) and the **academy** one (`/welcome`). In **full mode** the academy one comes first (the photo is mandatory and is not demanded before letting them touch their academy); in [simple mode](../configuration/simple-mode.md) the profile one comes first, with the photo optional, and `/welcome` is the **3-question sign-up**. Anyone who does not administer only sees the profile one.
 
 ## Exactly what it creates
 

@@ -8,9 +8,11 @@ Emisión y gestión de certificados PDF al completar un curso: **plantillas pers
 
 ## Cómo funciona
 
-- Cada certificado emitido guarda un **snapshot inmutable** (alumno, curso, fecha) y el hash SHA-256 del PDF: renombrar el curso después no altera un certificado ya emitido. El PDF se regenera bajo demanda desde el snapshot.
+- Cada certificado emitido guarda un **snapshot inmutable** (alumno, curso, fecha, y lo que hace falta para dibujarlo: texto, color, firmante, logo, nombre de la academia e idioma) y el hash SHA-256 del PDF: renombrar el curso después no altera un certificado ya emitido. La descarga sirve **el PDF emitido**, guardado en el almacenamiento; solo si ese objeto ya no existe se vuelve a dibujar desde el snapshot.
+- El PDF sale en el **idioma del alumno** (español, inglés o portugués): el de su perfil y, si no tiene, el del aula; el idioma queda en el snapshot para que un redibujado salga igual. La vista previa de la plantilla sale en el idioma de quien la mira.
 - Doble unicidad: `(tenant, número)` garantiza numeración correlativa y `(tenant, matrícula)` impide emitir dos veces por la misma matrícula.
-- La **verificación pública** (`/modules/certificates/verify/:id`) responde `{ number, studentName, courseTitle, issuedAt, valid }` sin exponer nunca email ni datos internos. El modelo de datos contempla la revocación (`revoked_at`): un certificado revocado verifica con `valid: false` y la página pública lo marca «Certificado revocado» — aunque hoy no existe operación de revocado en la API ni en el panel.
+- La **verificación pública** (`/modules/certificates/verify/:id`, sin sesión; la credencial es el propio UUID) responde `{ number, studentName, courseTitle, issuedAt, valid }` sin exponer nunca email ni datos internos.
+- **Revocación**: no hay botón ni endpoint para revocar a mano. El único camino hoy es el **reembolso** de la compra del curso: si el alumno no conserva el acceso por otra vía (otra compra cobrada o un grupo de acceso que sigue dando el curso), su matrícula se cancela —también si ya estaba completada— y sus certificados se revocan con motivo `refund`. Una fila revocada no se borra: `revoked_at` y `revoke_reason` quedan sellados, el certificado desaparece de «Mis certificados» y la verificación pública responde `valid: false` («Certificado revocado»). Si la persona vuelve a comprar el curso, la revocación por reembolso se deshace; una revocación por otro motivo no se toca.
 - El editor de plantillas tiene **preview PDF** con datos de ejemplo, sin persistir nada.
 
 ## Configuración
@@ -40,12 +42,12 @@ Emisión y gestión de certificados PDF al completar un curso: **plantillas pers
 
 ### La emisión es automática
 
-1. Cuando el alumno cruza el umbral de finalización, `mod.learning` emite `learning.course.completed` y el certificado se emite solo: snapshot inmutable, número correlativo del tenant y PDF con la plantilla del curso (o la default). No hay botón de «emitir»: si necesitas re-emitir, el PDF se regenera bajo demanda desde el snapshot al descargarlo.
+1. Cuando el alumno cruza el umbral de finalización, `mod.learning` emite `learning.course.completed` y el certificado se emite solo: snapshot inmutable, número correlativo del tenant y PDF con la plantilla del curso (o la default). No hay botón de «emitir»; dos finalizaciones simultáneas no duplican ni pisan el certificado.
 
 ### Descargar y compartir (alumno)
 
 1. En `/my-certificates` («Mis certificados»; en modo sencillo, en el menú del avatar) el alumno ve cada certificado con su número y fecha («Emitido el…»).
-2. «Descargar PDF» abre el certificado; «Añadir a LinkedIn» abre el flujo *Add to Profile* de LinkedIn pre-rellenado, con la URL de verificación pública como credencial.
+2. «Descargar PDF» abre el certificado; «Añadir a LinkedIn» abre el flujo *Add to Profile* de LinkedIn pre-rellenado: nombre de la credencial (el curso), organización (el nombre de la academia), ID de credencial (el número del certificado), año y mes de emisión y, como URL, la página pública de verificación `/verify/<id>`. Didacta no escribe en LinkedIn: solo abre el formulario ya relleno y es la persona quien lo confirma.
 3. En la ficha del curso completado también aparece «Descargar certificado».
 
     ![«Mis certificados» del alumno con descarga y botón de LinkedIn](../../assets/modules/certificates/certificates-3-my-certificates.png)
@@ -65,7 +67,7 @@ Emisión y gestión de certificados PDF al completar un curso: **plantillas pers
 | Tabla | Qué guarda |
 | --- | --- |
 | `mod_certificates_template` | Plantillas: cuerpo, color, logo, firmante, flag default. |
-| `mod_certificates_issued` | Emitidos: número, hash SHA-256, snapshot JSON, clave de storage, revocación. |
+| `mod_certificates_issued` | Emitidos: número, hash SHA-256, snapshot JSON, clave de storage, revocación (`revoked_at`, `revoke_reason`). |
 
 ## API
 
@@ -73,5 +75,5 @@ Prefijo `/modules/certificates`: los del alumno (`me`, detalle, descarga), plant
 
 ## Eventos
 
-- **Emite**: `certificates.issued`, `certificates.revoked`.
+- **Emite** (manifest): `certificates.issued` y `certificates.revoked`. Este último se publica al revocar los certificados vigentes de un alumno en un curso (hoy, la revocación por reembolso) con `{ userId, courseId, reason, revokedCount }`; si no había ninguno vigente que revocar, no se publica. Deshacer la revocación al volver a comprar no emite nada.
 - **Consume**: `learning.course.completed` (auto-emisión).

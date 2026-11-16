@@ -3,7 +3,7 @@
 Beyond the bundled modules, Didacta can run modules **packaged as a signed ZIP** that a `super_admin` installs from **Administration → Module marketplace**. This is the intended route for the future module marketplace.
 
 !!! note "Status: functional, still evolving"
-    The installation pipeline, the sandbox and the routing are implemented and operational. The **public marketplace catalog does not exist yet** (today installation happens by uploading the ZIP by hand), modules from the `community` vendor are not accepted yet (only packages signed by Didacta, or a deliberate direct upload), and uninstalling neither reverts migrations nor drops tables.
+    The installation pipeline, the sandbox and the routing are implemented and operational. The **public marketplace catalog does not exist yet** (today installation happens by uploading the ZIP by hand), modules from the `community` vendor are not accepted yet (only packages signed by Didacta; see "Signing your own packages" below), and uninstalling neither reverts migrations nor drops tables.
 
 ## The package format
 
@@ -17,7 +17,7 @@ Beyond the bundled modules, Didacta can run modules **packaged as a signed ZIP**
 ```
 
 - `manifest.jwt` is an **ES256** JWT whose payload is the module's full manifest (name, version, tables, permissions, events, UI surfaces, network/DB limits…).
-- The signature is verified against Didacta's public keys; a **direct unsigned upload** is also accepted for your own packages, and is explicitly flagged as such.
+- The signature is verified against Didacta's public keys. **Since beta.7 an instance does not run module code without a verified signature**: a ZIP with an invalid `manifest.jwt`, or signed by anyone, is no longer started. The only exception is the `DIDACTA_ALLOW_UNVERIFIED_MODULES=true` variable (development only: see below).
 
 ## What installation validates
 
@@ -46,7 +46,12 @@ Its HTTP routes are published under `/api/v1/modules/<slug>/…` and its UI is s
 
 ## Signing your own packages
 
-Official packaging and signing is done with VA360 LABS tooling (`scripts/marketplace/sign-package.ts`, against the signing issuer). For modules internal to your organization you can use the unsigned direct upload, accepting the provenance warning.
+Official packaging and signing is done with VA360 LABS tooling (`scripts/marketplace/sign-package.ts`, against the signing issuer). To try your own module before signing it, start the instance with `DIDACTA_ALLOW_UNVERIFIED_MODULES=true` (exact value `true`).
+
+!!! danger "Do not enable it in production"
+    A module's code runs **inside the API process**, with its same permissions: `node:vm` reduces the surface but is not a security boundary. A malicious module reaches `process.env` (`AUTH_SECRET`, `ADMIN_DATABASE_URL`), the disk and the database. That is why, by default, only what carries a verifiable signature runs.
+
+    On restart, a module installed **without** a verified signature is not loaded again unless the variable is on: the log says which ones were skipped and why. Reinstall it signed.
 
 ## Reference
 

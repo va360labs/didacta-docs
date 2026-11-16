@@ -14,8 +14,10 @@ El registro crea el usuario en `PENDING`, lanza en segundo plano el **lookup de 
 
 ## Cómo funciona
 
-- Los pasos se encadenan con **tickets firmados HMAC** (sin estado en base de datos): el ticket de Telegram autoriza el OTP y el `verificationToken` del OTP autoriza el registro.
+- Los pasos se encadenan con **tickets firmados HMAC** con `AUTH_SECRET` (sin estado en base de datos): el ticket de Telegram (15 min) autoriza el OTP y el `verificationToken` del OTP (30 min) autoriza el registro. Cada ticket lleva el aula en la que se emitió y solo vale en ella: una verificación hecha en un aula no sirve para inscribirse en otra. El código OTP caduca a los 10 minutos. Sin `AUTH_SECRET` el flujo responde que no está configurado.
 - Aprobar activa al usuario, le asigna el **grupo de acceso por defecto** y envía la bienvenida; rechazar lo desactiva y avisa.
+- **Los enlaces del email no deciden solos.** «Aprobar» y «Rechazar» abren `/member-registration/decision`, una pantalla de confirmación («¿Aprobar esta solicitud?»), y la decisión solo se aplica al pulsar su botón (`POST /modules/member-registration/decision`). Así los filtros de seguridad del correo, que abren todos los enlaces, no pueden aprobar ni rechazar por la persona. El primero en decidir gana: el sellado es atómico y un segundo intento no cambia nada.
+- Los correos salen en el idioma de quien los recibe (español, inglés o portugués) y sus enlaces apuntan al dominio verificado del aula del tenant; `WEB_PUBLIC_URL` solo se usa como último recurso en instalaciones de un único dominio.
 - Si el tenant exige un verificador no operativo (p. ej. Telegram sin bot configurado), la inscripción responde **503 fail-closed** — nunca deja pasar sin verificar.
 - Un worker diario de **purga GDPR** anonimiza los datos de Telegram de las solicitudes nunca decididas al vencer la retención (90 días por defecto).
 - El panel admin permite además re-lanzar el lookup de pagos, decidir sin el email, enviar recordatorios de renovación y gestionar **flags de impago** (con import CSV). El **alta manual** sin OTP existe como endpoint de la API admin (`POST /modules/member-registration/admin/requests`), sin pantalla propia en el panel.
@@ -63,7 +65,7 @@ Módulo de categoría **core**: siempre activo, sin interruptor en la pestaña �
 
 **La decisión (aprobador):**
 
-7. Por email: llega «Nueva inscripción pendiente — {nombre}» con los botones «Aprobar»/«Rechazar» (enlaces firmados de un solo uso, TTL 7 días) y el estado de impago si consta; al pulsar, aterriza en `/member-registration/decision` con el resultado.
+7. Por email: llega «Nueva inscripción pendiente — {nombre}» con los botones «Aprobar»/«Rechazar» (enlaces de un solo uso, TTL 7 días) y el estado de impago si consta; al pulsar, aterriza en `/member-registration/decision`, que pide confirmación («¿Aprobar esta solicitud?» / «¿Rechazar esta solicitud?»): la decisión se aplica al pulsar «Aprobar» o «Rechazar» en esa pantalla, y después muestra el resultado.
 8. O desde el panel: Administración → Personas y accesos → **Solicitudes de inscripción** (`/admin/member-requests`). Cada solicitud muestra su suscripción detectada («Suscripción vigente» / «Suscripción no vigente — baja o impago»), las compras puntuales y permite **Volver a consultar**, mapear la suscripción por otro email («¿La suscripción está a otro email? Mapéala aquí»), enviar recordatorios y elegir el «Tier a asignar» (preseleccionado si coincide con la suscripción). Pulsa **Aprobar** o **Rechazar**.
 
 ![Panel de solicitudes: lookup de suscripción, tier preseleccionado y decisión](../../assets/modules/member-registration/member-registration-3-requests.png)

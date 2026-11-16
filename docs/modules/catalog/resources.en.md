@@ -8,7 +8,7 @@ A library of community resources, organised into **collections** and searchable:
 
 ## How it works
 
-- The first visit seeds **6 default collections**; staff can create more, each with a cover image.
+- An academy with no collection at all gets, on its first visit, **one neutral collection ("General")** in the academy's language (es, en or pt), editable; staff can create more, each with a cover image. At least one is needed because sharing a resource requires choosing a collection. Academies that already have collections are left alone.
 - Any member can **share resources**; deleting is available to the author (for their own) or to staff (for any).
 - Deleting a collection that still holds resources is **blocked on purpose** (`Restrict`, not cascade): you have to empty it first — content is never lost silently.
 - `POST /:id/download` records the download/open and returns the URL: the counter feeds the popularity ordering.
@@ -16,7 +16,7 @@ A library of community resources, organised into **collections** and searchable:
 ## Configuration
 
 - **Activation** — `Administration → Settings`, "Modules" tab (`/admin/settings`): the toggle for "Biblioteca de recursos" (`mod.resources`). Disabling it removes the "Resources" item from the Learning group of the menu.
-- **Collections** — there is no separate admin screen: staff (`super_admin`, `tenant_admin`, `formador`) manage them from the `/resources` page itself, with "New collection" and the edit button on each card. The first visit seeds 6 collections ("Workflows de clase", "Skills y agentes", "Herramientas de IA", "Plantillas y sistemas", "Guías y contratos", "Casos y resultados"), all editable.
+- **Collections** — there is no separate admin screen: staff (`super_admin`, `tenant_admin`, `formador`) manage them from the `/resources` page itself, with "New collection" and the edit button on each card. The first visit of an academy without collections seeds one, "General" ("General" / "Geral" depending on the academy's language), editable.
 - **Storage** — file resources upload to the tenant's storage, configured on the "Storage" tab of `/admin/settings` (the container's local disk or an S3-compatible bucket).
 - No environment variables of its own and no further settings. No feature requires an Enterprise license.
 
@@ -36,9 +36,12 @@ A library of community resources, organised into **collections** and searchable:
 
 **Any member:**
 
-1. `/resources` ("Resources", Learning group; in simple mode, under "More") shows the grid of collections with their resource counts. If the academy has no collection at all, the library creates six sample ones, empty and marked "Soon": rename them, change their cover or delete them once you have your own.
+1. `/resources` ("Resources", Learning group; in simple mode, under "More") shows the grid of collections with their resource counts. If the academy has no collection at all, the library creates one, "General", empty: rename it or delete it once you have your own. Every collection with no resources carries the "Soon" mark.
 
     ![The library: a grid of collections with covers and resource counts](../../assets/modules/resources/en/resources-1-collections.png)
+
+    !!! note "The screenshot shows a library with several collections"
+        A new academy no longer starts from the six sample collections seen in the screenshot, but from a single one, "General".
 
 2. "Share resource": "Title", "Collection", type "File" (PDF, Word, Excel, ZIP, JSON…) or "Link", and "Description (optional)".
 
@@ -50,6 +53,10 @@ A library of community resources, organised into **collections** and searchable:
     ![An open collection: resources with their download counters and the search box](../../assets/modules/resources/en/resources-3-collection.png)
 
 5. Every author can delete their own resources with the X on the card (with confirmation).
+
+## Permissions
+
+`resources.read` and `resources.manage`. Creating, editing and deleting collections requires the `super_admin`, `tenant_admin` or `formador` role.
 
 ## Dependencies
 

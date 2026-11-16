@@ -15,17 +15,21 @@ Con entrega en **tiempo real vía SSE**, presencia, indicador de «escribiendo»
 ## Cómo funciona
 
 - La unicidad está garantizada en base de datos: una conversación por espacio, una por alumno en el canal de profesores y una por par de usuarios en DM (clave canónica ordenada), lo que hace el *get-or-create* **idempotente**.
+- Cada mensaje admite de 1 a 4000 caracteres; las URL `http(s)` del texto se pintan como enlaces clicables (solo http/https; la puntuación final no entra en el enlace).
+- El título del canal de profesores (y los respaldos «Sala», «Alumno», «Miembro») salen en el idioma del aula —es, en o pt: «Profesores», «Teachers», «Professores»—; si no se puede leer el idioma, en español.
 - El nombre del autor se guarda como **snapshot** al enviar (sobrevive a renombres y bajas, y evita N+1).
 - El modelo conserva el cuerpo de los mensajes borrados para auditoría y el cliente los pinta como «Mensaje eliminado»; hoy la API no expone ninguna acción de borrado de mensajes.
 - El stream SSE se abre con un **ticket efímero** (~60 s) porque `EventSource` no admite headers; eventos: `message.created`, `typing`, `ping`.
 - Una cuenta suspendida o borrada no puede usar la mensajería aunque su token siga vivo (verificación contra BD en cada llamada).
 - El rate limit usa Redis y degrada a contador local en memoria si Redis falla.
+- Otros módulos pueden leer, sin tocar sus tablas, los directos que el equipo ha escrito a una persona y hasta dónde ha leído y cuándo respondió por primera vez (lo usa `mod.retention`), y publicar un mensaje automático que aparece al momento por SSE, como uno escrito a mano.
 
 ## Configuración
 
-- **Activación** — `Administración → Configuración`, pestaña «Módulos» (`/admin/settings`): interruptor de «Mensajería · salas, directos y canal de profesores» (`mod.messaging`). Con el módulo desactivado la API responde con «El módulo de mensajería no está activo en esta comunidad.».
+- **Activación** — `/admin/settings?tab=modules` (pestaña «Módulos»): interruptor de «Mensajería · salas, directos y canal de profesores» (`mod.messaging`). Con el módulo desactivado la API responde con «El módulo de mensajería no está activo en esta comunidad.».
 - **Sin ajustes por tenant** — el módulo no expone ninguna pantalla de configuración propia; los cupos (20 mensajes/min, 30 señales de typing/min) están fijados en código.
 - **`REDIS_URL`** — la usan el realtime (pub/sub entre instancias de la API), la presencia y el rate limit. Sin Redis los mensajes se persisten igual: el rate limit degrada a un contador en memoria y la presencia a un espejo local (suficiente con una sola instancia de API); el fan-out en tiempo real entre varias instancias sí necesita Redis.
+- **Permisos del manifest**: `messaging.conversation.read`, `messaging.message.write` y `messaging.moderation.write`.
 - **Salas por espacio** — existen si `mod.community` está activo (el módulo lee sus espacios, solo lectura).
 - Ninguna función exige licencia Enterprise.
 
@@ -67,7 +71,7 @@ Opcional: `mod.community` (lectura de espacios para las salas).
 
 ## API
 
-Prefijo `/modules/messaging` (+ stream SSE). Detalle en [Referencia → Comunidad y personas](../../api/reference/community.md#mensajeria-modulesmessaging).
+Prefijo `/modules/messaging`: `conversations` (listado, mensajes, `typing`, `read`), `dm`, `spaces/:slug/open`, `faculty/open`, `presence`, `members` y `stream-ticket` + el stream SSE (`stream?ticket=…`). Detalle en [Referencia → Comunidad y personas](../../api/reference/community.md#mensajeria-modulesmessaging).
 
 ## Eventos
 

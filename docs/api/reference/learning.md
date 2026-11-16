@@ -29,7 +29,7 @@ Endpoints de cursos, matrículas y progreso, rutas, evaluaciones, certificados, 
 | DELETE | `/modules/courses/modules/:moduleId` | formador+ | Soft-delete del módulo (cascade lógico de lecciones). |
 | DELETE | `/modules/courses/lessons/:lessonId` | formador+ | Soft-delete de la lección (preserva progreso histórico). |
 
-**Bodies clave** — crear curso: `slug` (kebab-case), `title`, `description?`, `thumbnailUrl?`, `language` (default `es-ES`), `estimatedMinutes?`, `category?`. `slug` y `language` son inmutables. Crear lección: `type` (`VIDEO|HTML|PDF|TEXT|QUIZ|SCORM`), `title`, `content` (objeto libre), `durationMinutes?`, `publishAt?` (fecha futura = bloqueada).
+**Bodies clave** — crear curso: `slug` (kebab-case), `title`, `description?`, `thumbnailUrl?`, `featuredVideoUrl?`, `language` (default `es-ES`), `estimatedMinutes?`, `category?`. `slug` y `language` son inmutables. Editar curso (`PUT /:id`): los mismos campos más `status`, `externalPurchaseUrl` (página de ventas externa donde se compra el curso) y `certificateTemplateId` (plantilla de certificado preferida; `null` usa la del aula); `null` limpia un campo opcional. Crear lección: `type` (`VIDEO|HTML|PDF|TEXT|QUIZ|SCORM`), `title`, `content` (objeto libre), `durationMinutes?`, `publishAt?` (fecha futura = bloqueada).
 
 **Gating de lectura de `GET /:id`**: formador+ recibe el curso completo; el alumno recibe 404 si no está `PUBLISHED`, la estructura con `content: null` si no está matriculado, y `content: null` solo en lecciones no liberadas si hay drip.
 
@@ -151,6 +151,32 @@ Endpoints de cursos, matrículas y progreso, rutas, evaluaciones, certificados, 
 | GET | `/modules/events` · `/:id` | Bearer | Eventos por rango de fechas (`from`, `to`, `limit`, `order`) · detalle con `registeredCount`, `isFull`, `isRegistered`. |
 | POST | `/modules/events` | formador+ | Crea evento: `title`, `startAt`, `endAt`, `location?`, `capacity?`. |
 | POST | `/modules/events/:id/register` · `unregister` | Bearer | Inscripción (si está lleno: `{ registered: false, reason: 'full' }`) · cancelación. |
+
+## Vídeo
+
+Reproducción protegida de los vídeos de Bunny Stream de las lecciones, su protección y —en Didacta Cloud— la subida desde el navegador.
+
+| Método | Ruta | Auth | Qué hace |
+|---|---|---|---|
+| GET | `/video/bunny/:libraryId/:guid/play-url` | Bearer | URL de reproducción de un vídeo. Si el aula **protege** esa librería: URL firmada que **caduca a los 30 minutos**, 403 si la persona no puede ver el vídeo y 429 si supera el tope de vídeos distintos por cuenta. Si no la protege: la URL de embed sin firmar. |
+| GET | `/admin/video-protection` | admin | Estado de la protección: interruptor, tope por cuenta, marca de agua y librerías de Bunny (si tienen clave y qué dijo la última comprobación). **Nunca devuelve una clave.** |
+| PUT | `/admin/video-protection/settings` | admin | Activa o desactiva la protección y ajusta `enabled`, `watermark`, `maxVideosPerHour` y `maxVideosPerDay`. Los campos omitidos conservan su valor. |
+| PUT | `/admin/video-protection/token-key` | admin | Guarda (cifrada) la «Token authentication key» de una librería: `{ libraryId, tokenKey }`. Con ella y la protección activa, las URL de esa librería salen firmadas y caducan. |
+| POST | `/admin/video-protection/check` | admin | Comprobación real de la firma contra Bunny con un vídeo del propio aula (`{ libraryId }`). Siempre 200 con `outcome`: `ok`, `not_enforced`, `rejected`, `video_unavailable`, `unreachable`, `no_key` o `no_video`. |
+
+**Subida de vídeo (Cloud)** — `/video/uploads` (formador o admin, `VIDEO_UPLOAD_FORBIDDEN` si no). Solo existe si el operador configura Bunny Stream (`BUNNY_STREAM_API_KEY`); sin ello responde 404. El aula y el usuario salen siempre de la sesión.
+
+| Método | Ruta | Qué hace |
+|---|---|---|
+| GET | `/video/uploads/quota` | Horas de vídeo usadas y disponibles del aula, y sus límites. |
+| POST | `/video/uploads` | Prepara la subida a una lección: `{ lessonId, fileName, mimeType, sizeBytes, durationSeconds }`. Comprueba los límites, crea el vídeo en Bunny y devuelve `{ asset, upload }` con la firma **TUS** para subirlo desde el navegador. |
+| GET | `/video/uploads?lessonId=` | Vídeos subidos a una lección (los vivos, el último primero). |
+| GET | `/video/uploads/:id` | Estado de un vídeo (subiendo, procesando, listo, fallido). |
+| POST | `/video/uploads/:id/signature` | Firma nueva para reanudar una subida a medias. |
+| DELETE | `/video/uploads/:id` | Cancela una subida o borra un vídeo que ninguna lección usa (204). Un vídeo en uso da **409**: primero se quita de la lección. |
+| POST | `/video/bunny/webhook` | Avisos de Bunny Stream sobre el estado de un vídeo. Autenticado por la **firma de Bunny** (`x-bunnystream-signature`), no por sesión; 401 `VIDEO_WEBHOOK_SIGNATURE_INVALID`. |
+
+Los códigos de error de la subida (`code`) vienen del servicio de vídeo; el lado del operador está en [Instancia y plano de control](instance-operations.md#video-rutas-del-pool-cloud).
 
 ## Fundae — `/modules/fundae` (todo admin; el rol formador no accede)
 

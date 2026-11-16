@@ -16,8 +16,8 @@ La lista **cerrada** de capabilities Enterprise — 11 hoy, definidas en `packag
 | Capability | Qué desbloquea |
 | --- | --- |
 | `feat:multi_tenant.real` | **Multi-tenant real**: crear múltiples organizaciones aisladas en una misma instancia. Community opera con una organización. |
-| `feat:custom_domains` | **Dominios personalizados por tenant** con verificación CNAME gestionada desde el panel. |
-| `feat:white_label` | **White-label completo**: sobrescribir la marca y ocultar «powered by Didacta». El branding básico (logo, colores, textos) es Community. |
+| `feat:custom_domains` | **Dominios personalizados por tenant**: panel `/admin/domains` que registra cada dominio con su destino CNAME y su token de verificación. La verificación es **manual** (no consulta el DNS) y el panel no enruta el tráfico por sí solo; ver [Branding → Dominio propio](../configuration/branding.md#dominio-propio). |
+| `feat:white_label` | **White-label completo**: ocultar «powered by Didacta», **CSS personalizado** (máx. 16 KB, sanitizado) y **footer HTML** (máx. 4 KB). El branding básico (logo, colores, tipografía, textos) es Community. |
 
 ## Cumplimiento
 
@@ -31,7 +31,7 @@ La lista **cerrada** de capabilities Enterprise — 11 hoy, definidas en `packag
 | Capability | Community | Con la capability |
 | --- | --- | --- |
 | `feat:api.webhooks.high_throughput` | 1 endpoint/organización, máx. 3 tipos de evento, entrega directa con 1 reintento | 20 endpoints, eventos ilimitados, cola con backoff, **firma HMAC-SHA256**, dead-letter con reintento |
-| `feat:api.rate_limit.elevated` | 100 req/min autenticado · 30 anónimo | 1000 req/min autenticado · 300 anónimo |
+| `feat:api.rate_limit.elevated` | 100 req/min autenticado (tope por academia) · 30 anónimo (por IP) | 1000 req/min autenticado · 300 anónimo. Nunca por debajo de lo que hayas configurado para Community (ver `RATE_LIMIT_*` en [Variables de entorno](../configuration/environment-variables.md)) |
 
 ## Cómo se aplica el gating
 

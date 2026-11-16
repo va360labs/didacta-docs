@@ -32,4 +32,13 @@ They are also available as pnpm scripts: `pnpm test:local`, `pnpm test:local:uni
 
 ## E2E (Playwright)
 
-The E2E tests in `apps/e2e` need the API and the web app running (locally with `pnpm dev`, or the `docker-compose.alpha.yml` stack). See `apps/e2e/README.md` in the repository.
+The E2E tests in `apps/e2e` need the **whole** product running: Postgres and Redis, the schema with its seeds (including the system spaces and the seeded administrator's onboarding), the API and the web app. Instead of assembling that by hand, use the repository's harness, always from the root:
+
+```bash
+bash scripts/e2e-stack.sh all      # infra + seeded DB + build + start
+bash scripts/e2e-stack.sh test     # DB reset + general batch
+bash scripts/e2e-stack.sh run      # general batch without resetting
+bash scripts/e2e-stack.sh stop     # stops only the processes it started
+```
+
+`reset` exists because the suite is **not idempotent** (the Fundae specs use fixed tax IDs and the second pass returns 409) and it restarts the API on purpose (the module registry and the setup token are issued at boot). There are also `check` (stack diagnostics) and `mfa` (the two MFA specs, which need the policy on). For a single spec: `pnpm exec playwright test --config apps/e2e/playwright.config.ts apps/e2e/tests/<spec>.spec.ts`.
