@@ -6,9 +6,9 @@ Didacta is **one product with three editions**. The code is the same; what chang
 | --- | --- | --- |
 | **Community** | Teams that deploy and operate the platform themselves. | The full source code and **every module**, with no user limit. Free, self-hosted, under the Sustainable Use License. |
 | **Enterprise** | Organisations that need an SLA, custom integrations and a certified partner. | Community + cross-cutting core capabilities (SAML/OIDC SSO, SCIM, white-label…), unlocked with a signed license. |
-| **Cloud** | Anyone who wants to get started in minutes, with no infrastructure. | Hosting managed by VA360 LABS with hands-off upgrades. **Coming soon.** |
+| **Cloud** | Anyone who wants to open an academy in minutes, with no infrastructure. | The same product, hosted and maintained by VA360 LABS, with hands-off upgrades. Free: Didacta keeps 5% of each sale you make. See [Didacta Cloud](../cloud/index.md). |
 
-Pricing and sales: [didacta.io](https://didacta.io).
+Pricing and sales: [didacta.io](https://didacta.io). Cloud needs no purchase: you sign up at [didacta.io/en/start](https://didacta.io/en/start) and [this section](../cloud/index.md) explains how it works.
 
 ## Where the line is drawn
 
@@ -16,6 +16,10 @@ The line separating Community from Enterprise is deliberately simple:
 
 - **Modules are always Community.** No module — courses, certificates, gamification, Fundae, virtual classroom… — is ever locked behind a license. What a self-hoster installs is the complete product.
 - **The only paid features are cross-cutting core capabilities**: a closed list of platform features (identity federation, provisioning, white-label…) aimed at large organisations. The full list is in [Enterprise capabilities](../enterprise/capabilities.md).
+
+## Where Cloud fits
+
+Cloud is not a separate product line: it runs **the same published image** that is installed in Community, with the same modules. What changes is who operates it —VA360 LABS— and how payments work: your students' payments are received by Didacta, which transfers your share to you and keeps 5% of each sale. What you can and cannot configure, and how to move from one edition to the other, is in [Limits and differences from Community](../cloud/cloud-vs-community.md) and [Leaving and moving your data](../cloud/data-and-migration.md).
 
 ## What gating looks like in the product
 

@@ -16,8 +16,10 @@ La pertenencia al grupo se materializa como **matrículas reales** del core (ví
 - Los miembros entran por tres vías con dueño distinto: **MANUAL** (alta del admin o aprobación de inscripción — *sticky*, nunca se revoca sola), **TIER** (reconciliada con los tiers de `mod.payment-connections`) y **MEMBERSHIP** (concedida por la membresía de pago de `mod.subscriptions`).
 - La clave del diseño es el **refcount con provenance**: un curso solo se desmatricula cuando ningún grupo vivo lo otorga, y jamás se tocan matrículas de origen `PURCHASE`, `SUBSCRIPTION` o `API`.
 - La revocación por cancelación o impago retira **solo** las membresías de origen `MEMBERSHIP`. En `/admin/access-groups` y en el dossier del usuario, esas membresías se distinguen con el badge «Por membresía».
+- **Quién es dueño de una membresía.** Un alta manual sobre una membresía ya activa de otro origen la **promociona** a `MANUAL`: desde entonces ni un cambio de tier ni un impago la retiran. Al revés, una membresía **revocada** que se reactiva (por un pago, por ejemplo) pasa a ser de quien la reactiva, aunque antes fuera `MANUAL`: así un acceso concedido por dinero no sobrevive a que el pago deje de entrar.
+- **Refcount y reembolsos.** El refcount es el número de concesiones vivas (`mod_access_groups_grant` sin `revoked_at`) de un curso a una persona entre todos sus grupos. Cuando se reembolsa la compra de un curso, la matrícula de compra se retira salvo que algún grupo siga dándolo: en ese caso vuelve a ser de origen `GROUP`.
 - Borrar un grupo revoca sus membresías y limpia los calendarios de drip huérfanos.
-- Un grupo puede marcarse `isDefaultForApproval` (se concede al aprobar inscripciones) o vincularse a un tier (`linkedTierName`).
+- Un grupo puede marcarse `isDefaultForApproval` (se concede al aprobar inscripciones; solo uno por tenant: al marcar otro, se desmarca el anterior) o vincularse a un tier (`linkedTierName`). Cambiar o quitar el vínculo con el tier retira a quienes entraron por el tier anterior; los que corresponda vuelven en la siguiente sincronización.
 
 Es un módulo first-party **formalizado como paquete** (`modules/access-groups/`, manifest propio) cuya orquestación NestJS —controller, service Prisma y bridges de eventos— vive en el host (`apps/api/src/modules/access-groups/`), el patrón estándar de módulo built-in.
 
@@ -29,7 +31,7 @@ Todo se configura desde el panel, siempre con rol admin (`super_admin` / `tenant
 
 - **Crear grupo** — `/admin/access-groups` (Administración → Personas y accesos → «Grupos de acceso»): campos «Nombre», «Tipo» («Todos los cursos», «Varios cursos», «Un curso») y «Descripción (opcional)».
 - **«Marcar por defecto»** — `/admin/access-groups`: fija `isDefaultForApproval`; ese grupo se concede al aprobar solicitudes de `mod.member-registration`.
-- **Interruptor «Auto-otorga»** — `/admin/access-groups`, solo en grupos «Todos los cursos»: `autoGrantNewCourses`, matricula a los miembros en cada curso que se publique.
+- **Interruptor «Auto-otorga»** — `/admin/access-groups`, solo en grupos «Todos los cursos»: `autoGrantNewCourses` (por defecto **activado**), matricula a los miembros en cada curso que se publique.
 - **«Cursos del grupo»** — `/admin/access-groups` → «Gestionar»: el set de cursos de un grupo «Varios cursos»/«Un curso», con «Guardar cursos».
 - **«Vínculo con tier (pagos)»** — `/admin/access-groups` → «Gestionar»: campo «Nombre del tier» + «Guardar vínculo» (`linkedTierName`). La reconciliación se lanza con el botón «Sincronizar tiers desde pagos» de `/admin/integrations/payment-connections` (dueño: `mod.payment-connections`).
 - **«Grupo de acceso que concede»** — `/admin/membership`: qué grupo otorga la membresía de pago. El ajuste pertenece a `mod.subscriptions`, no a este módulo.
@@ -57,6 +59,8 @@ Todo se configura desde el panel, siempre con rol admin (`super_admin` / `tenant
 
 ![Configuración de la membresía: selector «Grupo de acceso que concede»](../../assets/modules/access-groups/access-groups-3-membership.png)
 
+Desde el perfil de una persona (`/u/<id>`, «Expediente» → «Formación» → «Grupos de acceso», solo admins) también puedes añadirla a un grupo con «Añadir» o sacarla con «Quitar»: quitarla retira la matrícula de los cursos que solo venían de ese grupo (el progreso se conserva por si vuelve). Las membresías «Por tier» las gestiona el pago.
+
 El miembro no ve «grupos» en ninguna pantalla: simplemente los cursos del grupo aparecen como matrículas activas en `/courses`, y desaparecen si ningún grupo vivo los otorga (las matrículas de otro origen nunca se tocan).
 
 ## Dependencias
@@ -69,7 +73,7 @@ El miembro no ve «grupos» en ninguna pantalla: simplemente los cursos del grup
 
 ## API
 
-Prefijo `/modules/access-groups` — **todo requiere admin**, incluidas las lecturas (exponen el roster). Detalle en [Referencia → Aprendizaje](../../api/reference/learning.md#grupos-de-acceso-modulesaccess-groups-todo-admin).
+Prefijo `/modules/access-groups` — **todo requiere admin**, incluidas las lecturas (exponen el roster): listar y crear grupos, `GET/PATCH/DELETE /:id`, `PUT /:id/courses`, `POST /:id/members`, `DELETE /:id/members/:userId` y los catálogos `GET /catalog/courses` y `GET /catalog/users` para los selectores del panel. Detalle en [Referencia → Aprendizaje](../../api/reference/learning.md#grupos-de-acceso-modulesaccess-groups-todo-admin).
 
 ## Eventos
 

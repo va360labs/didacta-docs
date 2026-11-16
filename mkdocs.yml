@@ -59,7 +59,7 @@ extra:
   # defecto: el workflow de deploy la sobreescribe en cada build con la
   # ultima release real de GitHub, y un cron diario reconstruye el sitio
   # para que nunca se quede vieja. En las paginas: {{ didacta_version }}.
-  didacta_version: 0.1.0-beta.1
+  didacta_version: 0.1.0-beta.24
   # Canal derivado de esa version (-alpha -> Alpha, -beta -> Beta, sin
   # sufijo -> Estable/Stable). Tambien lo refresca el deploy en cada build:
   # ninguna pagina vuelve a escribir el canal a mano.
@@ -181,6 +181,24 @@ plugins:
             Aprendizaje: Learning
             Comunidad y personas: Community and people
             Pagos, aula e IA: Payments, classroom and AI
+            # Cloud y otros
+            Precio y comisión: Pricing and fee
+            Empezar: Getting started
+            Cobros y pagos: Payouts
+            Reembolsos, disputas e impuestos: Refunds, disputes and taxes
+            Tu aula: Your academy
+            Invita y gana: Invite and earn
+            "Vídeo, inactividad y copias": Video, inactivity and backups
+            Baja y migración de datos: Leaving and moving your data
+            Límites y diferencias con Community: Limits and differences from Community
+            Soporte: Support
+            Idiomas: Languages
+            Modo sencillo: Simple mode
+            Cobros de plataforma: Platform payments
+            Mensajes automáticos: Automated messages
+            Ayuda y sugerencias: Help and suggestions
+            Agentes de IA y MCP: AI agents and MCP
+            Instancia y plano de control: Instance and control plane
             # Enterprise
             Licencia: License
             Aprovisionamiento (SCIM): Provisioning (SCIM)
@@ -389,6 +407,8 @@ nav:
       - IA (BYOK): configuration/ai.md
       - Aula virtual (Zoom): configuration/zoom.md
       - Branding whitelabel: configuration/branding.md
+      - Idiomas: configuration/languages.md
+      - Modo sencillo: configuration/simple-mode.md
       - Telemetría: configuration/telemetry.md
   - Módulos:
       - modules/index.md
@@ -405,11 +425,14 @@ nav:
           - Suscripciones: modules/catalog/subscriptions.md
           - Conexiones de pago: modules/catalog/payment-connections.md
           - Referidos: modules/catalog/referrals.md
+          - Cobros de plataforma: modules/catalog/payouts.md
           - Comunidad: modules/catalog/community.md
           - Mensajería: modules/catalog/messaging.md
           - Puntos y retos: modules/catalog/gamification.md
           - Biblioteca de recursos: modules/catalog/resources.md
           - Encuestas y NPS: modules/catalog/surveys.md
+          - Mensajes automáticos: modules/catalog/retention.md
+          - Ayuda y sugerencias: modules/catalog/support.md
           - Tutor IA: modules/catalog/ai-tutor.md
           - Corrección IA: modules/catalog/ai-grader.md
           - Generador IA: modules/catalog/ai-content.md
@@ -432,11 +455,14 @@ nav:
       - api/index.md
       - Autenticación: api/authentication.md
       - Vender e integrar desde fuera: api/external-integrations.md
+      - Agentes de IA y MCP: api/mcp.md
+      - Webhooks: api/webhooks.md
       - Convenciones: api/conventions.md
       - Referencia de endpoints:
           - api/reference/index.md
           - Núcleo y transversales: api/reference/core.md
           - Administración: api/reference/administration.md
+          - Instancia y plano de control: api/reference/instance-operations.md
           - Aprendizaje: api/reference/learning.md
           - Comunidad y personas: api/reference/community.md
           - Pagos, aula e IA: api/reference/payments-live-ai.md
@@ -445,6 +471,18 @@ nav:
       - Capabilities: enterprise/capabilities.md
       - Licencia: enterprise/license.md
       - Aprovisionamiento (SCIM): enterprise/scim.md
+  - Cloud:
+      - cloud/index.md
+      - Precio y comisión: cloud/pricing.md
+      - Empezar: cloud/getting-started.md
+      - Cobros y pagos: cloud/payouts.md
+      - Reembolsos, disputas e impuestos: cloud/refunds-and-taxes.md
+      - Tu aula: cloud/your-academy.md
+      - Invita y gana: cloud/referrals.md
+      - "Vídeo, inactividad y copias": cloud/video-and-inactivity.md
+      - Baja y migración de datos: cloud/data-and-migration.md
+      - Límites y diferencias con Community: cloud/cloud-vs-community.md
+      - Soporte: cloud/support.md
   - Comunidad:
       - Reportar un error: community/reporting-a-bug.md
       - Contribuir: community/contributing.md

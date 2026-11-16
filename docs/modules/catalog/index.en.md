@@ -1,6 +1,6 @@
 # Module catalog
 
-The 24 modules bundled with Didacta Community, **each with its own detail page**: what it does, how it works, dependencies, data model, API, events and configuration. Those in the **core** category are always active; the rest are enabled per organization.
+The 27 modules bundled with Didacta Community, **each with its own detail page**: what it does, how it works, dependencies, data model, API, events and configuration. Those in the **core** category are always active; the rest are enabled per organization.
 
 ## Learning (core)
 
@@ -26,7 +26,8 @@ The 24 modules bundled with Didacta Community, **each with its own detail page**
 | [Stripe Checkout](billing.md) (`mod.billing`) | One-off course payments, including a public purchase with no prior account. |
 | [Subscriptions](subscriptions.md) (`mod.subscriptions`) | Recurring billing with Stripe: grace periods, dunning, cancellation and the `/join` membership. |
 | [Payment connections](payment-connections.md) (`mod.payment-connections`) | Read-only Stripe/Woo accounts, tiers, a subscription dashboard and an order mirror. |
-| [Referral program](referrals.md) (`mod.referrals`) | Commissions on real charges, with a guarantee window and traceable manual payouts. |
+| [Referral program](referrals.md) (`mod.referrals`) | Commissions on real charges (membership and courses), with a guarantee window and traceable manual payouts. |
+| [Platform payments](payouts.md) (`mod.payouts`) | The operator collects in their own Stripe account and splits the money with the creator; inert unless platform mode is turned on. |
 
 ## Community and engagement
 
@@ -37,6 +38,8 @@ The 24 modules bundled with Didacta Community, **each with its own detail page**
 | [Points and challenges](gamification.md) (`mod.gamification`) | An auditable points ledger: rules with a daily cap, levels, perks and challenges with proof. |
 | [Resource library](resources.md) (`mod.resources`) | Resources grouped in collections, shared by the community, with a download counter. |
 | [Surveys and NPS](surveys.md) (`mod.surveys`) | Anonymous surveys triggered at the end of every live class. |
+| [Automated messages and at-risk members](retention.md) (`mod.retention`) | Direct messages the academy sends by itself (welcome, recovery, anniversary…) and a list of members to write to in time. |
+| [Help and suggestions](support.md) (`mod.soporte`) | Support tickets with a screenshot: from members to the academy team, and from the academy team to the platform operator. |
 
 ## Artificial intelligence
 

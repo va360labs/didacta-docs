@@ -3,9 +3,9 @@
 This guide walks through a Didacta installation **from scratch**, exactly as any new self-hoster would see it: an instance with no pre-existing data and the real path of an operator — setup wizard, the academy's welcome wizard, first course, enrolling students and a certificate — with a screenshot at every step.
 
 !!! note "Where these screenshots come from"
-    They were taken against an isolated, ephemeral instance with no seeds, running version 0.1.0-beta.18. The academy, course and people are examples (`Morning Pour`, `Ivy Carter`, `Theo Park`, domain `morningpour.example.com`) — replace them with your own.
+    They were taken against an isolated, ephemeral instance with no seeds, running version 0.1.0-beta.24. The academy, course and people are examples (`Morning Pour`, `Ivy Carter`, `Theo Park`, domain `morningpour.example.com`) — replace them with your own.
 
-    A new installation starts in **full mode** (side menu with every option); the [last step](#10-simple-mode) shows how to switch to **simple mode**, the mode Didacta Cloud academies start in.
+    The side menu ends with the "Help & feedback" card ([mod.soporte](../modules/catalog/support.md)). A new installation starts in **full mode** (side menu with every option); the [last step](#10-simple-mode) shows how to switch to **simple mode**, the mode Didacta Cloud academies start in.
 
 ## 1 · First start and setup wizard
 
@@ -63,7 +63,7 @@ Publishing requires four things (title, description, at least one section and on
 
 ![The "Ready to publish" card with the four requirements met](../assets/visual-walkthrough/en/10-course-ready.png)
 
-With "Publish", the course moves to **Published**.
+With "Publish", the course moves to **Published**. Above the course header sits the "Course price" card: while the course is a draft it tells you to publish it before setting a price; once published, "Put on sale" takes it to the sales catalog.
 
 ![Course published](../assets/visual-walkthrough/en/11-course-published.png)
 

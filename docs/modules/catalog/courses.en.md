@@ -17,7 +17,7 @@ This is the heart of the catalog: courses with a `slug`, title and status (`DRAF
 - **Activation**: a `core`-category module, always active in every tenant. It does not appear in the "Modules" tab at `/admin/settings?tab=modules` (that tab only lists deactivatable modules) and the API refuses to disable it; if a row is ever left with `enabled=false` in the database, server startup re-enables it automatically.
 - **Per-tenant settings**: none. All configuration is per course, from the instructor's builder.
 - **Curated categories**: the administrator manages them at `/admin/courses/categories` ("Course categories" screen): name, "Color" and "Icon". The name is an exact-text match with the category written on the course; the catalog and the course card render the chip with that style.
-- **Environment variables**: none of its own. Cover images and SCORM packages are stored in the instance's file backend (`/admin/settings?tab=storage`, local disk or S3-compatible).
+- **Environment variables**: none belongs to the module itself. Content-related ones: `LESSON_IFRAME_ALLOWED_HOSTS` (extra `<iframe>` hosts in HTML lessons) and `BUNNY_STREAM_*` (video upload, Didacta Cloud only; see "Lesson video"). Cover images and SCORM packages are stored in the instance's file backend (`/admin/settings?tab=storage`, local disk or S3-compatible).
 - **License**: the whole module is Community; no feature requires Enterprise capabilities.
 
 !!! note "Screenshots in full mode"
@@ -33,7 +33,7 @@ This is the heart of the catalog: courses with a `slug`, title and status (`DRAF
 
 2. In the builder (`/studio/courses/<id>`), click "Add section", type the title and confirm with "Create section". Sections group related lessons.
 3. Inside each section, "Add lesson": pick the "Type" (Video, HTML, PDF, Text, Quiz or SCORM), type the title and click "Create".
-4. Click "Edit" on the lesson to load its content depending on the type: "Video URL" (YouTube, Bunny Stream or a `.mp4`/`.webm`/`.m3u8` file) with clickable "Resources and chapters", "PDF URL", "HTML", "Text", a linked quiz (see [mod.assessments](assessments.md)) or "Upload SCORM package" (a `.zip` with `imsmanifest.xml` at the root). The "Publish date (optional)" field schedules the lesson: with a future date it shows in the list but stays locked until then.
+4. Click "Edit" on the lesson to load its content depending on the type: "Video URL" (YouTube, Bunny Stream or a `.mp4`/`.webm`/`.m3u8` file) with clickable "Resources and chapters" (and, optionally, "Transcript (for the AI tutor)": paste the text or upload an `.srt`, `.vtt` or `.txt`; students do not see it, the [AI tutor](ai-tutor.md) reads it), "PDF URL", "HTML", "Text", a linked quiz (see [mod.assessments](assessments.md)) or "Upload SCORM package" (a `.zip` with `imsmanifest.xml` at the root). The "Publish date (optional)" field schedules the lesson: with a future date it shows in the list but stays locked until then.
 
     ![The course builder with sections, lessons and the publish card](../../assets/modules/courses/en/courses-2-builder.png)
 
@@ -41,6 +41,13 @@ This is the heart of the catalog: courses with a `slug`, title and status (`DRAF
 6. Reorder sections and lessons by dragging (drag & drop); a lesson can also be moved to another section. Deletions are soft deletes: the item stops showing but students' historical progress is preserved.
 7. The "Before publishing" card lists the requirements: "Course title", "Description", "At least one section" and "At least one lesson". Once everything is met it switches to "Ready to publish". Click "Publish"; if a module hooked into the validation blocks publishing (e.g. FUNDAE), the API responds 422 with the reasons.
 8. "Archive" removes the course from the catalog without deleting anything; "Unarchive" returns it to `DRAFT` (it is not republished automatically: you review it and click "Publish" again).
+
+### Lesson video: upload and protection
+
+- **Uploading the video from the editor (Didacta Cloud only).** In a video lesson, besides pasting a link, the editor offers "Upload the video for this lesson": drag the file or pick it, with "Pause" and "Resume" if the connection drops. After the upload the video is prepared in a few minutes (you can keep editing) and you must click "Save changes" for students to see it. It only exists if the instance has `BUNNY_STREAM_API_KEY`; without it (the case of a self-hosted install) the editor only accepts links and the `/video/uploads` routes answer 404. Limits per video: 4 GB and 2 hours. The total space depends on whether you have sold yet: before the first sale, 5 h stored, up to 720p and 100 h watched per month; afterwards, 50 h (plus 10 h for every €30 of operator commission over the last 12 months), up to 1080p and no cap on hours watched. The editor's "Your video space" card shows what you have used.
+- **Video protection** (`/admin/security`, "Video protection" card, `super_admin` and `tenant_admin` only). For the Bunny Stream videos you link by hand: with protection on, every playback checks that the student receives that lesson's content and hands them a signed link that expires after 30 minutes. To turn it on you save each library's "Token authentication key" (stored encrypted and never shown again), enable the token in Bunny and click "Check". Settings: "Protection enabled" (on by default), "Watermark with the student email" (on by default), "Different videos per hour" (30) and "Different videos per day" (100) per account; instructors and admins have no cap. Videos uploaded from the editor are already signed by the platform and need no key.
+- **Sanitized HTML.** Lesson HTML and the course description are sanitized **on the server when saving**: `<script>`, `<style>` and `javascript:` links are discarded. In HTML lessons only `<iframe>`s from YouTube, Vimeo and Bunny Stream are allowed (plus any hosts the operator adds in `LESSON_IFRAME_ALLOWED_HOSTS`, comma-separated).
+- **Who receives the content.** `GET /modules/courses/:id` returns the full syllabus to a student, but each lesson's content only if they have a live enrollment and the lesson is released (drip, publish date, trial period or level); instructors and admins always see it complete.
 
 ### Curating the catalog categories (admin)
 
@@ -76,5 +83,5 @@ Prefix `/modules/courses`: CRUD for courses/modules/lessons, managed categories,
 
 ## Events and hooks
 
-- **Emits**: `courses.course.created/updated/published/archived/unarchived`, `courses.module.created/deleted`, `courses.lesson.created/updated/moved`.
+- **Emits**: `courses.course.created/updated/published/archived/unarchived`, `courses.module.created/deleted`, `courses.lesson.created/updated/moved/moved-to-module/deleted`, `courses.lessons.reordered` and `courses.modules.reordered`.
 - **Exposes the hook** `courses.publish.validate` (the only active hook in the product — the reference pattern).

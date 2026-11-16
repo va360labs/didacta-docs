@@ -23,11 +23,13 @@ This documentation covers everything you need to install, operate and extend you
   <a href="modulos/"><h3>🧩 Modules</h3><p>The full catalog with one page per module, how to manage them and the guide to building your own.</p></a>
   <a href="api/"><h3>🔌 API</h3><p>Authentication, multi-tenant conventions and an endpoint-by-endpoint reference of the REST API.</p></a>
   <a href="enterprise/"><h3>🏢 Enterprise</h3><p>Enterprise capabilities, how licensing works and how to activate it.</p></a>
+  <a href="cloud/"><h3>☁️ Cloud</h3><p>The managed edition: free, with 5% of each sale. Pricing, payouts, your academy, support and data migration.</p></a>
 </div>
 
 ## Quick paths
 
 - **I want to try Didacta right now** → [Installing with Docker Compose](installation/docker-compose.md)
+- **I would rather not install anything** → [Didacta Cloud](cloud/index.md)
 - **I came here to upgrade my instance** → [Upgrading Didacta](installation/upgrading.md)
 - **I am looking for a specific environment variable** → [Environment variables](configuration/environment-variables.md)
 - **I want to build a module** → [Building a module](modules/building-a-module/index.md)

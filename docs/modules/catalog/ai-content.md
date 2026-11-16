@@ -27,7 +27,7 @@ Genera **borradores formativos** a partir del texto de una lección: resúmenes 
 
 ![Dónde se pone la clave de chat que usa el generador](../../assets/modules/ai-content/ai-content-2-providers.png)
 
-**Sin variables propias, sin ajustes por tenant y sin exigencia de licencia Enterprise.**
+**Sin variables propias, sin ajustes por tenant y sin exigencia de licencia Enterprise.** Permisos del manifest: `ai-content.generate`, `ai-content.review` y `ai-content.read`.
 
 ## Uso paso a paso
 

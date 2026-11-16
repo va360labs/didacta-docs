@@ -54,5 +54,6 @@ Didacta está en **{{ didacta_channel|lower }}** ({{ didacta_version }}): entre 
 ## Siguientes pasos
 
 - [Ediciones: Community, Enterprise y Cloud](editions.md)
+- [Didacta Cloud: la edición gestionada](../cloud/index.md)
 - [Arquitectura de la plataforma](architecture.md)
 - [Instalar Didacta en 5 minutos](../installation/docker-compose.md)

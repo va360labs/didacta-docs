@@ -12,16 +12,13 @@ You need a *Server-to-Server OAuth* app created in your account's [Zoom App Mark
 
 So that Didacta receives events (meeting start/end, recordings available, attendance):
 
-1. In your Zoom app, point the webhook endpoint at your instance:
+1. In your Zoom app, point the webhook endpoint at **your academy's domain** (the exact URL appears, with a "Copy" button, in the "Zoom webhook" block of the **Virtual classroom** tab):
    ```
    https://your-domain/api/v1/webhooks/zoom
    ```
-2. Copy Zoom's **Secret Token** into the variable:
-   ```bash
-   ZOOM_WEBHOOK_SECRET=...
-   ```
+2. Paste Zoom's **Secret Token** into the **Webhook Secret Token** field under **Administration → Settings → Virtual classroom**, next to your credentials (it is **not** an environment variable: it is **per academy**, encrypted) and click **"Comprobar webhook"** (Check webhook).
 
-Didacta verifies the HMAC-SHA256 signature of every event against the raw request body; without the secret, events are rejected.
+Didacta verifies the HMAC-SHA256 signature of every event against the raw request body, using the secret **of the academy the URL's domain belongs to**; without it, events are rejected, and an event is never processed for an academy other than the one that signed it. One Zoom app shared by several academies of the same owner works if all of them store the same secret. Received notices are listed at `/admin/webhooks?tab=zoom`. Details in [mod.zoom-live](../modules/catalog/zoom-live.md).
 
 ## Scheduled jobs
 

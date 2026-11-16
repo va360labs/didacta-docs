@@ -19,6 +19,7 @@ La guía canónica es [CONTRIBUTING.md](https://github.com/va360labs/didacta-io/
 ## Validaciones antes de push
 
 ```bash
+pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test

@@ -17,7 +17,8 @@ It creates no charges: to sell, use [mod.billing](billing.md) and [mod.subscript
 
 ## How it works
 
-- Matching is by **normalised email** (lowercase + trim) on both sides; `active`, `trialing` and `past_due` all count as active.
+- Matching is by **normalised email** (lowercase + trim) on both sides; in the live reconciliation `active`, `trialing` and `past_due` all count as active.
+- **A payment failure grants no access**: a subscription in arrears (`past_due` in Stripe, `on-hold` in WooCommerce) **gets no derived tier** — and therefore neither the linked access group nor its courses — unless the operator configures grace days with `PAYMENT_CONNECTIONS_PAST_DUE_GRACE_DAYS` (default 0). Days are counted from when the subscription enters arrears; once the period is over, access is removed on the next **"Sync tiers from payments"**, and it comes back on its own when the gateway collects and the subscription returns to `active`.
 - The effective tier resolves as: manual → derived from payment → "Unknown". Changes publish `payment_connections.user_tier.changed`, which `mod.access-groups` consumes to reconcile memberships.
 - API keys are stored **encrypted** per connection; they never come back in a GET.
 - The dashboard reads only the materialised table — it never queries the providers live.
@@ -45,7 +46,7 @@ Each listed connection shows its status (**"Verified"** / "Error"…), the Live 
 
 ### Subscription control (dashboard)
 
-The **"Subscription control"** block on the same screen: a **"Sync now"** button (besides the cron), the filters **"Search by email"**, **"Provider"**, **"Status"** and **"Only not registered in Didacta"**, and a per-row **"Reminder"** button that sends the renewal email (template editable from the modal itself, per tenant).
+The **"Subscription control"** block on the same screen: a **"Sync now"** button (besides the cron), the filters **"Search by email"**, **"Provider"**, **"Status"** and **"Only not registered in Didacta"**, and a per-row **"Reminder"** button that sends the renewal email (template editable from the modal itself, per tenant and in the academy's language — es, en or pt — keeping the `{plan}` and `{enlace}` placeholders).
 
 ![The "Subscription control" dashboard with filters and the last sync](../../assets/modules/payment-connections/en/payment-connections-2-dashboard.png)
 
@@ -71,6 +72,7 @@ The **"Subscription alerts"** block: the **"Stripe Customer Portal link"** field
 | `PAYMENT_SUBSCRIBERS_SYNC_CRON` | Cron of the worker materialising subscribers (`*/15 * * * *`). |
 | `SUBSCRIPTIONS_DAILY_CRON` / `SUBSCRIPTIONS_DAILY_TZ` | Daily summary to the admins (`0 9 * * *`, `UTC`). |
 | `SUBSCRIPTIONS_RENEWAL_WINDOW_DAYS` | Window of the renewal notices (7 days). |
+| `PAYMENT_CONNECTIONS_PAST_DUE_GRACE_DAYS` | Days a subscriber of a connected account in arrears (`past_due` / `on-hold`) keeps their tier and the linked group. Default `0`: arrears grant no access. A value that is not a positive number counts as 0. Independent of `SUBSCRIPTIONS_GRACE_PERIOD_DAYS`, which only applies to subscriptions charged by Didacta itself ([mod.subscriptions](subscriptions.md)). |
 
 Credentials, the Woo webhook secret, the renewal template and the cancellation portal URL are all **per tenant**, encrypted in the database — no variables of their own.
 
@@ -79,10 +81,14 @@ Credentials, the Woo webhook secret, the renewal template and the cancellation p
 1. Create the restricted key in Stripe (`Customers = Read` + `Subscriptions = Read`, optionally `Invoices = Read`) and connect it under **"Connect a payment account"** → **"Connect"**. The connection ends up **"Verified"** with the account's details.
 2. Click **"View subscribers"**: the live reconciliation splits **"In Didacta with an active subscription"** from **"Subscribers NOT in Didacta"**. In the second table, **"Select all with email"** → **"Invite (n)"** creates their accounts (PENDING) and sends the activation email.
 3. Under **"Subscription control"**, click **"Sync now"** (or wait for the cron, every 15 min): the materialised table shows every subscription of every account with its real status ("Active", "Payment overdue (unpaid)", "Cancelled"…). Filter by email, provider or status; the **"Reminder"** button sends the renewal email with the open invoice's payment link (if the key can read Invoices).
-4. Tiers: create the catalog (Free, Basic, Pro…), click **"Sync tiers from payments"** to derive each user's real tier, and adjust manually from **Users** where needed. Every tier change publishes `payment_connections.user_tier.changed`, which access groups consume.
+4. Tiers: create the catalog (Free, Basic, Pro…), click **"Sync tiers from payments"** to derive the real tier of each user whose subscription is up to date (the notice says how many users in arrears are left without a tier), and adjust manually from **Users** where needed. Every tier change publishes `payment_connections.user_tier.changed`, which access groups consume.
 5. Under **"Subscription alerts"**, paste your **"Stripe Customer Portal link"** and use **"Test send now"** to verify the circuit. After that, the daily summary and the 7-day notices go out on their own.
 6. With WooCommerce: connect the store, register the signed webhook pointing to the URL with `?tenant=`, and set the secret through the API. The order mirror surfaces one-off purchases ("lifetime access") in the member enrollment requests and warns about `TIMED` access expiries.
 7. What the end user sees: under `/account?tab=subscription` (the **"Subscription"** tab) their external subscription appears with status and amount, plus the **"Manage my subscription"** button (opens the Stripe Customer Portal) or, without a portal, **"View / pay invoice ↗"** and a note to contact the academy.
+
+## Permissions
+
+`payment_connections.connection.read`, `.create`, `.update` and `.delete`. In addition, every administration endpoint requires the `super_admin` role; only `me/subscription` and `me/billing-portal` are open to any authenticated user.
 
 ## Dependencies
 
@@ -94,7 +100,7 @@ None.
 
 ## API
 
-Prefix `/modules/payment-connections` (super_admin, except the self-service `me/*` endpoints). Details in [Reference → Payments](../../api/reference/payments-live-ai.md#payment-connections-modulespayment-connections-super_admin).
+Prefix `/modules/payment-connections` (super_admin, except the self-service `me/*` endpoints): `connections`, `tiers/catalog`, `user-tiers` (+ `user-tiers/sync`), `orders-mirror/*`, `subscriptions-dashboard/*` and `woo-webhook`. Details in [Reference → Payments](../../api/reference/payments-live-ai.md#payment-connections-modulespayment-connections-super_admin).
 
 ## Events
 

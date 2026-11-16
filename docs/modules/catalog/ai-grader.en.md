@@ -26,7 +26,7 @@ AI-assisted grading for the open-ended questions in [mod.assessments](assessment
 
 **Rubrics.** There is no rubric editing screen yet: they are managed through the API (`GET`/`PUT`/`DELETE /modules/ai-grader/questions/:questionId/rubric`, instructor role and above). Validations on save: instructions from 10 to 2000 characters, 1 to 8 criteria, each criterion with a name, a description and an integer weight (1-100), and the weights summing to the question's points.
 
-**No variables of its own, no per-tenant settings and no Enterprise license requirement.**
+**No variables of its own, no per-tenant settings and no Enterprise license requirement.** Manifest permissions: `ai-grader.rubric.read/write` and `ai-grader.suggestion.read/write`.
 
 ## Step by step
 
@@ -59,8 +59,8 @@ Optional: `mod.assessments` (the source of attempts, answers and questions).
 
 ## API
 
-Prefix `/modules/ai-grader` (instructor and above): rubric management and the suggestion cycle. Details in [Reference → Payments, classroom and AI](../../api/reference/payments-live-ai.md#ai).
+Prefix `/modules/ai-grader` (instructor and above): rubric management and the suggestion cycle (`attempts/:attemptId/suggest`, `attempts/:attemptId/suggestions` and `suggestions/:id/apply`). Details in [Reference → Payments, classroom and AI](../../api/reference/payments-live-ai.md#ai).
 
 ## Events
 
-**Emits**: `ai-grader.suggestion.generated`, `ai-grader.suggestion.failed`. It consumes none.
+**Emits**: `ai-grader.suggestion.generated` (for each saved suggestion: `suggestionId`, `attemptId`, `answerId`, `questionId`, `proposedScore`, `provider`, `model`) and `ai-grader.suggestion.failed` (when the provider fails or its reply cannot be read: `attemptId`, `answerId`, `questionId`, `reason` = `provider` or `unparseable`). Reusing an already saved suggestion publishes nothing. It consumes none.

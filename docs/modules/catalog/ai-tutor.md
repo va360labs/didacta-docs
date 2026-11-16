@@ -14,6 +14,8 @@ Encima hay un **ciclo de calidad** en Administración → Tutor IA con tres pest
 - Las **correcciones humanas viven en tabla propia**, no como chunks: se recuperan por similitud, se inyectan en el prompt **por encima** del contexto RAG y entran en caliente sin reindexar (y sobreviven a los reindexados, que borran y regeneran los chunks).
 - Cuota de **10 preguntas diarias** por alumno (no aplica al staff, que además puede probar el tutor de cualquier curso sin matricularse).
 - Cuotas superadas → 429; proveedor de IA sin configurar → 424.
+- **Sin proveedor de IA, el tutor no se enseña.** Necesita a la vez chat y embeddings (propios o por defecto del servidor); si falta uno, `GET /modules/ai-tutor/status` responde `available: false` (`NO_PROVIDER`) y el alumno no ve el panel. Tampoco intenta indexar al publicar o guardar lecciones (lo deja en el log de depuración, sin error).
+- La cabecera «[Módulo N: título]» que se antepone a cada lección al indexar sale en el idioma del aula, y el extracto de la cita ya no la enseña (los índices anteriores tampoco, sin reindexar).
 
 ## Configuración
 
@@ -26,11 +28,15 @@ Encima hay un **ciclo de calidad** en Administración → Tutor IA con tres pest
 
 La clave se cifra con AES-256-GCM al guardarse y nunca se vuelve a mostrar (para cambiarla hay que reintroducirla). Guardar configuración por tenant exige la variable `AI_CONFIG_ENCRYPTION_KEY` en el servidor. Si el tenant no configura nada, se usa el default global del cluster (`DEFAULT_AI_CHAT_*` / `DEFAULT_AI_EMBED_*`); si tampoco existe, el tutor responde **424** y el alumno ve «No hay proveedor de IA configurado en el tenant. Pídele al admin que configure uno.». El detalle completo del gateway está en [Configuración → IA](../../configuration/ai.md).
 
+**Sin proveedor.** El administrador ve, en lugar del tutor en la lección y arriba de `/admin/ai/tutor`, el aviso «El tutor IA está apagado» con el botón **«Configurar el proveedor de IA»** que lleva a `/admin/ai/providers`; el alumno no ve nada.
+
 **Indexación.** Automática al publicar el curso. Para cursos publicados **antes** de configurar embeddings, la misma pantalla de proveedores tiene la tarjeta «Indexación de cursos existentes» con el botón **«Reindexar todos los cursos publicados»**. El reindexado de un curso concreto (`POST /admin/ai-tutor/courses/:courseId/index`) no tiene botón: es API.
 
 **Parámetros del RAG.** Son constantes del producto, no ajustes: top-K 5, presupuesto de historial 3000 tokens, umbral de similitud de correcciones y cuota diaria de 10 preguntas.
 
 **Licencia.** Nada del módulo exige licencia Enterprise.
+
+**Permisos del manifest.** `ai-tutor.chat.read/write`, `ai-tutor.index.write`, `ai-tutor.config.write` y `ai-tutor.review.read/write`.
 
 !!! note "Capturas en modo sencillo"
     Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
@@ -75,9 +81,9 @@ Opcionales: `mod.courses`, `mod.learning`.
 
 ## API
 
-`POST /modules/ai-tutor/courses/:courseId/ask` (alumno) + superficie admin (`/admin/ai-tutor/*`: indexado, revisión, correcciones, informe). Detalle en [Referencia → Pagos, aula e IA](../../api/reference/payments-live-ai.md#ia).
+`GET /modules/ai-tutor/status` (¿puede contestar el tutor en este aula?), `POST /modules/ai-tutor/courses/:courseId/ask` (alumno) + superficie admin (`/admin/ai-tutor/*`: indexado de un curso y `reindex-all`, `answers` y su revisión, `corrections`, `report/monthly`). Detalle en [Referencia → Pagos, aula e IA](../../api/reference/payments-live-ai.md#ia).
 
 ## Eventos
 
-- **Emite**: `ai-tutor.course.indexed/index-failed`, `ai-tutor.chat.message-sent/message-received`, `ai-tutor.answer.reviewed/corrected`.
+- **Emite**: `ai-tutor.course.indexed/index-failed`, `ai-tutor.chat.message-received` (un único evento por turno, con la pregunta y la respuesta ya guardadas), `ai-tutor.answer.reviewed/corrected`.
 - **Consume**: `courses.course.published/unpublished`, `courses.lesson.created/updated/deleted`.

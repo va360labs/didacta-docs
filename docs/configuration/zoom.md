@@ -12,16 +12,13 @@ Necesitas una app *Server-to-Server OAuth* creada en el [Zoom App Marketplace](h
 
 Para que Didacta reciba eventos (inicio/fin de reunión, grabaciones disponibles, asistencia):
 
-1. En tu app de Zoom, configura el endpoint de webhook apuntando a tu instancia:
+1. En tu app de Zoom, configura el endpoint de webhook apuntando al **dominio de tu academia** (la URL exacta aparece, con botón «Copiar», en el bloque «Webhook de Zoom» de la pestaña **Aula virtual**):
    ```
    https://tu-dominio/api/v1/webhooks/zoom
    ```
-2. Copia el **Secret Token** de Zoom en la variable:
-   ```bash
-   ZOOM_WEBHOOK_SECRET=...
-   ```
+2. Pega el **Secret Token** de Zoom en el campo **Webhook Secret Token** de **Administración → Configuración → Aula virtual**, junto a tus credenciales (**no** es una variable de entorno: es **por academia**, cifrado) y pulsa **«Comprobar webhook»**.
 
-Didacta verifica la firma HMAC-SHA256 de cada evento contra el cuerpo crudo de la petición; sin el secret, los eventos se rechazan.
+Didacta verifica la firma HMAC-SHA256 de cada evento contra el cuerpo crudo de la petición con el secreto **de la academia a la que pertenece el dominio** de la URL; sin él, los eventos se rechazan, y un evento nunca se procesa para un aula distinta de la que firmó. Una misma app de Zoom repartida entre varias academias del mismo dueño funciona si todas guardan el mismo secreto. Los avisos recibidos se ven en `/admin/webhooks?tab=zoom`. Detalle en [mod.zoom-live](../modules/catalog/zoom-live.md).
 
 ## Trabajos programados
 

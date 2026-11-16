@@ -1,6 +1,6 @@
 # Reference — Community and people
 
-Community, messaging, gamification, resources, surveys, referrals, theming, member registration and membership. Every route hangs off `/api/v1`.
+Community, messaging, gamification and retention, resources, surveys, referrals, theming, member registration, membership, automatic retention messages and help and suggestions. Every route hangs off `/api/v1`.
 
 **Auth**: `Bearer` = an authenticated user · `admin` = tenant_admin/super_admin · `staff` = admin + instructor · `Public` = no session (the tenant is resolved by domain).
 
@@ -24,9 +24,10 @@ Community, messaging, gamification, resources, surveys, referrals, theming, memb
 | GET · POST · PATCH · DELETE | `/modules/community/spaces[/:slug]` | read Bearer · write admin | Spaces; the 4 system ones are editable but cannot be deleted (409). |
 | GET | `/modules/community/members` | Bearer | Paginated directory of active members. |
 | GET | `/modules/community/stats` | Bearer | The tenant's active members and courses. |
+| GET | `/modules/community/sidebar` | Bearer | The feed's sidebar in one call: the classroom card (brand, members, presence), the month's ranking and the latest comments. Each block comes `null` or empty when there is no data. |
 | GET · POST | `/modules/community/broadcasts` | admin | Announcements with status and batch resumption. |
 | POST | `/modules/community/digest/run-now` | super_admin | Forces the weekly digest (QA) → 202. |
-| GET | `/modules/community/unsubscribe?token=` | Public (HMAC token from the email) | Unsubscribes from announcements; returns HTML. |
+| GET · POST | `/modules/community/unsubscribe` | Public (HMAC token from the email) | Unsubscribes from the community's emails: `GET ?token=` from the email link (returns HTML) · `POST` **one-click unsubscribe** (RFC 8058) from the mail client. |
 
 **External API** — `/community-api` (an API key with the `community:post` scope, whose owner must be an admin): `GET /community-api/spaces` (where to publish) and `POST /community-api/posts` (publishes with `source='api'`; a non-existent `space` → 422 with the valid slugs).
 
@@ -64,6 +65,23 @@ Community, messaging, gamification, resources, surveys, referrals, theming, memb
 | GET · POST | `/modules/gamification/admin/submissions[/:id/review]` | staff | Submissions · approving (crediting the points) or rejecting. |
 | POST | `/modules/gamification/admin/backfill` | admin | Populates the ledger with historical activity (idempotent). |
 
+**Retention and celebrations (streaks, badges, rewards and level-gated content):**
+
+| Method | Route | Auth | What it does |
+|---|---|---|---|
+| GET | `/modules/gamification/me/retention` | Bearer | My streak, my badges (and the catalog) and my preferences. |
+| PUT | `/modules/gamification/me/prefs` | Bearer | `{ celebrate?, showStreak? }`: stay out of celebrations / do not show my streak. |
+| GET | `/modules/gamification/me/rewards` | Bearer | Rewards I have received and those I still have to earn. |
+| GET | `/modules/gamification/me/locks` | Bearer | Content unlocked by level, as seen by me (it does not include what I have through purchase or subscription). |
+| GET | `/modules/gamification/members/summary?ids=` · `/members/:userId/summary` | Bearer | Level, badges and streak of several members (cards) · of one (their profile). |
+| GET · PUT | `/modules/gamification/admin/retention/settings` | admin | Switches: `streaksEnabled`, `badgesEnabled`, `celebrateCourses`, `celebrateIntros`, `celebrateAnniversaries`, `celebrateLevels`. |
+| GET · PUT | `/modules/gamification/admin/badges[/:key]` | admin | Badge catalog · rename or turn one off (`{ name?, enabled? }`). |
+| GET | `/modules/gamification/admin/lockable-content` | admin | Courses (and their sections) that can be gated by level. |
+| GET · PUT · DELETE | `/modules/gamification/admin/locks[/:id]` | admin | List · gates a course or a section until a level (`{ targetKind: COURSE \| MODULE, targetId, levelId, grantPaid? }`) · removes (204). |
+| GET · POST · PUT · DELETE | `/modules/gamification/admin/rewards[/:id]` | admin | Automatic rewards: `{ title, triggerKind: LEVEL \| POINTS, levelId?, points?, kind: MESSAGE \| CODE, message?, url?, code?, active? }`. |
+| GET | `/modules/gamification/admin/reward-grants` | admin | Log of rewards delivered. |
+| POST | `/modules/gamification/admin/celebrations/anniversaries/run` | admin | Publishes this classroom's anniversaries for today right now (it does so by itself every morning). Idempotent. |
+
 **Errors**: `GAMIFICATION_CHALLENGE_CLOSED` / `GAMIFICATION_PERK_UNAVAILABLE` / `GAMIFICATION_ALREADY_SUBMITTED` / `GAMIFICATION_ALREADY_REVIEWED` 409 · validation 422 · not found 404.
 
 ## Resources — `/modules/resources`
@@ -90,14 +108,37 @@ Community, messaging, gamification, resources, surveys, referrals, theming, memb
 
 ## Referrals — `/modules/referrals`
 
+**Member:**
+
 | Method | Route | Auth | What it does |
 |---|---|---|---|
-| GET | `/modules/referrals/me` · `me/stats` | Bearer | My code and link (`/join?ref=`) · clicks, sign-ups, commissions and history. |
-| POST | `/modules/referrals/track` | Public | Records a click (deduplicated by code + day + IP hash; the IP is never stored in the clear). |
-| GET · PUT | `/modules/referrals/admin/config` | admin | The program's policy: `commissionBps`, scope, windows, guarantee, minimum payout. |
-| GET | `/modules/referrals/admin/commissions` · `referrers` | admin | Commissions with filters and totals · referrers with their metrics. |
-| POST | `/modules/referrals/admin/commissions/:id/approve` · `revoke` | admin | Approves · revokes with a mandatory reason. |
-| POST | `/modules/referrals/admin/payouts` | admin | An atomic manual payout of a batch of `APPROVED` commissions, with an external reference. |
+| GET | `/modules/referrals/me` | Bearer | My code and link (`/join?ref=`), creating it if it does not exist. 404 if the program is inactive; 403 if it requires an active membership and I do not have one. |
+| POST | `/modules/referrals/me/terms` | Bearer | I declare I am over 18 and accept the current version of the terms. Without this there is no link and no commissions are attributed; 403 `REFERRALS_TERMS_REQUIRED` if the version is not the current one. |
+| GET · PUT | `/modules/referrals/me/payee` | Bearer | Details to be paid in cash (full name, country, NIF/NIE or tax identifier, IBAN), encrypted; GET returns them **masked** (last 4 only) or `null`. PUT: 422 `REFERRALS_PAYEE_INVALID` with the failing fields (never their values). |
+| POST | `/modules/referrals/me/payouts` | Bearer | I request the cash payout of what is confirmed. It needs payout details and reaching the classroom's minimum; 409 if one is already requested or details are missing. |
+| GET | `/modules/referrals/me/payouts/:id/receipt` | Bearer | PDF receipt of one of my own paid cash payouts. |
+| GET | `/modules/referrals/me/stats` | Bearer | Clicks, attributed sign-ups, commissions by status, history and settlements. Works even if the program is inactive (`programActive=false`) to show the history. |
+| GET | `/modules/referrals/me/invitees` | Bearer | My invitees: initials, join date, status (`trial`, `paying`, `bought_course`, `cancelled`, `joined`) and the non-voided commission generated. **Never** a name or email. |
+| POST | `/modules/referrals/me/redeem-credit` | Bearer | Redeems what was earned (approved, unpaid commissions) as a discount on the next membership installment (a credit to the Stripe customer balance). Idempotent. 403 without an active membership or with the option off; 409 if there is nothing to redeem. |
+
+**Public:**
+
+| Method | Route | Auth | What it does |
+|---|---|---|---|
+| POST | `/modules/referrals/track` | Public | Records a click on `/join?ref=CODE` (classroom by domain; deduplicated by code + day + IP hash; the IP is never stored in the clear). Best-effort: never fails because of an invalid code or inactive program. |
+| GET | `/modules/referrals/public/terms` | Public | The classroom's public program terms: current version and real figures (percentage, attribution and guarantee days, minimum payout, discount cap). |
+
+**Administration (admin):**
+
+| Method | Route | What it does |
+|---|---|---|
+| GET · PUT | `/modules/referrals/admin/config` | The program's policy: `commissionBps`, scope, windows, guarantee, minimum payout. Changes **do not recalculate** commissions already accrued (basis points are sealed per commission). |
+| GET | `/modules/referrals/admin/commissions` · `referrers` | Commissions with filters and totals by status · referrers with metrics. |
+| POST | `/modules/referrals/admin/commissions/:id/approve` · `revoke` | Approves a `PENDING` commission without waiting for the guarantee · revokes (`PENDING`/`APPROVED`) with a mandatory reason. |
+| GET | `/modules/referrals/admin/cash-payouts` | The classroom's cash payouts (requested and paid) with what is needed to pay: name, tax identifier and IBAN. |
+| POST | `/modules/referrals/admin/cash-payouts/:id/paid` | Marks a requested payout as paid, with the transfer reference: the settlement becomes `DONE` and its commissions `PAID`. |
+| GET | `/modules/referrals/admin/cash-payouts/:id/receipt` | PDF receipt of a paid cash payout of the classroom. |
+| POST | `/modules/referrals/admin/payouts` | An atomic manual payout of a batch of `APPROVED` commissions, with a mandatory external reference. |
 
 ## Theming — `/modules/theming`
 
@@ -107,6 +148,10 @@ Community, messaging, gamification, resources, surveys, referrals, theming, memb
 | POST | `/modules/theming/me/reset` | admin | Returns to the defaults. |
 | POST · DELETE | `/modules/theming/me/logo` | admin | Uploads (base64, ≤2 MB, png/jpeg/svg/webp) · deletes the logo. |
 | GET | `/modules/theming/tenants/:tenantId/logo` | Public | Serves the logo (needed on `/signin` before authentication). |
+| POST · DELETE | `/modules/theming/me/favicon` | admin | Uploads (base64, ≤1 MB, png/jpeg/svg/webp) · removes the favicon. |
+| GET | `/modules/theming/tenants/:tenantId/favicon` | Public | Serves the favicon (also drawn on screens with no session). |
+| POST · DELETE | `/modules/theming/me/cover` | admin | Uploads (≤10 MB) · removes the academy's cover —the header of its card in the community—; without it the card goes back to the color band. |
+| GET | `/modules/theming/tenants/:tenantId/cover` | Public | Serves the cover (an `<img>` does not send the token). |
 
 ## Member registration — `/modules/member-registration`
 
@@ -118,7 +163,7 @@ Community, messaging, gamification, resources, surveys, referrals, theming, memb
 | POST | `/modules/member-registration/telegram/verify` | Validates the Telegram Login Widget signature and group membership → a ticket (15 min). |
 | POST | `/modules/member-registration/otp/request` · `otp/verify` | Sends the code by email · validates it → a `verificationToken` (30 min). |
 | POST | `/modules/member-registration/register` | Creates the `PENDING` user and notifies the approver → `{ status: 'PENDING' }`. |
-| GET | `/modules/member-registration/decision?token=` | The approve/reject link from the approver's email (302 to the result). |
+| GET · POST | `/modules/member-registration/decision` | `GET ?token=`: the approve/reject link from the approver's email **only reads** and redirects (302) to the confirmation screen · `GET decision/preview`: what that token would do, without running it · `POST`: runs the confirmed decision. |
 
 If the tenant requires a verifier that is not operational (for example Telegram with no bot), it returns a **fail-closed 503**.
 
@@ -139,5 +184,40 @@ If the tenant requires a verifier that is not operational (for example Telegram 
 | POST | `/membership/checkout` | Public | Anonymous subscription checkout: `{ planId, email?, referralCode? }` → `{ url, sessionId }`. |
 | GET · POST · PATCH · DELETE | `/membership/admin/plans[/:id]` | admin | Plans: name, billing period (1-12 months), price in cents, struck-through price, trial, featured. Deleting a plan that has sales deactivates it instead. |
 | GET · PUT | `/membership/admin/config` | admin | The public page: active, headlines, access group, lesson limit during the trial, per-course prices, testimonial. |
+| GET | `/membership/checkout-session/:sessionId` | Public | Return from the membership payment (thank-you screen): whether **this** academy's session is completed, which plan, how much and when. |
+| GET · PUT | `/membership/admin/retention` | admin | "When someone wants to leave": what is offered when cancelling (pause and maximum months, discount with % and months). |
+| GET | `/membership/admin/retention/summary` | admin | Cancellation summary: how many pressed "Cancel me", how many stayed (pause or discount) and the reasons. |
 
 **Errors**: `MEMBERSHIP_PAGE_INACTIVE` 404 · `MEMBERSHIP_CONFIG_INCOMPLETE` 422 · `SUBSCRIPTIONS_STRIPE_CONFIG_MISSING` 503 · `SUBSCRIPTIONS_STRIPE_API_ERROR` 502.
+
+## Retention — `/modules/retention` (admin)
+
+The classroom's automatic messages (welcome, inactivity, course completed…) and the at-risk member list. Everything requires administering the classroom; with the module turned off for the tenant, **403** `TENANT_MODULES_MODULE_NOT_ACTIVE`.
+
+| Method | Route | What it does |
+|---|---|---|
+| GET · PUT | `/modules/retention/admin/settings` | Who signs the messages (`senderUserId`) and the anti-spam rules (`manualCooldownHours`, `sendWindowStartHour`, `sendWindowEndHour`). |
+| GET | `/modules/retention/admin/templates` | Ready-made templates, in the classroom's language. |
+| POST | `/modules/retention/admin/templates/:key/activate` | Activates a template in one click (or turns it back on if it exists). |
+| GET · POST | `/modules/retention/admin/automations` | Automatic messages with their metrics · creates one: `{ trigger, name?, days?, resendAfterDays?, body, emailEnabled?, emailSubject?, enabled? }`. |
+| PATCH · DELETE | `/modules/retention/admin/automations/:id` | Edits, turns on or off · deletes (204; its metrics are kept). |
+| POST | `/modules/retention/admin/preview` | Preview with the real data of a person or of the viewer: `{ trigger, body, subject?, userId? }`. |
+| POST | `/modules/retention/admin/run` | Runs **this** classroom's sweep now, without waiting for the 5 minutes (same anti-spam rules). |
+| GET | `/modules/retention/admin/at-risk` | At-risk members (`?reason=inactive\|paid_not_started\|stalled`, `days` 1–365, `search`): not signing in, paid and did not start, half-way through. |
+| POST | `/modules/retention/admin/at-risk/:userId/recovery` | Adds the person to the classroom's recovery message. |
+
+Triggers (`trigger`): `WELCOME`, `DAYS_AFTER_JOIN`, `INACTIVE`, `COURSE_COMPLETED`, `FIRST_POST`, `LEVEL_UP` and `ANNIVERSARY`.
+
+## Help and suggestions — `/modules/soporte`
+
+Tickets for "something is not working / I have a problem / I have a suggestion". **The destination is decided by the server from the session's roles**, never the body: a member writes to the **classroom team** (destination `AULA`); whoever administers the classroom writes to **Didacta** (destination `PLATAFORMA`, notifying the operator email defined by `SUPPORT_OPERATOR_ALERT_EMAIL`). With the module turned off, 403 `TENANT_MODULES_MODULE_NOT_ACTIVE`.
+
+| Method | Route | Auth | What it does |
+|---|---|---|---|
+| POST | `/modules/soporte/tickets` | Bearer | Opens a ticket: `{ tipo: FALLO \| PROBLEMA \| MEJORA, texto (5–4000), contexto?, captura? }`. The screenshot is a PNG, JPEG or WebP of up to 5 MB in base64. **At most 5 tickets in 24 hours.** It answers as soon as it is saved; notifications go out afterwards. |
+| GET | `/modules/soporte/canal` | Bearer | Who a ticket from the caller would go to (`AULA` or `PLATAFORMA`) and whether anyone is on the other side; the web does not show the button otherwise. |
+| GET | `/modules/soporte/tickets/mios` | Bearer | My tickets and their status, newest first. |
+| GET | `/modules/soporte/tickets/:id/captura` | author or admin | A ticket's screenshot (404 to anyone else). |
+| GET | `/modules/soporte/admin/tickets` | admin | The classroom team's inbox: the 200 newest, with `?estado=` and `?tipo=` filters, and how many there are in each state. |
+| GET | `/modules/soporte/admin/menu` | Bearer | `{ allowed, badge }`: whether the caller sees the inbox and how many new tickets are untaken. |
+| GET · PATCH | `/modules/soporte/admin/tickets/:id` | admin | A ticket with its author, context and internal note · changes `estado` (`NUEVO`, `EN_CURSO`, `RESUELTO`, `DESCARTADO`) or `notaInterna` (at least one); if the state changes, whoever opened it is notified. |

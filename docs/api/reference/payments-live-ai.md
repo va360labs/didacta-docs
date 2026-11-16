@@ -1,6 +1,6 @@
 # Referencia — Pagos, aula virtual e IA
 
-Billing, suscripciones, conexiones de pago, Zoom y los tres módulos de IA. Todas las rutas cuelgan de `/api/v1`.
+Billing, suscripciones, conexiones de pago, cobros de plataforma (Cloud), Zoom y los tres módulos de IA. Todas las rutas cuelgan de `/api/v1`.
 
 ## Pago único (billing) — `/modules/billing`
 
@@ -11,6 +11,7 @@ Billing, suscripciones, conexiones de pago, Zoom y los tres módulos de IA. Toda
 | GET · POST · PATCH · DELETE | `/modules/billing/products[/:id]` | admin | Productos (curso ↔ precio de Stripe): alta con `stripePriceId` existente **o** `amountCents` (crea Product+Price), activación, borrado (no toca órdenes históricas). |
 | GET | `/modules/billing/public/catalog` · `public/offer/:courseId` | Público (tenant por dominio) | Catálogo público de venta · oferta pública. Degradan a vacío sin Stripe. La oferta **no filtra existencia**: curso inexistente o sin publicar responde 200 `{ forSale: false, options: [] }`, nunca 404. |
 | POST | `/modules/billing/public/checkout/:courseId` | Público | **Checkout anónimo**: el visitante compra sin cuenta. Body `{ optionId?, email? }` — el `email` solo **precarga** el formulario de Stripe; la cuenta se crea SIEMPRE con el email confirmado en el pago. 404 curso inexistente (o `:courseId` no UUID) · 409 no publicado · 503 sin pasarela. |
+| GET | `/modules/billing/public/checkout-session/:sessionId` | Público | Vuelta del pago (pantalla de gracias): si la sesión de **esta** academia está pagada, qué curso se compró, cuánto y cuándo. |
 | POST | `/modules/billing/webhook` | Firma Stripe (`stripe-signature`) | Recibe `checkout.session.completed/expired`, `charge.refunded`. Idempotente por `stripe_event_id`. |
 
 ## Suscripciones — `/modules/subscriptions`
@@ -21,6 +22,8 @@ Billing, suscripciones, conexiones de pago, Zoom y los tres módulos de IA. Toda
 | GET | `/modules/subscriptions/me` | Bearer | Mis suscripciones (incluye canceladas, con plan y curso). Devuelve `[]` si el módulo no está configurado. |
 | GET | `/modules/subscriptions/me/:id/invoices` | Bearer (propietario) | Facturas con URL hosted de Stripe. |
 | POST | `/modules/subscriptions/me/:id/cancel` | Bearer (propietario) | Cancela: `{ immediate? }` (por defecto al final del periodo). |
+| POST | `/modules/subscriptions/me/portal` | Bearer | Abre el portal de cliente de Stripe del alumno (cambiar la tarjeta, ver sus facturas, darse de baja). |
+| GET · POST | `/modules/subscriptions/me/:id/leave` | Bearer (propietario) | **Al darse de baja**: GET devuelve los motivos y la pausa o el descuento que el aula ofrece ahora a esa suscripción · POST registra lo que decide: `{ reason, reasonText?, choice: pause \| discount \| cancel, pauseMonths? (1–12) }` —pausar (sin cobro ni acceso hasta el primer cobro tras la pausa), quedarse con el descuento o la baja al final del periodo pagado—. Se confirma por correo. La oferta se configura en `/membership/admin/retention`. |
 | POST | `/modules/subscriptions/me/membership/pay-now` | Bearer | Termina el trial de la membresía y cobra ya. |
 | POST | `/modules/subscriptions/webhook` | Firma Stripe (secret propio) | `customer.subscription.*`, `invoice.*`; fulfillment de membresía idempotente. |
 | POST | `/modules/subscriptions/admin/grace-expiration/run-now` | super_admin | Fuerza la expiración de periodos de gracia (QA) → 202. |
@@ -49,6 +52,41 @@ Errores comunes: `SUBSCRIPTIONS_PRICE_NOT_RECURRING` 422 · `SUBSCRIPTIONS_ALREA
 
 **Webhook entrante**: `POST /modules/payment-connections/woo-webhook?tenant=<slug>` — público con firma HMAC-SHA256 (`x-wc-webhook-signature`); responde 200 a pings de verificación y a topics ignorados para que WooCommerce no desactive el webhook.
 
+## Cobros de plataforma — `/modules/payouts` (Cloud)
+
+El **modo plataforma**: el operador cobra las ventas de todas las aulas con su cuenta de Stripe y liquida a cada creador. Solo existe cuando el operador define `PAYMENTS_PLATFORM_STRIPE_SECRET_KEY`; sin ella **no hay ninguna de estas rutas** (404) y el aula cobra con sus propias claves (`/admin/tenant-settings/stripe`). Las rutas que usa el plano de control —volumen, comisión, países— están en [Instancia y plano de control](instance-operations.md#cobros-de-plataforma-rutas-del-pool-cloud). Todo lo del creador exige `tenant_admin` o `super_admin` (`PAYOUTS_ADMIN_ROLE_REQUIRED`).
+
+**Alta de cobros**
+
+| Método | Ruta | Qué hace |
+|---|---|---|
+| GET | `/modules/payouts/status` | Estado de los cobros del aula: `mode` (`platform`, `own` o `none`), si ya puede vender (`ready`) y por qué no (`reason`), la cuenta conectada, el nombre del operador y los países admitidos. Con `?sync=1` consulta antes la cuenta en Stripe (vuelta del alta). |
+| POST | `/modules/payouts/connect` | Conecta cobros: `{ country (ISO alfa-2), entityType: individual \| company }`. Crea (o reutiliza) la cuenta conectada y devuelve el enlace del alta alojada de Stripe. Un país no admitido da 422. |
+| POST | `/modules/payouts/connect/link` | Enlace nuevo del alta alojada («Completar», o el anterior caducó). |
+| GET | `/modules/payouts/dashboard-link` | Enlace de un solo uso al panel Express del creador en Stripe. |
+| POST | `/modules/payouts/disconnect` | Desconecta cobros: el aula **deja de vender** (checkout cerrado) y sus suscripciones vivas se cancelan al final del periodo. La cuenta de Stripe **no se cierra** (lo pendiente se sigue pagando); conectar de nuevo la reactiva. |
+
+**Ventas, reembolsos y datos fiscales**
+
+| Método | Ruta | Qué hace |
+|---|---|---|
+| GET | `/modules/payouts/sales?page=&pageSize=` | Ventas del aula cobradas por la plataforma, más recientes primero (`pageSize` máx. 100). |
+| GET | `/modules/payouts/summary` | Resumen **por divisa**: vendido, comisiones de tarjeta, comisión del operador, recibido, pendiente y deuda. |
+| GET | `/modules/payouts/sales/:id/refund-preview?amount=` | Qué pasaría al reembolsar (`amount` en la moneda del cargo; sin él, todo lo que queda): lo que recibe el alumno y lo que se descuenta al creador. No mueve dinero. |
+| POST | `/modules/payouts/sales/:id/refund` | Reembolsa una venta: `{ amount?, requestId? }` (total si no hay `amount`). Devuelve el dinero al alumno, recupera del creador su parte y deja como deuda lo que no se pueda recuperar. `requestId` (UUID) hace el reintento idempotente: un doble clic acaba en **un** reembolso. Venta de otra aula: 404. |
+| GET · PUT | `/modules/payouts/tax-profile` | Datos fiscales del creador (sin el NIF entero; si aún no hay, propone lo que ya sabe Stripe) · guárdalos: `{ entityType, legalName, country, taxId?, vatId?, address, birthDate? }`. Valida el NIF (español, con su control) y el NIF-IVA en VIES. |
+| GET | `/modules/payouts/invoices` · `/invoices/:id/pdf` | Facturas de la comisión emitidas al aula, más recientes primero · el PDF tal como se emitió (de otra aula: 404). |
+
+**Operador (super_admin)**
+
+| Método | Ruta | Qué hace |
+|---|---|---|
+| POST | `/modules/payouts/admin/invoices/run` | Emite ahora las facturas de un mes (`{ month?: "YYYY-MM", tenantId? }`; por defecto, el anterior) a todas las aulas o a una. Idempotente. |
+| POST | `/modules/payouts/admin/reconcile/run-now` | Lanza una pasada del conciliador de cobros (todas las aulas): `{ deep?, windowHours? (1–720) }`. Nunca desde una sesión de soporte. |
+| POST | `/modules/payouts/webhook` | Webhook de Stripe de la plataforma. Público, con **firma de Stripe** (secreto del operador); el aula sale del registro de objetos del evento, no de la petición. |
+
+**Errores de dominio** (`code`, todos con prefijo `PAYOUTS_`): `COUNTRY_UNSUPPORTED`, `TAX_PROFILE_INVALID` y `PRICE_CURRENCY` → 422 · `ACCOUNT_NOT_FOUND`, `SALE_NOT_FOUND` e `INVOICE_NOT_FOUND` → 404 · `ACCOUNT_ALREADY_STARTED`, `ACCOUNT_ONBOARDING_INCOMPLETE`, `NOT_READY`, `SALE_NOT_REFUNDABLE`, `REFUND_EXCEEDS_REMAINING` y `REFUND_REJECTED` → 409 · `STRIPE_CONFIG` → 503 · `STRIPE_API_ERROR` → 502 · `WEBHOOK_SIGNATURE_INVALID` → 401.
+
 ## Aula virtual — `/modules/zoom-live`
 
 | Método | Ruta | Auth | Qué hace |
@@ -60,6 +98,8 @@ Errores comunes: `SUBSCRIPTIONS_PRICE_NOT_RECURRING` 422 · `SUBSCRIPTIONS_ALREA
 | GET | `/modules/zoom-live/sessions/:id/registrations` | staff | Roster de inscritos. |
 | GET · POST · PUT | `/modules/zoom-live/sessions/:id/attendance[…]` | staff | Informe de asistencia · sincroniza contra la API de Zoom · override manual por miembro (`{ present: bool\|null }`). |
 | POST | `/modules/zoom-live/test-credentials` | admin | Smoke test de las credenciales S2S (`real` o `stub`). |
+| POST | `/modules/zoom-live/test-webhook` | admin | Autocomprobación del webhook de Zoom: Didacta se llama a sí misma por su URL pública con el handshake `endpoint.url_validation` firmado con el Secret Token del aula. Siempre 200 con `{ ok, url, reason?, status?, detail? }`: el motivo del fallo es el dato. |
+| POST | `/modules/zoom-live/admin/reminders/run` | formador o admin | Fuerza el barrido de recordatorios de clase sin esperar al cron, acotado al aula de quien llama. |
 | GET | `/modules/zoom-live/webhook-events` | admin | Log de webhooks de Zoom (QA). |
 | GET | `/modules/zoom-live/sessions/:id/calendar.ics` · `calendar/google` · `outlook` · `office365` | **Público** | Evento de calendario (nunca incluye el `joinUrl`). |
 | POST | `/webhooks/zoom` | Firma HMAC de Zoom | `meeting.started/ended`, `recording.completed` + handshake de validación. Idempotente por `event_id`. |
@@ -89,6 +129,7 @@ Errores: `AI_CONTENT_LESSON_TEXT_EMPTY` 422 · `AI_CONTENT_DRAFT_NOT_IN_DRAFT` 4
 
 | Método | Ruta | Auth | Qué hace |
 |---|---|---|---|
+| GET | `/modules/ai-tutor/status` | Bearer | `{ available, reason }`: si el tutor puede contestar en este aula. Sin proveedor de IA (ni propio ni por defecto) o sin el módulo, `available: false` con `reason` `NO_PROVIDER` o `MODULE_INACTIVE`, y la web no lo enseña. |
 | POST | `/modules/ai-tutor/courses/:courseId/ask` | Bearer | Pregunta al tutor (RAG): `{ question, conversationId?, lessonId?, topK? }` → respuesta + citas. El staff puede probar cualquier curso sin matrícula ni cuota. |
 | POST | `/admin/ai-tutor/courses/:courseId/index` · `reindex-all` | admin | Re-indexa un curso · todos los publicados. |
 

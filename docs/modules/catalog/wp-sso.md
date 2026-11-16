@@ -11,6 +11,9 @@ Permite que un usuario **ya autenticado en WordPress** entre a Didacta sin volve
 - El token es de **un solo uso**: el `jti` se marca como consumido (anti-replay, en Redis con fallback en memoria).
 - El secreto HMAC solo lo conocen WordPress y Didacta; nunca viaja al navegador.
 - Los emails se normalizan (trim + lowercase) antes de resolver el usuario.
+- **Identidad estable**: con un plugin ≥ 0.2.0 el token lleva `sub` (el `user_id` de WordPress) y Didacta vincula por él, no por email, de modo que un cambio o reutilización del email en WordPress no mueve la cuenta. Un token de un plugin 0.1.0, sin `sub`, se acepta degradado a vínculo solo por email (con aviso en el log).
+- **`email_verified`**: el plugin lo firma en `false` por defecto —WordPress no mantiene un estado fiable de verificación del email— y Didacta lo guarda en la identidad vinculada. Si tienes una fuente real (p. ej. un doble opt-in), derívalo con el filtro de WordPress `didacta_sso_email_verified`; no lo pongas a `true` a ciegas.
+- Una cuenta que no está activa (pendiente, suspendida…) no entra por SSO aunque WordPress la reconozca.
 - La redirección final usa la base web endurecida (`WEB_PUBLIC_URL` / dominio verificado del tenant / allowlist), nunca el header `Host` — evita open-redirect con exfiltración de tokens.
 - En WordPress: `DIDACTA_SSO_SECRET` y `DIDACTA_SSO_CALLBACK` en `wp-config.php`, y el botón vía shortcode `[didacta_sso_button]`.
 
@@ -67,7 +70,7 @@ En el lado WordPress, las constantes de `wp-config.php`: `DIDACTA_SSO_SECRET`, `
     - URL transparente: `https://tu-wordpress/?didacta_sso=try` (sin sesión WP vuelve EN SILENCIO al signin de Didacta; es la que usa el auto-bounce).
 9. Prueba el circuito con el botón **Probar bounce ↗** de la pestaña WordPress (aparece cuando la config está activa).
 
-**Lo que ve el usuario:** desde WordPress, con sesión iniciada, el botón lo lleva a Didacta ya autenticado (302 al callback → `/auth/callback` con la sesión). Con «Auto-redirect transparente» activo, entrar en `/signin` de Didacta rebota al WordPress y, si hay sesión allí, vuelve autenticado sin tocar nada; si no la hay, el login normal aparece sin ruido. Si «Auto-provisionar usuarios» está activo, el primer SSO crea la cuenta con rol alumno; si está apagado, quien no exista en el tenant ve el error `user_not_provisioned`.
+**Lo que ve el usuario:** desde WordPress, con sesión iniciada, el botón lo lleva a Didacta ya autenticado (302 al callback → `/auth/callback` con la sesión). Con «Auto-redirect transparente» activo, entrar en `/signin` de Didacta rebota al WordPress y, si hay sesión allí, vuelve autenticado sin tocar nada; si no la hay, el login normal aparece sin ruido. Si «Auto-provisionar usuarios» está activo, el primer SSO crea la cuenta con rol alumno; si está apagado, quien no exista en el tenant ve el error `user_not_provisioned`. Los fallos vuelven a `/auth/error?reason=…` con un motivo: `user_not_provisioned`, `user_inactive`, el código del token (`bad_signature`, `expired`, `ttl_too_long`, `audience_invalid`, `issuer_invalid`, `replayed`, `missing_token`, `not_configured`…) o `wp_sso_failed`. Los rechazos por falta de cuenta quedan en el registro de auditoría (`sso.wp.callback.rejected`).
 
 ## Dependencias
 
@@ -81,8 +84,9 @@ Sin tablas propias: el único estado (el `jti` consumido) es efímero y vive en 
 
 - `GET /modules/wp-sso/:tenantSlug/status` — config pública (para el auto-redirect del signin).
 - `GET /modules/wp-sso/:tenantSlug/callback?token=` — intercambio del token por sesión (302).
+- Permiso del manifest: `wp-sso.callback.exchange`.
 - Admin: `GET`/`PUT`/`DELETE` `/api/v1/admin/sso/wp/config` (Community, sin capability). La pantalla que los consume es `/admin/sso?tab=wordpress`.
 
 ## Eventos
 
-**Emite**: `wp-sso.signin.success`, `wp-sso.user.provisioned`, `wp-sso.account.linked`. No consume.
+**No emite eventos** al bus ni consume ninguno. El intercambio de token deja su rastro en el **registro de auditoría** del aula: `sso.wp.signin.success`, `sso.wp.user.provisioned`, `sso.wp.account.linked` y `sso.wp.callback.rejected`.

@@ -7,13 +7,16 @@ Didacta Community is installed on your own infrastructure from the official Dock
 | Path | Who it is for | Guide |
 | --- | --- | --- |
 | **Docker Compose** (recommended) | Most installations: brings up the app + Postgres + Redis + a test mailbox in one go. | [Install with Docker Compose](docker-compose.md) |
+| **One command** (`install.sh`) | Trying it or installing on a machine with Docker without reading anything else: it downloads the compose file, generates `AUTH_SECRET`, starts everything and prints the setup wizard link. | [Install with one command](docker-compose.md#install-with-one-command) |
+| **One-click platforms** (Coolify, Dokploy, Easypanel) | Anyone already using one of them: the repository ships a template per platform under `deploy/`. | [`deploy/README.md`](https://github.com/va360labs/didacta-io/blob/main/deploy/README.md) |
 | **Manual docker run** | Operators who already have managed Postgres 16 and Redis 7 and only want the application container. | [Install with docker run](docker-run.md) |
 
 ## Requirements
 
 - **Docker 24+** with Docker Compose v2 (`docker compose version`).
 - **2 GB of free RAM** and ~2 GB of disk for images and data.
-- Free ports (all configurable via environment variables): `3000` (web), `4000` (API), `5432` (Postgres), `6379` (Redis), `8025` (test mailbox UI).
+- Free ports (all configurable via environment variables): `3000` (web), `4000` (API), `5432` (Postgres), `6379` (Redis), `8025` (test mailbox UI). Postgres, Redis, MinIO and Mailpit are published **on `127.0.0.1` only**.
+- **A single domain**: the image runs the API (`:4000`) and the web app (`:3000`) together, and the web app rewrites `/api/*`, `/healthz` and `/readyz` to the API. On a real server it is enough to publish port 3000 behind your TLS proxy: no second domain, no CORS.
 
 !!! warning "PostgreSQL with pgvector"
     The official compose file uses the `pgvector/pgvector:pg16` image. If you bring your own Postgres it must be **16+ with the `pgvector` extension available** (the AI tutor stores embeddings in `vector` columns). Without it the app will not start (`type "vector" does not exist`).

@@ -11,10 +11,13 @@ El asistente está protegido por un **token de un solo uso**: al arrancar sin ni
 ## Los pasos
 
 1. **Bienvenida** — presentación del asistente.
-2. **Organización** — nombre de la organización (obligatorio) y dominio público, pre-rellenado con el host desde el que accedes. En «Configuración avanzada» puedes ajustar el *slug* (autogenerado, apto para DNS).
+2. **Organización** — nombre de la organización (obligatorio), **idioma de la academia** (español, inglés o portugués de Brasil; el asistente propone el de tu navegador; ver [Idiomas](../configuration/languages.md)) y dominio público, pre-rellenado con el host desde el que accedes. En «Configuración avanzada» puedes ajustar el *slug* (autogenerado, apto para DNS).
 3. **Módulos** — lista de módulos disponibles. Los módulos **core** (cursos, aprendizaje, evaluaciones…) aparecen pre-marcados y no se pueden desmarcar; los opcionales (comunidad, gamificación, Fundae, aula virtual…) se activan o no a tu gusto. Todo se puede cambiar después en **Administración → Configuración → Módulos**.
 4. **Tu cuenta** — nombre, email y contraseña del primer administrador (**mínimo 12 caracteres**, con medidor de fuerza).
 5. **Listo** — tour rápido (Cursos, Comunidad, Administración) y recomendación de activar MFA. «Empezar» abre el asistente de bienvenida de la academia (`/welcome`): nombre, logo y color, primer curso, alumnos, cobros y correo.
+
+!!! note "Dos asistentes bloqueantes en el primer acceso"
+    Al administrador le esperan dos: el de **perfil** (`/onboarding`: foto, nombre, idioma y avisos) y el de **academia** (`/welcome`). En **modo completo** va primero el de academia (la foto es obligatoria y no se exige antes de dejarle tocar su academia); en [modo sencillo](../configuration/simple-mode.md) va primero el de perfil, con la foto opcional, y `/welcome` es el **alta en 3 preguntas**. Quien no administra solo ve el de perfil.
 
 ## Qué crea exactamente
 

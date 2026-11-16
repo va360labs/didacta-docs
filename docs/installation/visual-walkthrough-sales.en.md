@@ -3,7 +3,7 @@
 The second part of the visual walkthrough — it picks up where [Visual walkthrough: getting started](visual-walkthrough.md) ends. Here we configure outgoing mail and get the instance ready to sell: individual courses and memberships.
 
 !!! note "Where these screenshots come from"
-    The same isolated, seed-free instance as part one (version 0.1.0-beta.18, **full mode**), started with no Stripe key in its environment. SMTP points at the Mailpit service bundled in `docker-compose.alpha.yml` — this is a real send, not a simulation: the test email genuinely lands in the mailbox.
+    The same isolated, seed-free instance as part one (version 0.1.0-beta.24, **full mode**), started with no Stripe key in its environment. SMTP points at the Mailpit service bundled in `docker-compose.alpha.yml` — this is a real send, not a simulation: the test email genuinely lands in the mailbox.
 
 ## 1 · Notifications (SMTP)
 

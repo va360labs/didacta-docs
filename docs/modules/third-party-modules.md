@@ -3,7 +3,7 @@
 Además de los módulos incluidos, Didacta puede ejecutar módulos **empaquetados como ZIP firmado** que un `super_admin` instala desde **Administración → Marketplace módulos**. Es la vía prevista para el futuro marketplace de módulos.
 
 !!! note "Estado: funcional, en evolución"
-    El pipeline de instalación, el sandbox y el enrutado están implementados y operativos. El **catálogo público de marketplace aún no existe** (hoy la instalación es por subida manual del ZIP), los módulos de vendor `community` todavía no se aceptan (solo paquetes firmados por Didacta o subida directa consciente), y la desinstalación no revierte migraciones ni borra tablas.
+    El pipeline de instalación, el sandbox y el enrutado están implementados y operativos. El **catálogo público de marketplace aún no existe** (hoy la instalación es por subida manual del ZIP), los módulos de vendor `community` todavía no se aceptan (solo paquetes firmados por Didacta; ver «Firmar tus propios paquetes» más abajo), y la desinstalación no revierte migraciones ni borra tablas.
 
 ## El formato del paquete
 
@@ -17,7 +17,7 @@ Además de los módulos incluidos, Didacta puede ejecutar módulos **empaquetado
 ```
 
 - `manifest.jwt` es un JWT **ES256** cuyo payload es el manifest completo del módulo (nombre, versión, tablas, permisos, eventos, superficies UI, límites de red/BD…).
-- La firma se verifica contra las claves públicas de Didacta; también se admite **subida directa sin firma** para paquetes propios, marcada explícitamente como tal.
+- La firma se verifica contra las claves públicas de Didacta. **Desde beta.7 una instancia no ejecuta código de módulo sin firma verificada**: un ZIP con `manifest.jwt` inválido, o firmado por cualquiera, ya no se arranca. La única excepción es la variable `DIDACTA_ALLOW_UNVERIFIED_MODULES=true` (solo para desarrollo: ver más abajo).
 
 ## Qué valida la instalación
 
@@ -46,7 +46,12 @@ Sus rutas HTTP se publican bajo `/api/v1/modules/<slug>/…` y su UI se sirve co
 
 ## Firmar tus propios paquetes
 
-El empaquetado y firma oficial se hace con la tooling de VA360 LABS (`scripts/marketplace/sign-package.ts` contra el emisor de firmas). Para módulos internos de tu organización puedes usar la subida directa sin firma, asumiendo la advertencia de origen.
+El empaquetado y firma oficial se hace con la tooling de VA360 LABS (`scripts/marketplace/sign-package.ts` contra el emisor de firmas). Para probar un módulo propio antes de firmarlo, arranca la instancia con `DIDACTA_ALLOW_UNVERIFIED_MODULES=true` (valor exacto `true`).
+
+!!! danger "No lo actives en producción"
+    El código de un módulo corre **dentro del proceso de la API**, con sus mismos permisos: `node:vm` reduce la superficie pero no es una frontera de seguridad. Un módulo malicioso llega a `process.env` (`AUTH_SECRET`, `ADMIN_DATABASE_URL`), al disco y a la base de datos. Por eso, por defecto, solo se ejecuta lo que trae firma verificable.
+
+    Al reiniciar, un módulo instalado **sin** firma verificada no se vuelve a cargar salvo que la variable esté activa: el log dice cuáles se han omitido y por qué. Reinstálalo firmado.
 
 ## Referencia
 

@@ -17,7 +17,7 @@
 
 **Enabling or disabling the module.** Under `/admin/settings?tab=modules` (the "Modules" tab of Settings), with the "Enable …" / "Disable …" buttons on the module's row. With the module enabled, the **"Surveys"** entry appears in the Content group of the admin panel; with it disabled, the student panel simply does not render.
 
-**Per-tenant settings.** There are none: neither the post-class survey nor its questions can be edited from the panel (the 4 questions are fixed on purpose, so results are comparable across classes and over time).
+**Per-tenant settings.** There are none: neither the post-class survey nor its questions can be edited from the panel (the 4 questions are fixed on purpose, so results are comparable across classes and over time). The only thing that varies is the **language**: when the survey is created, the questions are stored in the academy's language (es, en or pt), with the same types and order; surveys that already exist are not translated.
 
 **Email templates.** The module's two emails — the invitation when the survey is created and the 24 h reminder — use the `surveys.post_class.invitation` and `surveys.post_class.reminder` templates, customizable under `/admin/emails`. Both notices also go out through the in-app channel.
 
@@ -29,7 +29,7 @@
 | `SURVEYS_REMINDER_CRON` | Frequency of the reminder sweep (cron, UTC). | `*/15 * * * *` |
 | `SURVEYS_REMINDER_DELAY_HOURS` | Hours without answering after which the reminder is sent. | `24` |
 
-The reminder worker needs `REDIS_URL` (without Redis it does not start, with a log warning) and uses `WEB_PUBLIC_URL` for the link to the class. It only reminds about surveys up to 72 h old (a fixed product cap: a late deploy does not spam old surveys).
+The reminder worker needs `REDIS_URL` (without Redis it does not start, with a log warning). The class link in the invitation and the reminder points to the domain of the academy that owns the class, not to a single instance-wide URL. It only reminds about surveys up to 72 h old (a fixed product cap: a late deploy does not spam old surveys).
 
 **License.** Nothing in this module requires an Enterprise license.
 
@@ -41,7 +41,7 @@ The reminder worker needs `REDIS_URL` (without Redis it does not start, with a l
 **As an admin**
 
 1. Enable `mod.surveys` (with `mod.zoom-live` enabled if you want the automatic post-class survey).
-2. There is nothing to create: when each live class ends, the survey is created on its own with its 4 fixed questions — NPS 0-10 ("From 0 to 10, would you recommend this class to another member?"), two 1-5 scales ("The class content", "Pace and clarity") and an optional free-text one ("What would you improve? (optional)"). Registered attendees get the in-app notice and an email with the link to the class page.
+2. There is nothing to create: when each live class ends, the survey is created on its own with its 4 fixed questions (shown here in English; in Spanish or Portuguese academies, translated) — NPS 0-10 ("From 0 to 10, would you recommend this class to another member?"), two 1-5 scales ("The class content", "The pace and clarity") and an optional free-text one ("What would you improve? (optional)"). Registered attendees get the in-app notice and an email with the link to the class page.
 3. Open **"Surveys"** (`/admin/surveys`): a table with the columns "Survey", "Date", "Status" ("Open"/"Closed") and "Responses", most recent first.
 
 4. Click **"Results"** on a row: you will see the NPS (promoters 9-10 minus detractors 0-6, in points), the average of each scale question and the free-text answers with no author.
@@ -60,6 +60,10 @@ The reminder worker needs `REDIS_URL` (without Redis it does not start, with a l
 2. Answer by tapping the 0-10 (NPS) and 1-5 buttons (scale "(1 = poor · 5 = great)"); the free text is optional. The **"Send rating"** button only activates once every scored question is answered.
 3. After sending you will see "Thanks for your feedback! We'll take it into account for upcoming classes.". Only one submission per person is accepted; a second attempt (another tab, a double click) lands on the same thank-you state.
 4. If you have not answered after 24 h, you will get a single reminder with the link to the class.
+
+## Permissions
+
+`surveys.response.write`, `surveys.results.read` and `surveys.manage`. The **"Surveys"** screen and the `admin/*` endpoints are only for `tenant_admin` and `super_admin`.
 
 ## Dependencies
 

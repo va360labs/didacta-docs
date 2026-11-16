@@ -7,7 +7,7 @@ Didacta guarda ficheros — portadas de curso, certificados PDF, paquetes SCORM,
 Los ficheros van al volumen de datos, bajo `STORAGE_ROOT` (`/app/data/storage` en la imagen oficial).
 
 !!! warning "El volumen de datos guarda algo más que ficheros"
-    En `STORAGE_ROOT` vive también la **clave de cifrado autogenerada** (`.didacta-secret-key`) que protege los secretos por tenant (SSO, SMTP, Stripe, Zoom…). Aunque uses S3 para los ficheros, **mantén el volumen montado y respaldado**, o fija la clave con `TENANT_SETTINGS_ENC_KEY`.
+    En el mismo volumen (`/app/data`), **fuera** de `STORAGE_ROOT`, vive la **clave de cifrado autogenerada** (`/app/data/secrets/.didacta-secret-key`) que protege los secretos por tenant (SSO, SMTP, Stripe, Zoom…); no está dentro del storage porque ese árbol se sirve por HTTP. Aunque uses S3 para los ficheros, **mantén el volumen montado y respaldado**, o fija la clave con `TENANT_SETTINGS_ENC_KEY`. Si tu plataforma solo permite un volumen montado exactamente en `STORAGE_ROOT`, define `SECRETS_DIR` en otro volumen persistente.
 
 ## Driver S3
 

@@ -7,7 +7,7 @@ Didacta stores files — course cover images, PDF certificates, SCORM packages, 
 Files go to the data volume, under `STORAGE_ROOT` (`/app/data/storage` in the official image).
 
 !!! warning "The data volume holds more than files"
-    `STORAGE_ROOT` is also where the **auto-generated encryption key** (`.didacta-secret-key`) lives, protecting per-tenant secrets (SSO, SMTP, Stripe, Zoom…). Even if you use S3 for files, **keep the volume mounted and backed up**, or pin the key with `TENANT_SETTINGS_ENC_KEY`.
+    The same volume (`/app/data`) also holds, **outside** `STORAGE_ROOT`, the **auto-generated encryption key** (`/app/data/secrets/.didacta-secret-key`) protecting per-tenant secrets (SSO, SMTP, Stripe, Zoom…); it is not inside the storage because that tree is served over HTTP. Even if you use S3 for files, **keep the volume mounted and backed up**, or pin the key with `TENANT_SETTINGS_ENC_KEY`. If your platform only allows one volume mounted exactly at `STORAGE_ROOT`, define `SECRETS_DIR` on another persistent volume.
 
 ## S3 driver
 

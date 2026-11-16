@@ -13,14 +13,27 @@ SMTP_FROM="Mi Academia <no-reply@ejemplo.com>"
 # Opcionales:
 SMTP_USER=usuario
 SMTP_PASS=contraseña
-SMTP_SECURE=true      # fuerza TLS implícito; sin definir, lo decide el puerto
+SMTP_ENCRYPTION=starttls   # tls (465) | starttls (587) | none; vacío = lo decide el puerto
 ```
 
-Si falta cualquiera de las tres primeras, **no hay SMTP global**: solo podrán enviar correo los tenants que configuren SMTP propio.
+Si falta cualquiera de las tres primeras, **no hay SMTP global**: solo podrán enviar correo los tenants que configuren SMTP propio. `SMTP_SECURE` (`true`/`false`) sigue aceptándose como variable heredada; `SMTP_PASSWORD` es alias de `SMTP_PASS`. Sirve cualquier proveedor SMTP (por ejemplo, las credenciales SMTP de Amazon SES).
+
+### Quién firma los correos con el SMTP compartido
+
+Cuando una academia usa el SMTP global (el de la plataforma), la **dirección** de envío es siempre la de `SMTP_FROM` (la que tiene SPF/DKIM), pero el alumno ve el **nombre de la academia**:
+
+```text
+From: "Academia Ñandú" <hola@ejemplo.com>
+Reply-To: contacto@academia-nandu.com
+```
+
+Las respuestas van al **«Correo para respuestas»** de la academia (ver abajo) o, si no lo puso, al correo de su **administrador principal** (el primer administrador activo de esa academia). El nombre pasa por una limpieza (máx. 64 caracteres, sin `<`, `>`, `@`, comillas ni caracteres de control) para que no pueda usarse para falsificar una cabecera.
 
 ## 2. SMTP por tenant (panel de administración)
 
-Cada organización puede definir su propio servidor en **Administración → Configuración → Notificaciones** (la pestaña «Notificaciones» de `/admin/settings`). Ese ajuste tiene prioridad sobre el global, y sus credenciales se guardan **cifradas at-rest** en la base de datos.
+Cada organización puede definir su propio servidor en **Administración → Configuración → Notificaciones** (la pestaña «Notificaciones» de `/admin/settings`). Ese ajuste tiene prioridad sobre el global, y sus credenciales se guardan **cifradas at-rest** en la base de datos. Desde la misma pantalla se envía un **correo de prueba** para comprobar la configuración.
+
+En la misma pestaña, la tarjeta **«Correo para respuestas»** (`GET`/`PUT /api/v1/admin/tenant-settings/smtp/sender`) fija el `Reply-To` de los correos de la academia, y enseña **adónde llegan hoy** las respuestas (con SMTP propio, a su `From`). Vacío lo quita y se vuelve al administrador principal.
 
 ## En desarrollo: Mailpit
 
@@ -31,7 +44,7 @@ El compose oficial incluye [Mailpit](https://mailpit.axllent.org/): todos los co
 
 ## Enlaces dentro de los emails
 
-Los enlaces absolutos de los emails (botón de «Restablecer contraseña», invitaciones…) se construyen con `WEB_PUBLIC_URL`. **Sin esa variable, en producción los emails llevan enlaces a `localhost`.** Configúrala siempre:
+Los enlaces absolutos de los emails (botón de «Restablecer contraseña», invitaciones…) se construyen con el **dominio primario verificado de la academia** si lo tiene y, si no, con `WEB_PUBLIC_URL`. **Sin ninguno de los dos, en producción los emails llevan enlaces a `localhost`.** Configúrala siempre:
 
 ```bash
 WEB_PUBLIC_URL=https://campus.ejemplo.com
@@ -53,7 +66,10 @@ Claves del núcleo:
 | `payment_connections.access_expiring` | Acceso derivado de una cuenta de pago externa a punto de expirar. |
 | `subscriptions.admin_digest` | Resumen diario de suscripciones para admins. |
 
-Los módulos añaden las suyas al mismo catálogo — por ejemplo, `mod.member-registration` registra sus 4 plantillas (`member_registration.otp_code`, `.approval_request`, `.welcome_approved`, `.rejection`). Los endpoints de lectura/edición están en [Referencia → Administración](../api/reference/administration.md).
+Los módulos añaden las suyas al mismo catálogo — por ejemplo, `mod.member-registration` registra sus 4 plantillas (`member_registration.otp_code`, `.approval_request`, `.welcome_approved`, `.rejection`) — y las notificaciones del hub (matrícula, clases en directo, encuestas, referidos, avisos de ayuda, mensajes automáticos…) están en la misma pantalla. Los correos de cada venta tienen sus plantillas propias (ver [mod.billing → Correos de venta](../modules/catalog/billing.md)). Las plantillas existen en español, inglés y portugués.
+
+!!! note "Idioma de lo que personalizas"
+    Las plantillas transaccionales (reset de contraseña, bienvenidas, avisos de renovación…) se personalizan en el canal Email **en español (es-ES)**; las del hub permiten elegir canal e idioma en el editor. Ver también [Idiomas](languages.md). Los endpoints de lectura/edición están en [Referencia → Administración](../api/reference/administration.md).
 
 ## Si no hay SMTP configurado
 

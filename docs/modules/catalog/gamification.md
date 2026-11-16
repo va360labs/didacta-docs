@@ -11,13 +11,20 @@ Convierte la actividad de la comunidad en un **libro de puntos auditable**, con 
 
 Encima, los **niveles** se calculan sobre puntos de por vida y nunca bajan; la **clasificación** se calcula por rango de fechas (semana/mes/total) y sí se mueve. Un nivel desbloquea **beneficios** definidos por el operador (sesión 1:1, clase extra…) con cupo por alumno y espera opcional; el alumno los solicita y una persona los atiende.
 
+Además, una **capa de retención** opcional para que el alumno vuelva: **contenido que se desbloquea por nivel**, **premios automáticos** al llegar a un nivel o unos puntos, **insignias**, **rachas** de días y semanas, y **celebraciones** en la comunidad.
+
 ## Cómo funciona
 
 - La única defensa real contra el doble cobro es la unicidad `(tenant, usuario, sourceKey)`, donde la `sourceKey` identifica el **hecho** (`community.post:<id>`), no el evento — el bus entrega al menos una vez.
-- Los **beneficios no tocan los grupos de acceso**: el acceso a cursos es producto de pago y no puede ganarse participando (decisión de producto explícita).
+- Los **beneficios no tocan los grupos de acceso**: el acceso a cursos es producto de pago y no puede ganarse participando (decisión de producto explícita). La única excepción es el desbloqueo por nivel de un curso de pago con **«Regalarlo al llegar al nivel»**, que el operador tiene que marcar a propósito (ver más abajo).
 - Moderar contenido (ocultarlo) **revoca** los puntos que dio; restaurarlo los devuelve.
 - El **backfill** rellena el ledger con la actividad histórica: idempotente, repetible, excluye contenido oculto y posts por API, y no aplica el techo diario hacia atrás.
-- Niveles y retos **nacen vacíos a propósito** (sus nombres y premios son decisiones de marca); solo se siembran las reglas de pesos.
+- Niveles y retos **nacen vacíos a propósito** (sus nombres y premios son decisiones de marca); solo se siembran las reglas de pesos y el catálogo de insignias.
+- **Desbloqueo por nivel**: un curso entero, o una de sus secciones, sale con candado («Se desbloquea en el nivel N», con los puntos que faltan) hasta que la persona llega al nivel; entonces se abre solo y se le avisa. El nivel ya alcanzado no se vuelve a cerrar aunque una revocación le baje los puntos. Si el curso es **de pago**, llegar al nivel no lo regala (quien lo compró entra siempre) salvo que el operador marque **«Regalarlo al llegar al nivel»**.
+- **Rachas**: días y semanas seguidos con actividad (publicar, comentar o avanzar en un curso), contados en el día local de cada persona. Un día sin actividad no rompe la racha hasta que termina, y nunca se avisa de que se va a perder.
+- **Insignias**: se ganan solas; el producto trae seis (primera publicación, primer comentario, primer curso terminado, racha de 7 días, racha de 30 días y nivel 3), que el operador puede desactivar o renombrar. Salen en el perfil y en la tarjeta de miembro.
+- **Premios automáticos**: un mensaje o enlace, o un código de descuento que el operador ya creó en su cuenta de pagos (Didacta no crea cupones), que se entrega solo al llegar a un nivel o a unos puntos, con aviso y registro de entregas. En las aulas que cobran con los cobros de plataforma ([mod.payouts](payouts.md)) no hay premio de código de descuento (esos pagos no admiten cupones).
+- **Celebraciones**: publicaciones automáticas, a nombre de quien administra el aula y en el espacio General, cuando alguien termina un curso, se presenta, cumple años en la comunidad o sube de nivel; si el mismo día hay varias del mismo tipo salen en una sola. Cada miembro puede elegir no aparecer.
 
 !!! note "Capturas en modo sencillo"
     Las capturas de esta página son de una academia en **modo sencillo** (pestañas arriba). Las pantallas que no tienen pestaña propia están en **«Más»**, con el mismo nombre que en el menú de administración; en **modo completo** se abren desde el menú lateral. Las rutas (`/admin/…`, `/studio/…`) son las mismas en los dos modos.
@@ -25,13 +32,17 @@ Encima, los **niveles** se calculan sobre puntos de por vida y nunca bajan; la *
 ## Configuración
 
 - **Activación** — `Administración → Configuración`, pestaña «Módulos» (`/admin/settings`): interruptor de «Puntos y retos» (`mod.gamification`). Al desactivarlo desaparecen del menú «Ranking» y «Retos», y «Puntos y retos» del área de administración.
-- **Panel único** — `/admin/gamification` («Puntos y retos», grupo Personas y accesos del área de administración), con 6 pestañas: «Retos», «Entregas», «Niveles», «Beneficios», «Solicitudes» y «Reglas».
+- **Panel único** — `/admin/gamification` («Puntos y retos», grupo Personas y accesos del área de administración), con 7 pestañas: «Retos», «Entregas», «Niveles», «Beneficios», «Solicitudes», «Reglas» y «Premios y desbloqueos».
 - **Reglas de puntuación** — pestaña «Reglas» («Cuánto vale cada cosa»): por cada acción («Publicar un post», «Responder a alguien», «Compartir un recurso», «Terminar un curso», «Traer a un referido») se fijan «Puntos», «Techo/día» (0 = sin límite) y el checkbox «Activa». Las reglas vienen sembradas con pesos por defecto.
 - **Relleno del histórico** — misma pestaña «Reglas», tarjeta «Rellenar el histórico» con el botón «Rellenar ahora»: da puntos por la actividad anterior con su fecha original; se puede repetir sin duplicar nada.
-- **Roles** — reglas, niveles, beneficios y backfill: solo `super_admin` / `tenant_admin`; retos, entregas y solicitudes de beneficio: también `formador`.
-- Sin variables de entorno propias. Ninguna función exige licencia Enterprise.
+- **Premios y desbloqueos** — pestaña «Premios y desbloqueos» (la capa de retención): «Contenido que se desbloquea por nivel» (elige «Curso», «Sección», «Se desbloquea en» y «Cerrar hasta ese nivel»; «Abrir ya» quita el candado), «Premios automáticos» (nombre, «Se entrega al llegar a» un nivel o unos puntos, «Qué recibe»: un mensaje o enlace, o un código; «Crear premio», con «Pausar»/«Activar» y «Registro de entregas»), «Insignias» («Dar insignias» y renombrar), «Rachas» («Contar rachas») y «Celebraciones en la comunidad» (cuatro interruptores: cursos, presentaciones, aniversarios y niveles). **Rachas e insignias nacen activadas; las cuatro celebraciones, apagadas.**
+- **Roles** — reglas, niveles, beneficios, backfill y toda la capa de retención (premios, desbloqueos, insignias, rachas y celebraciones): solo `super_admin` / `tenant_admin`; retos, entregas y solicitudes de beneficio: también `formador`.
+- Variable de entorno: `GAMIFICATION_ANNIVERSARY_CRON` — cron del barrido diario de aniversarios para las celebraciones (`0 8 * * *`, UTC). Ninguna función exige licencia Enterprise.
 
 ![El panel de puntos: la pestaña Reglas con pesos, techos diarios y el relleno del histórico](../../assets/modules/gamification/gamification-1-rules.png)
+
+!!! note "La captura es anterior a la pestaña «Premios y desbloqueos»"
+    La captura muestra el panel con seis pestañas; la séptima, «Premios y desbloqueos», se añadió después y no sale en ella.
 
 ## Uso paso a paso
 
@@ -56,9 +67,14 @@ Encima, los **niveles** se calculan sobre puntos de por vida y nunca bajan; la *
 
 2. «Entregar» abre el modal de entrega: qué ha hecho, la prueba (archivo o enlace, obligatoria si el reto la exige) y una confirmación — cada reto se entrega **una sola vez**. Queda «En revisión» hasta que el equipo la resuelve.
 3. Con un beneficio desbloqueado, «Pedirlo» crea la solicitud; la pantalla muestra el estado («Solicitado», «Aprobado», «Hecho») y cuándo puede volver a pedirlo si hay espera.
-4. `/leaderboard` («Ranking»): el ranking por «Este mes», «Esta semana» o «Global», con «Tus puntos», «Tu puesto» y «Tu nivel» arriba.
+4. En `/challenges` también ve **«Tu racha»**, **«Tus insignias»**, **«Tus premios»** (con su código o enlace y lo que le falta para el siguiente) y **«Tu privacidad»**: puede elegir **«Aparecer en las celebraciones de la comunidad»** y **«Mostrar mi racha en mi perfil»**. Su nivel, sus insignias y su racha salen también en su perfil (`/u/<id>`).
+5. `/leaderboard` («Ranking»): el ranking por «Este mes», «Esta semana» o «Global», con «Tus puntos», «Tu puesto» y «Tu nivel» arriba.
 
     ![La clasificación de la comunidad por rango de fechas](../../assets/modules/gamification/gamification-4-leaderboard.png)
+
+## Permisos
+
+`gamification.read`, `gamification.submit` y `gamification.manage`.
 
 ## Dependencias
 
@@ -66,7 +82,7 @@ Opcionales (solo lectura para el backfill): `mod.community`, `mod.learning`, `mo
 
 ## Modelo de datos
 
-`mod_gamification_ledger_entry` (asiento, append-only salvo revocación) · `_profile` (saldo materializado) · `_rule` · `_level` · `_perk` · `_perk_request` · `_challenge` · `_submission` (una entrega por reto y persona).
+`mod_gamification_ledger_entry` (asiento, append-only salvo revocación) · `_profile` (saldo materializado) · `_rule` · `_level` · `_perk` · `_perk_request` · `_challenge` · `_submission` (una entrega por reto y persona). Capa de retención: `_settings` · `_member_prefs` · `_activity_day` · `_streak` · `_badge` · `_user_badge` · `_content_lock` · `_content_unlock` · `_reward` · `_reward_grant` · `_celebration` · `_celebration_mark`.
 
 ## API
 
@@ -74,5 +90,5 @@ Prefijo `/modules/gamification` (miembro + `/admin`). Detalle en [Referencia →
 
 ## Eventos
 
-- **Emite**: `gamification.points.awarded/revoked`, `gamification.level.changed`, `gamification.challenge.submitted/reviewed`, `gamification.perk.requested/handled`.
-- **Consume**: `community.post.created/comment.created/post.hidden/unhidden/comment.hidden/unhidden`, `resources.resource.created/deleted`, `learning.course.completed`, `referrals.referral.attributed`.
+- **Emite**: `gamification.points.awarded/revoked`, `gamification.level.changed`, `gamification.challenge.submitted/reviewed`, `gamification.perk.requested/handled`, `gamification.badge.awarded`, `gamification.reward.granted`, `gamification.content.unlocked`.
+- **Consume**: `community.post.created/comment.created/post.hidden/unhidden/comment.hidden/unhidden`, `resources.resource.created/deleted`, `learning.course.completed`, `learning.progress.updated`, `referrals.referral.attributed`, y sus propios `gamification.level.changed` y `gamification.points.awarded` (para premios, desbloqueos y celebraciones).

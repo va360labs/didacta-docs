@@ -16,7 +16,7 @@ Didacta distingue dos niveles con contratos distintos:
 | Acceso a datos | Prisma del host; puede **leer** (nunca escribir) tablas de otros módulos declarando la dependencia | Solo sus propias tablas, a través de un `db` sandboxed con guardia SQL por prefijo |
 | UI | In-tree, en la web de Didacta | Bundles JS dentro del ZIP |
 
-Los 24 módulos que trae Didacta son first-party. El nivel third-party existe para el futuro marketplace — ver [Módulos de terceros](third-party-modules.md).
+Los 27 módulos que trae Didacta son first-party. El nivel third-party existe para el futuro marketplace — ver [Módulos de terceros](third-party-modules.md).
 
 ## Reglas de aislamiento
 
@@ -50,6 +50,6 @@ Un manifest declara dependencias **duras** (`dependencies.modules` — sin ellas
 
 ## Siguiente paso
 
-- [Catálogo de los 24 módulos](catalog/index.md)
+- [Catálogo de los 27 módulos](catalog/index.md)
 - [Gestionar módulos en tu instalación](managing.md)
 - [Crear un módulo](building-a-module/index.md)

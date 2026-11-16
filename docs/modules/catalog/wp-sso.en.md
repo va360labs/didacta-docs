@@ -11,6 +11,9 @@ It lets a user **already authenticated in WordPress** enter Didacta without sign
 - The token is **single use**: the `jti` is marked as consumed (anti-replay, in Redis with an in-memory fallback).
 - The HMAC secret is known only to WordPress and Didacta; it never reaches the browser.
 - Email addresses are normalised (trimmed + lowercased) before the user is resolved.
+- **Stable identity**: with a plugin ≥ 0.2.0 the token carries `sub` (the WordPress `user_id`) and Didacta links by it, not by email, so an email change or reuse in WordPress does not move the account. A token from a 0.1.0 plugin, without `sub`, is accepted degraded to an email-only link (with a log warning).
+- **`email_verified`**: the plugin signs it as `false` by default — WordPress keeps no reliable email-verification state — and Didacta stores it on the linked identity. If you have a real source (e.g. a double opt-in), derive it with the WordPress filter `didacta_sso_email_verified`; do not set it to `true` blindly.
+- An account that is not active (pending, suspended…) does not get in through SSO even if WordPress recognises it.
 - The final redirect uses the hardened web base (`WEB_PUBLIC_URL` / the tenant's verified domain / allowlist), never the `Host` header — this prevents open redirects with token exfiltration.
 - In WordPress: `DIDACTA_SSO_SECRET` and `DIDACTA_SSO_CALLBACK` in `wp-config.php`, and the button through the `[didacta_sso_button]` shortcode.
 
@@ -67,7 +70,7 @@ On the WordPress side, the `wp-config.php` constants: `DIDACTA_SSO_SECRET`, `DID
     - Transparent URL: `https://your-wordpress/?didacta_sso=try` (without a WP session it SILENTLY returns to Didacta's sign-in; this is the one the auto-bounce uses).
 9. Test the loop with the **Test the bounce ↗** button on the WordPress tab (it appears when the configuration is active).
 
-**What the user sees:** from WordPress, with a session open, the button takes them into Didacta already authenticated (302 to the callback → `/auth/callback` with the session). With "Transparent auto-redirect" on, visiting Didacta's `/signin` bounces to the WordPress and, if there is a session there, the user comes back authenticated without touching anything; if there is none, the normal login appears without noise. With "Auto-provision users" on, the first SSO creates the account with the student role; when off, anyone who does not exist in the tenant sees the `user_not_provisioned` error.
+**What the user sees:** from WordPress, with a session open, the button takes them into Didacta already authenticated (302 to the callback → `/auth/callback` with the session). With "Transparent auto-redirect" on, visiting Didacta's `/signin` bounces to the WordPress and, if there is a session there, the user comes back authenticated without touching anything; if there is none, the normal login appears without noise. With "Auto-provision users" on, the first SSO creates the account with the student role; when off, anyone who does not exist in the tenant sees the `user_not_provisioned` error. Failures return to `/auth/error?reason=…` with a reason: `user_not_provisioned`, `user_inactive`, the token's code (`bad_signature`, `expired`, `ttl_too_long`, `audience_invalid`, `issuer_invalid`, `replayed`, `missing_token`, `not_configured`…) or `wp_sso_failed`. Rejections for lack of an account are kept in the audit log (`sso.wp.callback.rejected`).
 
 ## Dependencies
 
@@ -81,8 +84,9 @@ No tables of its own: the only state (the consumed `jti`) is ephemeral and lives
 
 - `GET /modules/wp-sso/:tenantSlug/status` — public configuration (for the sign-in auto-redirect).
 - `GET /modules/wp-sso/:tenantSlug/callback?token=` — exchanging the token for a session (302).
+- Manifest permission: `wp-sso.callback.exchange`.
 - Admin: `GET`/`PUT`/`DELETE` `/api/v1/admin/sso/wp/config` (Community, no capability required). The screen that consumes them is `/admin/sso?tab=wordpress`.
 
 ## Events
 
-**Emits**: `wp-sso.signin.success`, `wp-sso.user.provisioned`, `wp-sso.account.linked`. It consumes none.
+**Emits no events** on the bus and consumes none. The token exchange leaves its trace in the classroom's **audit log**: `sso.wp.signin.success`, `sso.wp.user.provisioned`, `sso.wp.account.linked` and `sso.wp.callback.rejected`.

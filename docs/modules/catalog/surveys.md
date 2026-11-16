@@ -17,7 +17,7 @@ Encuestas **anónimas** de la comunidad. El caso principal: al terminar cada cla
 
 **Activar o desactivar el módulo.** En `/admin/settings?tab=modules` (pestaña «Módulos» de Configuración), con los botones «Activar …» / «Desactivar …» de la fila del módulo. Con el módulo activo aparece la entrada **«Encuestas»** en el grupo Contenido del panel admin; con el módulo inactivo, el panel del alumno simplemente no se renderiza.
 
-**Ajustes por tenant.** No hay: ni la encuesta post-clase ni sus preguntas se editan desde el panel (las 4 preguntas son fijas a propósito, para que los resultados sean comparables entre clases y en el tiempo).
+**Ajustes por tenant.** No hay: ni la encuesta post-clase ni sus preguntas se editan desde el panel (las 4 preguntas son fijas a propósito, para que los resultados sean comparables entre clases y en el tiempo). Lo único que varía es el **idioma**: al crear la encuesta, las preguntas se guardan en el idioma del aula (es, en o pt), con los mismos tipos y orden; las encuestas ya creadas no se traducen.
 
 **Plantillas de correo.** Los dos correos del módulo — invitación al crearse la encuesta y recordatorio a las 24 h — usan las plantillas `surveys.post_class.invitation` y `surveys.post_class.reminder`, personalizables en `/admin/emails`. Ambos avisos salen también por el canal in-app.
 
@@ -29,7 +29,7 @@ Encuestas **anónimas** de la comunidad. El caso principal: al terminar cada cla
 | `SURVEYS_REMINDER_CRON` | Frecuencia del barrido de recordatorios (cron, UTC). | `*/15 * * * *` |
 | `SURVEYS_REMINDER_DELAY_HOURS` | Horas sin responder tras las que se envía el recordatorio. | `24` |
 
-El worker de recordatorios necesita `REDIS_URL` (sin Redis no arranca, con aviso en el log) y usa `WEB_PUBLIC_URL` para el enlace a la clase. Solo recuerda encuestas con ≤ 72 h de antigüedad (tope fijo del producto: un deploy tardío no bombardea encuestas viejas).
+El worker de recordatorios necesita `REDIS_URL` (sin Redis no arranca, con aviso en el log). El enlace a la clase de la invitación y del recordatorio apunta al dominio del aula dueña de la clase, no a una URL única de la instalación. Solo recuerda encuestas con ≤ 72 h de antigüedad (tope fijo del producto: un deploy tardío no bombardea encuestas viejas).
 
 **Licencia.** Nada del módulo exige licencia Enterprise.
 
@@ -41,7 +41,7 @@ El worker de recordatorios necesita `REDIS_URL` (sin Redis no arranca, con aviso
 **Como admin**
 
 1. Activa `mod.surveys` (con `mod.zoom-live` activo si quieres la encuesta post-clase automática).
-2. No hay nada que crear: al terminar cada clase en directo, la encuesta se crea sola con sus 4 preguntas fijas — NPS 0-10 («Del 0 al 10, ¿recomendarías esta clase a otro miembro?»), dos escalas 1-5 («El contenido de la clase», «El ritmo y la claridad») y un texto opcional («¿Qué mejorarías? (opcional)»). Los inscritos reciben el aviso in-app y por correo con el enlace a la página de la clase.
+2. No hay nada que crear: al terminar cada clase en directo, la encuesta se crea sola con sus 4 preguntas fijas (aquí, en español; en aulas en inglés o portugués, traducidas) — NPS 0-10 («Del 0 al 10, ¿recomendarías esta clase a otro miembro?»), dos escalas 1-5 («El contenido de la clase», «El ritmo y la claridad») y un texto opcional («¿Qué mejorarías? (opcional)»). Los inscritos reciben el aviso in-app y por correo con el enlace a la página de la clase.
 3. Abre **«Encuestas»** (`/admin/surveys`): tabla con columnas «Encuesta», «Fecha», «Estado» («Abierta»/«Cerrada») y «Respuestas», las más recientes primero.
 
 4. Pulsa **«Resultados»** en una fila: verás el NPS (promotores 9-10 menos detractores 0-6, en puntos), la media de cada pregunta de escala y las respuestas libres sin autor.
@@ -60,6 +60,10 @@ El worker de recordatorios necesita `REDIS_URL` (sin Redis no arranca, con aviso
 2. Responde tocando los botones 0-10 (NPS) y 1-5 (escala «1 = mal · 5 = genial»); el texto es opcional. El botón **«Enviar valoración»** solo se activa con todas las preguntas puntuables respondidas.
 3. Tras enviar verás «¡Gracias por tu respuesta! La tenemos en cuenta para las próximas clases.». Solo se acepta un envío por persona; un segundo intento (otra pestaña, doble clic) termina en el mismo agradecimiento.
 4. Si a las 24 h no respondiste, recibirás un único recordatorio con el enlace a la clase.
+
+## Permisos
+
+`surveys.response.write`, `surveys.results.read` y `surveys.manage`. La pantalla **«Encuestas»** y los endpoints `admin/*` son solo para `tenant_admin` y `super_admin`.
 
 ## Dependencias
 
