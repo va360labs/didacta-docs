@@ -1,6 +1,6 @@
 # Referencia de endpoints
 
-Referencia **endpoint a endpoint** de la API de Didacta, extraída del código real de la versión 0.1.0-beta.24 (unos 130 controladores y más de 700 endpoints), organizada en seis áreas:
+Referencia **endpoint a endpoint** de la API de Didacta, extraída del código real de la versión 0.1.0-beta.24 (unos 130 controladores y más de 700 endpoints), con las rutas de niveles de la membresía, contenido por nivel y dirección de la academia de la 0.1.0-beta.27, organizada en seis áreas:
 
 <div class="didacta-cards">
   <a href="core/"><h3>🔐 Núcleo y transversales</h3><p>Auth, MFA, API keys, mi cuenta, setup, licencia pública, sitio público del aula, storage, auditoría, SSO, SCIM, inscripción externa, agentes MCP y webhooks.</p></a>

@@ -1,6 +1,6 @@
 # Endpoint reference
 
-An **endpoint-by-endpoint** reference for the Didacta API, extracted from the real code of version 0.1.0-beta.24 (about 130 controllers and more than 700 endpoints), organised into six areas:
+An **endpoint-by-endpoint** reference for the Didacta API, extracted from the real code of version 0.1.0-beta.24 (about 130 controllers and more than 700 endpoints), plus the membership-level, per-level content and academy-address routes of 0.1.0-beta.27, organised into six areas:
 
 <div class="didacta-cards">
   <a href="core/"><h3>🔐 Core and cross-cutting</h3><p>Auth, MFA, API keys, my account, setup, public license, the classroom's public site, storage, auditing, SSO, SCIM, external enrollment, MCP agents and webhooks.</p></a>

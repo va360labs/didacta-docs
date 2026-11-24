@@ -12,7 +12,7 @@ Cloud and Community are **the same product**: the same modules and the same publ
 | **Payments** | With your own Stripe account, with no Didacta fee. | Always through Didacta's Stripe account, which transfers your share every week and keeps 5%. You cannot connect your own Stripe account ([Payouts](payouts.md)). |
 | **Countries you can get paid in** | Whatever your Stripe account allows. | 33 countries: the EU, Norway, Liechtenstein, the UK, Switzerland, the US and Canada. |
 | **Academy mode** | Full (side menu), with the option to switch to simple. | Simple ("Start here"), with the option to switch to full. |
-| **Address** | Your domain, as you configure it. | `<your-academy>.didacta.io`; no custom domain for now. |
+| **Address** | Your domain, as you configure it. | `<your-academy>.didacta.io`, which you change yourself from Settings (up to 3 times every 30 days; see [Your academy](your-academy.md#changing-the-address)); no custom domain for now. |
 | **Data** | Wherever you host it. | Servers in the EU. |
 | **Backups** | Your own ([Backups](../installation/backups.md)). | Nightly and encrypted: 30 days and one per month for 12 months. |
 | **Email** | Your SMTP. | The platform's service with your academy's name; own SMTP optional ([Your academy](your-academy.md#email)). |

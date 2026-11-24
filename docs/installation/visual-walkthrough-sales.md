@@ -76,6 +76,9 @@ Con una clave real guardada y verificada: en cada curso vinculado desde **Pagos 
 
 A diferencia de los cursos sueltos, **crear y editar planes de membresía no necesita Stripe configurado** — el Price de Stripe se genera solo en el primer cobro real. Solo el checkout final (el botón «Continuar al pago seguro») depende de las mismas credenciales del paso anterior.
 
+!!! note "Membresía con niveles (0.1.0-beta.27)"
+    Este recorrido vende una membresía **sin niveles**: un grupo de acceso para todos los planes, que es como sigue funcionando un aula que no crea niveles. Desde la versión 0.1.0-beta.27 la pantalla **Membresía** tiene además, encima de «Planes», la tarjeta **«Niveles»**, que no sale en estas capturas: con ella cada nivel (Básico, Pro, uno gratis…) da sus propios cursos y tiene sus propios precios, sin crear grupos a mano. Ver [Suscripciones → Niveles](../modules/catalog/subscriptions.md#niveles).
+
 ### Grupo de acceso
 
 Cada plan concede acceso a través de un **grupo de acceso**. Antes de crear el plan, damos de alta uno en `/admin/access-groups` con tipo «Todos los cursos»:

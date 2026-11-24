@@ -12,6 +12,8 @@ Member sign-up with **manual validation**: request → evidence → human decisi
 
 Registration creates the user as `PENDING`, kicks off a background **lookup of subscriptions and purchases** for that email across the connected payment accounts, and notifies the **approver** by email with two signed single-use links (approve / reject) plus the overdue payment status if there is one.
 
+If the membership has a **free level**, this registration is its way in and, by default, whoever verifies their email with a code gets in straight away, without waiting for anyone. See [Automatic approval with the free level](#automatic-approval-with-the-free-level).
+
 ## How it works
 
 - The steps are chained with **HMAC-signed tickets** using `AUTH_SECRET` (no state in the database): the Telegram ticket (15 min) authorises the OTP and the OTP's `verificationToken` (30 min) authorises registration. Each ticket carries the classroom it was issued in and is only valid there: a verification done in one classroom is useless for registering in another. The OTP code expires after 10 minutes. Without `AUTH_SECRET` the flow answers that it is not configured.
@@ -59,7 +61,7 @@ A **core**-category module: always active, with no switch in the "Modules" tab. 
 
 4. "Verify your Telegram" step: they press the Login Widget button; the screen confirms "Your Telegram account has been verified" or warns them when they are not in the group (they can continue and their case will be reviewed).
 5. "Verify your email" step: they type their address, press **Send code**, enter the "6-digit code" and press **Verify**.
-6. "Your details" step: name, password (at least 12 characters) and an optional bio — the email is asked for in this step when there is no OTP step — then they press **Create request**. Final screen: "Registration pending validation".
+6. "Your details" step: name, password (at least 12 characters) and an optional bio — the email is asked for in this step when there is no OTP step — then they press **Create request**. Final screen: "Registration pending validation". With [automatic approval](#automatic-approval-with-the-free-level), the button is **Create my account** and the final screen is "You're in".
 
 ![Public sign-up wizard with its verification steps](../../assets/modules/member-registration/en/member-registration-2-wizard.png)
 
@@ -72,6 +74,22 @@ A **core**-category module: always active, with no switch in the "Modules" tab. 
 
 9. Approving activates the account, assigns the default access group and sends the welcome email; rejecting deactivates the user and notifies them.
 10. Keep the overdue reference list under Administration → Revenue → **Overdue payments** (`/admin/delinquents`): manual entry ("New record", "Mark as overdue") or **Import CSV**. Registration uses these flags to warn you when someone requests access without being up to date.
+
+## Automatic approval with the free level
+
+When the membership has a [free level](subscriptions.md#the-free-level), this registration is that level's way in and nobody needs to approve each sign-up any more.
+
+- **When the free level is created (or turned on)**, registration is enabled, the "Email with a 6-digit code (OTP)" verification is added to whatever you had (Telegram, if you required it, is kept) and the free level's group becomes the default access group on approval.
+- **Whoever verifies their email with the code gets in straight away.** The sign-up follows the same path as "Approve" in the panel —default group (the free level's), welcome email, audit log entry (with `via: auto`) and the `member_registration.request.approved` event— but without notifying the approver, because there is nothing to approve.
+- **The wizard talks about "your account" instead of "your request"**: "Verify your email and create your account in two steps." (three if Telegram is also required), the last button is **Create my account** and the final screen is **"You're in"** ("Your account is ready. Sign in with your email and password.") with the **Sign in** button.
+- **Only with email verification**: without a code there is no proof that the email belongs to whoever signs up, so manual approval stays. And only a sign-up that is still pending changes: a rejected one, or an account that already existed, does not get in by signing up again.
+- **"Review every free sign-up by hand"**, on the free level's card (Membership in full mode, Sales in simple mode), turns it off: every sign-up waits for your approval again. Turning the free level off or deleting it also turns it off.
+- **Classrooms without a free level do not change**: manual approval, as always.
+
+!!! warning "With Telegram required"
+    If you also require "Membership of your Telegram group", instant entry does not check whether the person is in the group: it is noted on their request, but they get in anyway. If you want to review that, turn on "Review every free sign-up by hand".
+
+Through the API, `GET /modules/member-registration/config` says `autoApprove` (whether people get in straight away) and `POST /modules/member-registration/register` answers `{ status: 'ACTIVE' }` when the sign-up gets in on its own (`PENDING` otherwise). The setting lives in the `member-registration` scope, key `auto-approve` (`{ enabled, manualReview }`), and the levels editor writes it.
 
 ## Dependencies
 

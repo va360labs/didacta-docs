@@ -23,7 +23,7 @@ El feed social del tenant: **posts** (opcionalmente ligados a un curso y a un es
 
 Todo lo demás se configura desde el panel, cada cosa en su pantalla:
 
-- **Espacios** — `/admin/community/spaces` («Espacios de comunidad», grupo Comunidad del área de administración). Por espacio: «Nombre», «Slug» (permanente una vez creado), «Descripción (opcional)», icono o emoji, «Color» y «Orden» (número menor → aparece antes en el sidebar). Los espacios de sistema van marcados con 🔒: editables, no eliminables. Un admin también puede crear un espacio desde el botón «+» del grupo «Foros» del sidebar.
+- **Espacios** — `/admin/community/spaces` («Espacios de comunidad», grupo Comunidad del área de administración). Por espacio: «Nombre», «Slug» (permanente una vez creado), «Descripción (opcional)», icono o emoji, «Color», «Orden» (número menor → aparece antes en el sidebar) y **«Quién puede verlo»** (todos los miembros o solo algunos niveles de la membresía; ver [Espacios por nivel](#espacios-por-nivel)). Los espacios de sistema llevan la etiqueta «Del sistema»: editables, no eliminables. Un admin también puede crear un espacio desde el botón «+» del grupo «Foros» del sidebar.
 - **Tags curados** — `/admin/community/tags` («Tags de comunidad»). Nombre (se normaliza a minúsculas para evitar duplicados), color e icono; editar un tag impacta a todos los posts que lo usan. Los autores siguen pudiendo escribir tags libres en sus posts.
 - **Publicaciones por API** — `/admin/community/api-posts` («Publicaciones por API») lista los posts entrados con `POST /community-api/posts`, agrupados por el admin dueño de la API key. Las claves (scope `community:post`) se gestionan en `/admin/api-keys` («Claves API»).
 - **Avisos masivos** — `/admin/broadcasts` («Avisos a la comunidad», grupo Comunicación): «Asunto», «Mensaje» y el checkbox «Marcar como importante (ignora las bajas)».
@@ -31,6 +31,9 @@ Todo lo demás se configura desde el panel, cada cosa en su pantalla:
 - **Roles** — ocultar/restaurar, fijar, tags, espacios, avisos y `notifyAll` exigen `super_admin` o `tenant_admin`; el formador no modera la comunidad.
 
 ![Espacios de comunidad: lista con los espacios de sistema y el formulario de edición](../../assets/modules/community/community-3-spaces.png)
+
+!!! note "La captura es anterior a los espacios por nivel"
+    En la captura los espacios de sistema llevan un candado 🔒 y el formulario no tiene «Quién puede verlo». Desde la versión 0.1.0-beta.27 los de sistema llevan la etiqueta «Del sistema» y el candado queda solo para los espacios restringidos a algunos niveles.
 
 Variables de entorno (workers):
 
@@ -68,6 +71,27 @@ Disparo manual del digest (QA): `POST /modules/community/digest/run-now`, solo `
 4. Sus menciones se acumulan en `/community/mentions` («Mis menciones»); el directorio está en `/members` y el perfil público de cada miembro en `/u/<id>`.
 5. Si no quiere emails de comunidad, apaga la fila «Comunidad» en `/account` → «Notificaciones», o usa el enlace de baja del propio email; los avisos marcados como importantes llegan igual.
 
+## Espacios por nivel
+
+Si la membresía tiene [niveles](subscriptions.md#niveles) (Básico, Pro…), un espacio puede ser solo para algunos. En el editor del espacio (`/admin/community/spaces`, y también en el alta rápida del «+» de «Foros»), **«Quién puede verlo»**:
+
+- **«Todos los miembros»**: lo de siempre. Un espacio en el que no se elige nada es de todos.
+- **«Solo estos niveles»**: una casilla por nivel de pago, con su nombre y en su orden. Al elegir esta opción salen **todas marcadas**; desmarca las que no deban verlo. La pantalla lo recuerda: **«Un nivel no incluye a otro: marca todos los que deben verlo.»** Si Pro debe ver el espacio de Básico, marca los dos. Sin ninguna marcada no se guarda («Marca al menos un nivel.»).
+- El **nivel gratis** no se ofrece: lo que ve el gratis lo ven todos los miembros, y restringir a él dejaría fuera a quien paga.
+- Sin niveles de pago, las casillas son los grupos de acceso del aula; si no hay ninguno, solo cabe «Todos los miembros» («Todavía no tienes niveles de membresía. Cuando los crees, aquí podrás elegir quién lo ve.»).
+- En la lista del panel, un espacio restringido lleva la marca «Solo para: Pro» (con sus niveles) y un candado.
+
+**Quién lo ve.** El equipo del aula (`super_admin`, `tenant_admin` y formador) lo ve siempre: «Tú y tu equipo lo veis siempre.» Un miembro, si es miembro activo de alguno de los niveles marcados. Un nivel borrado no abre nada: un espacio que solo tenía ese nivel queda solo para el equipo.
+
+**Qué ve quien no tiene el nivel:**
+
+- En el menú «Foros» el espacio sale con candado, y el compositor no lo ofrece para publicar.
+- En `/spaces/<slug>` (y en el filtro de espacios del feed del modo sencillo): el nombre, un candado con «Este espacio es solo para algunos niveles de la membresía.», **«Disponible en: Pro»** (con sus niveles) y el botón **«Ver planes»**, que lleva a `/join`. Nunca la descripción ni las publicaciones.
+- Las publicaciones de ese espacio no le salen en el feed general, ni en «últimos comentarios», ni en el resumen semanal, ni en el perfil público de nadie; no se le avisa de menciones o respuestas en ellas, los avisos masivos de un post de ese espacio solo llegan a su público, y la sala de chat del espacio no le aparece. Si una publicación está en dos espacios y uno está cerrado para él, no la ve.
+- Las notificaciones enviadas antes de restringir el espacio no se borran.
+
+**Por API**: leer algo cerrado responde 404, como si no existiera; publicar, comentar o reaccionar en un espacio cerrado, 403 `COMMUNITY_SPACE_LOCKED`. `GET /modules/community/spaces` lista los espacios cerrados con `locked: true`, nombre, icono y `accessLevels` (sin descripción). Al crear o editar un espacio, `accessGroupIds` (ids de grupo de acceso; `[]` lo abre a todos; uno que no existe da 422 `COMMUNITY_ACCESS_GROUP_UNKNOWN`). Las opciones del editor salen de `GET /modules/access-groups/options` (admin o formador).
+
 ## Sanciones y expediente
 
 Además de ocultar contenido, un admin puede **sancionar a una persona**: sigue entrando y leyendo (y manteniendo lo que ha comprado), pero deja de poder aportar contenido en las áreas que marques. No es la suspensión de la cuenta, que corta el acceso entero. Esta parte vive en el **core** (no en `mod.community`), porque una sanción cruza varios módulos a la vez y se aplica en un único punto de control.
@@ -86,11 +110,11 @@ Endpoints (solo admin): `GET/POST /admin/users/:userId/restrictions`, `POST /adm
 
 ## Dependencias
 
-Sin dependencias duras. Opcionales (solo lectura, declaradas en el manifest): `mod.courses` (posts ligados a curso), `mod.gamification` (ranking de la barra lateral), `mod.messaging` (presencia) y `mod.theming` (marca de la tarjeta de la academia).
+Sin dependencias duras. Opcionales (solo lectura, declaradas en el manifest): `mod.courses` (posts ligados a curso), `mod.gamification` (ranking de la barra lateral), `mod.messaging` (presencia), `mod.theming` (marca de la tarjeta de la academia) y `mod.access-groups` (quién es miembro activo de cada nivel, para los espacios por nivel; lo resuelve el host, el módulo no lee sus tablas).
 
 ## Modelo de datos
 
-`mod_community_post` · `_comment` · `_reaction` · `_mention` · `_tag` · `_space` · `_broadcast` (con estado y cursor) · `_user_pref` (preferencias: baja del digest y baja de los avisos masivos). Un post oculto conserva `hidden_at`/`hidden_by_id`/`hidden_reason` y el fijado guarda `pinned_at`; la última edición de contenido, `edited_at`.
+`mod_community_post` · `_comment` · `_reaction` · `_mention` · `_tag` · `_space` (con `access_group_ids`: vacío = todos los miembros) · `_broadcast` (con estado y cursor) · `_user_pref` (preferencias: baja del digest y baja de los avisos masivos). Un post oculto conserva `hidden_at`/`hidden_by_id`/`hidden_reason` y el fijado guarda `pinned_at`; la última edición de contenido, `edited_at`.
 
 ## API
 

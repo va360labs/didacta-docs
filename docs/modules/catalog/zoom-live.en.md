@@ -43,9 +43,9 @@ As an instructor (or admin):
 
 1. Open **Virtual classroom** in the instructor menu (`/studio/live`) and click **New session**.
 2. Fill in **Title**, **Date and time**, **Duration (min)** (15–480) and **Time zone** — the time is interpreted in the chosen zone, not in your computer's. The **Host email** must have a user in your Zoom account: the meeting is created under their name.
-3. Optional: link a **Course (optional)** and a **Lesson (optional)** — with a lesson, enrolled students see the session in its detail. Leave **Announce in the community** checked to publish a feed card people can register from.
+3. Optional: link a **Course (optional)** and a **Lesson (optional)** — with a lesson, enrolled students see the session in its detail. Leave **Announce in the community** checked to publish a feed card people can register from. If the membership has levels, choose in **"Who can see it"** whether the class is for all members or only some levels (see [Live classes by level](#live-classes-by-level)).
 4. Click **Create session**, then **Copy link** to share the registration page (`/live/<id>`).
-5. **Edit** only allows changing title, date, duration, time zone and agenda; the host, course and lesson are fixed at creation. **Cancel** notifies everyone registered.
+5. **Edit** only allows changing title, date, duration, time zone, agenda and "Who can see it"; the host, course and lesson are fixed at creation. **Cancel** notifies everyone registered.
 6. At class time, click **Start** (or **Start (host)** from the class page).
 
 ![The instructor's virtual classroom list with a scheduled class](../../assets/modules/zoom-live/en/zoom-live-2-live-sessions.png)
@@ -67,13 +67,30 @@ Attendance (staff, on the same class page):
 
 ![The class attendance panel with sync and manual marking](../../assets/modules/zoom-live/en/zoom-live-4-attendance.png)
 
+## Live classes by level
+
+If the membership has [levels](subscriptions.md#levels) (Basic, Pro…), a class can be for only some of them. The class form —in full mode, **Virtual classroom** (`/studio/live`); in simple mode, **Live**— has **"Who can see it"**, both when creating and when editing:
+
+- **"All members"**: as always. A class where nothing is chosen belongs to everyone.
+- **"Only these levels"**: one checkbox per paid level, with its name and in its order. When you pick this option they all come **ticked**; untick the ones that should not see it. The screen reminds you: **"One level doesn't include another: tick every level that should see it."** With none ticked it is not saved ("Tick at least one level.").
+- The free level is not offered (what the free level sees, everyone sees). Without paid levels, the checkboxes are the classroom's access groups; if there are none, only "All members" is possible.
+- In the panel's class list, a restricted class carries the "Only for: Pro" mark (with its levels) and a padlock.
+
+**Who sees it.** The classroom team (`super_admin`, `tenant_admin` and instructor, who hosts) always does. A member does if they are an active member of any of the ticked levels. Only they register and receive the link, the reminder, the cancellation notice, the recording and the post-class survey.
+
+**What someone without the level sees.** At `/live/<id>`, the title, time and duration, a padlock with "This class is only for some membership levels.", **"Available in: Pro"** (with its levels) and the **"See plans"** button, which leads to `/join`. The live class card in the community feed shows just as closed (the announcement of a class with a level is published without its description). They never see the description, the link or the recording, and have no button to register; even if they registered before the class was restricted, they no longer get the link.
+
+Left as they were, on purpose: the `.ics` file and calendar links (only title, time, duration and `/live/<id>`), the "next live class" on the public home page (title and time, no link) and notifications sent before the class was restricted. The level cards on `/join` name each level's upcoming live classes (name and date only).
+
+**Through the API**: the detail of a closed class comes with `locked: true` and `accessLevels`, without description, link or recording; registering or asking for the link (`register`, `join`) answers 403 `ZOOM_SESSION_LOCKED`. When creating or editing, `accessGroupIds` (`[]` opens it to everyone; a group that does not exist gives 422 `ZOOM_ACCESS_GROUP_UNKNOWN`).
+
 ## Dependencies
 
-Optional: `mod.courses` (linking a session ↔ course/lesson).
+Optional: `mod.courses` (linking a session ↔ course/lesson) and `mod.access-groups` (who is an active member of each level, for live classes by level; the host resolves it, the module does not read its tables).
 
 ## Data model
 
-`mod_zoom_session` (the class: schedule, host, URLs, recording, sync flags) · `_session_registration` (registration, the basis for gating) · `_session_attendance` (entry click + Zoom data + override) · `_webhook_event` (idempotent log).
+`mod_zoom_live_session` (the class: schedule, host, URLs, recording, sync flags and `access_group_ids`, empty = all members) · `_session_registration` (registration, the basis for gating) · `_session_attendance` (entry click + Zoom data + override) · `_webhook_event` (idempotent log).
 
 Manifest permissions: `zoom.session.read` and `zoom.session.write`.
 

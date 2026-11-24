@@ -12,6 +12,8 @@ Alta de miembros con **validación manual**: solicitud → evidencia → decisi�
 
 El registro crea el usuario en `PENDING`, lanza en segundo plano el **lookup de suscripciones y compras** del email en las cuentas de pago conectadas, y avisa al **aprobador** por email con dos enlaces firmados de un solo uso (aprobar / rechazar) más el estado de impago si consta.
 
+Si la membresía tiene un **nivel gratis**, este registro es su puerta de entrada y, por defecto, quien verifica su correo con código entra al momento, sin esperar a nadie. Ver [Aprobación automática con el nivel gratis](#aprobacion-automatica-con-el-nivel-gratis).
+
 ## Cómo funciona
 
 - Los pasos se encadenan con **tickets firmados HMAC** con `AUTH_SECRET` (sin estado en base de datos): el ticket de Telegram (15 min) autoriza el OTP y el `verificationToken` del OTP (30 min) autoriza el registro. Cada ticket lleva el aula en la que se emitió y solo vale en ella: una verificación hecha en un aula no sirve para inscribirse en otra. El código OTP caduca a los 10 minutos. Sin `AUTH_SECRET` el flujo responde que no está configurado.
@@ -59,7 +61,7 @@ Módulo de categoría **core**: siempre activo, sin interruptor en la pestaña �
 
 4. Paso «Verifica tu Telegram»: pulsa el botón del Login Widget; la pantalla confirma «Tu cuenta de Telegram quedó verificada» o avisa si no está en el grupo (puede continuar y se revisará su caso).
 5. Paso «Verifica tu email»: escribe su correo, pulsa **Enviar código**, teclea el «Código de 6 dígitos» y pulsa **Verificar**.
-6. Paso «Tus datos»: nombre, contraseña (mínimo 12 caracteres) y biografía opcional — el email se pide en este paso cuando no hay paso OTP — y pulsa **Crear solicitud**. Pantalla final: «Registro pendiente de validación».
+6. Paso «Tus datos»: nombre, contraseña (mínimo 12 caracteres) y biografía opcional — el email se pide en este paso cuando no hay paso OTP — y pulsa **Crear solicitud**. Pantalla final: «Registro pendiente de validación». Con la [aprobación automática](#aprobacion-automatica-con-el-nivel-gratis), el botón es **Crear mi cuenta** y la pantalla final, «Ya estás dentro».
 
 ![Wizard público de inscripción con sus pasos de verificación](../../assets/modules/member-registration/member-registration-2-wizard.png)
 
@@ -72,6 +74,22 @@ Módulo de categoría **core**: siempre activo, sin interruptor en la pestaña �
 
 9. Aprobar activa la cuenta, asigna el grupo de acceso por defecto y envía la bienvenida; rechazar desactiva al usuario y le avisa.
 10. Mantén la lista de referencia de impagos en Administración → Ingresos → **Impagos** (`/admin/delinquents`): alta manual («Nuevo registro», «Marcar como impago») o **Importar CSV**. La inscripción usa estas marcas para avisarte de quien solicita acceso sin estar al día.
+
+## Aprobación automática con el nivel gratis
+
+Cuando la membresía tiene un [nivel gratis](subscriptions.md#el-nivel-gratis), este registro es la puerta de ese nivel y deja de hacer falta que alguien apruebe cada alta.
+
+- **Al crear (o encender) el nivel gratis**, el registro se habilita, se añade la verificación «Email con código de 6 dígitos (OTP)» a las que hubiera (Telegram, si la exigías, se conserva) y el grupo del nivel gratis pasa a ser el grupo de acceso por defecto al aprobar.
+- **Quien verifica su correo con el código entra al momento.** El alta sigue el mismo camino que «Aprobar» en el panel —grupo por defecto (el del nivel gratis), correo de bienvenida, registro de auditoría (con `via: auto`) y evento `member_registration.request.approved`—, pero sin avisar al aprobador, porque no hay nada que aprobar.
+- **El asistente habla de «tu cuenta» y no de «tu solicitud»**: «Verifica tu correo y crea tu cuenta en dos pasos.» (tres si también hay Telegram), el botón final es **Crear mi cuenta** y la pantalla final es **«Ya estás dentro»** («Tu cuenta está lista. Entra con tu correo y tu contraseña.») con el botón **Entrar**.
+- **Solo con verificación por correo**: sin código no hay prueba de que el correo es de quien se apunta, y entonces sigue la aprobación manual. Y solo cambia una inscripción que sigue pendiente: una rechazada, o una cuenta que ya existía, no entran por volver a apuntarse.
+- **«Revisar a mano cada alta gratis»**, en la tarjeta del nivel gratis (Membresía en modo completo, Ventas en modo sencillo), la apaga: cada alta vuelve a esperar a que la apruebes. Apagar o borrar el nivel gratis también la apaga.
+- **Las aulas sin nivel gratis no cambian**: aprobación manual, como siempre.
+
+!!! warning "Con Telegram exigido"
+    Si además exiges «Pertenencia a tu grupo de Telegram», la entrada al momento no mira si la persona está en el grupo: queda anotado en su solicitud, pero entra igual. Si quieres revisarlo, enciende «Revisar a mano cada alta gratis».
+
+Por API, `GET /modules/member-registration/config` dice `autoApprove` (si se entra al momento) y `POST /modules/member-registration/register` responde `{ status: 'ACTIVE' }` cuando el alta entra sola (`PENDING` si no). El ajuste vive en el scope `member-registration`, clave `auto-approve` (`{ enabled, manualReview }`), y lo escribe el editor de niveles.
 
 ## Dependencias
 

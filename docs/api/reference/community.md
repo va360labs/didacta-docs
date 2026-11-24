@@ -21,7 +21,7 @@ Comunidad, mensajería, gamificación y retención, recursos, encuestas, referid
 | POST | `/modules/community/posts/:id/moderate` · `comments/:id/moderate` | admin | Oculta/restaura (`{ hidden, reason? }`) — reversible, distinto del borrado del autor. |
 | POST | `/modules/community/posts/:id/pin` · `unpin` | admin | Fija/desfija el post en el feed. |
 | GET · POST · PUT · DELETE | `/modules/community/tags[/:id]` | lectura Bearer · escritura admin | Tags curados (`name`, `color` hex, `icon`). |
-| GET · POST · PATCH · DELETE | `/modules/community/spaces[/:slug]` | lectura Bearer · escritura admin | Espacios; los 4 de sistema son editables pero no eliminables (409). |
+| GET · POST · PATCH · DELETE | `/modules/community/spaces[/:slug]` | lectura Bearer · escritura admin | Espacios; los 4 de sistema son editables pero no eliminables (409). `accessGroupIds` al crear o editar: solo para esos niveles (vacío = todos). Los de un nivel que quien mira no tiene se listan con `locked: true`, nombre, icono y `accessLevels`, sin descripción. |
 | GET | `/modules/community/members` | Bearer | Directorio paginado de miembros activos. |
 | GET | `/modules/community/stats` | Bearer | Miembros y cursos activos del tenant. |
 | GET | `/modules/community/sidebar` | Bearer | La barra lateral del feed en una llamada: tarjeta del aula (marca, miembros, presencia), ranking del mes y últimos comentarios. Cada bloque viene `null` o vacío si no hay datos. |
@@ -31,7 +31,7 @@ Comunidad, mensajería, gamificación y retención, recursos, encuestas, referid
 
 **API externa** — `/community-api` (API key con scope `community:post`, cuyo dueño debe ser admin): `GET /community-api/spaces` (dónde publicar) y `POST /community-api/posts` (publica con `source='api'`; `space` inexistente → 422 con los slugs válidos).
 
-**Errores**: `NOT_AUTHOR` / `NOT_MODERATOR` 403 · `NESTED_REPLIES_TOO_DEEP` / `REACTION_TARGET_MISSING` 422 · `TAG_NAME_EXISTS` / `SPACE_EXISTS` / `SPACE_NOT_DELETABLE` 409 · not-found 404.
+**Errores**: `NOT_AUTHOR` / `NOT_MODERATOR` 403 · `NESTED_REPLIES_TOO_DEEP` / `REACTION_TARGET_MISSING` 422 · `TAG_NAME_EXISTS` / `SPACE_EXISTS` / `SPACE_NOT_DELETABLE` 409 · not-found 404. Espacios por nivel: leer algo de un espacio cerrado para quien mira da 404 (como si no existiera); publicar, comentar o reaccionar en él, 403 `COMMUNITY_SPACE_LOCKED`; un grupo que no existe en `accessGroupIds`, 422 `COMMUNITY_ACCESS_GROUP_UNKNOWN`. Ver [Comunidad → Espacios por nivel](../../modules/catalog/community.md#espacios-por-nivel).
 
 ## Mensajería — `/modules/messaging`
 
@@ -159,10 +159,10 @@ Comunidad, mensajería, gamificación y retención, recursos, encuestas, referid
 
 | Método | Ruta | Qué hace |
 |---|---|---|
-| GET | `/modules/member-registration/config` | Qué pasos exige el wizard (`verifiers`, `botUsername`). |
+| GET | `/modules/member-registration/config` | Qué pasos exige el wizard (`verifiers`, `botUsername`) y si se entra al momento (`autoApprove`: nivel gratis con correo verificado). |
 | POST | `/modules/member-registration/telegram/verify` | Valida la firma del Telegram Login Widget y la pertenencia al grupo → ticket (15 min). |
 | POST | `/modules/member-registration/otp/request` · `otp/verify` | Envía código al email · lo valida → `verificationToken` (30 min). |
-| POST | `/modules/member-registration/register` | Crea el usuario `PENDING` y avisa al aprobador → `{ status: 'PENDING' }`. |
+| POST | `/modules/member-registration/register` | Crea el usuario `PENDING` y avisa al aprobador → `{ status: 'PENDING' }`. Con la [aprobación automática del nivel gratis](../../modules/catalog/member-registration.md#aprobacion-automatica-con-el-nivel-gratis), la aprueba al momento sin avisar al aprobador → `{ status: 'ACTIVE' }`. |
 | GET · POST | `/modules/member-registration/decision` | `GET ?token=`: el enlace aprobar/rechazar del email del aprobador **solo lee** y redirige (302) a la pantalla de confirmación · `GET decision/preview`: qué haría ese token sin ejecutarlo · `POST`: ejecuta la decisión ya confirmada. |
 
 Si el tenant exige un verificador no operativo (p. ej. Telegram sin bot), responde **503 fail-closed**.
@@ -180,15 +180,19 @@ Si el tenant exige un verificador no operativo (p. ej. Telegram sin bot), respon
 
 | Método | Ruta | Auth | Qué hace |
 |---|---|---|---|
-| GET | `/membership/page` | Público | Datos de `/join`: planes activos, cursos con precio de referencia, testimonial. |
+| GET | `/membership/page` | Público | Datos de `/join`: planes activos, cursos con precio de referencia, testimonial. Con niveles, además `tiers` (lo que incluye cada uno: cursos, espacios y próximos directos), `freeSignupPath` y `freeSignupInstant`. |
+| GET | `/membership/tiers` | Público | Niveles encendidos: `{ tiers: [{ id, name, accessGroupId, isFree }] }`. |
 | POST | `/membership/checkout` | Público | Checkout de suscripción anónimo: `{ planId, email?, referralCode? }` → `{ url, sessionId }`. |
-| GET · POST · PATCH · DELETE | `/membership/admin/plans[/:id]` | admin | Planes: nombre, periodicidad (1-12 meses), precio en céntimos, precio tachado, trial, destacado. Borrar un plan con ventas lo desactiva. |
+| GET · POST · PATCH · DELETE | `/membership/admin/plans[/:id]` | admin | Planes: nombre, periodicidad (1-12 meses), precio en céntimos, precio tachado, trial, destacado y `tierId` (el nivel; obligatorio si hay niveles de pago, se fija al crear). Borrar un plan con ventas lo desactiva. |
+| GET · POST | `/membership/admin/tiers` | admin | [Niveles](../../modules/catalog/subscriptions.md#niveles): lista (cursos, precios, gente dentro, planes sin nivel y estado del registro gratis) · crea `{ name, description?, isFree?, allCourses?, courseIds? }` (el primer nivel de pago adopta los planes de siempre; el gratis abre el registro gratis). |
+| PATCH · DELETE | `/membership/admin/tiers/:id` | admin | Edita `{ name?, description?, active?, courseIds?, manualReview? }` · borra un nivel sin nadie dentro (con alumnos, 409: se apaga). |
+| PUT | `/membership/admin/tiers/order` | admin | Ordena los niveles (`{ tierIds }`): el orden de las tarjetas de `/join`. |
 | GET · PUT | `/membership/admin/config` | admin | Página pública: activo, titulares, grupo de acceso, límite de lecciones en trial, precios por curso, testimonial. |
 | GET | `/membership/checkout-session/:sessionId` | Público | Vuelta del pago de la membresía (pantalla de gracias): si la sesión de **esta** academia está completada, qué plan, cuánto y cuándo. |
 | GET · PUT | `/membership/admin/retention` | admin | «Cuando alguien quiere irse»: qué se ofrece al darse de baja (pausa y meses máximos, descuento con % y meses). |
 | GET | `/membership/admin/retention/summary` | admin | Resumen de bajas: cuántos pulsaron «Darme de baja», cuántos se quedaron (pausa o descuento) y los motivos. |
 
-**Errores**: `MEMBERSHIP_PAGE_INACTIVE` 404 · `MEMBERSHIP_CONFIG_INCOMPLETE` 422 · `SUBSCRIPTIONS_STRIPE_CONFIG_MISSING` 503 · `SUBSCRIPTIONS_STRIPE_API_ERROR` 502.
+**Errores**: `MEMBERSHIP_PAGE_INACTIVE` 404 · `MEMBERSHIP_CONFIG_INCOMPLETE` 422 · `SUBSCRIPTIONS_STRIPE_CONFIG_MISSING` 503 · `SUBSCRIPTIONS_STRIPE_API_ERROR` 502. Niveles: `MEMBERSHIP_TIER_NOT_FOUND` 404 · `MEMBERSHIP_TIER_INVALID` / `MEMBERSHIP_TIER_IS_FREE` 400 · `MEMBERSHIP_TIER_IN_USE` / `MEMBERSHIP_PLAN_NAME_TAKEN` 409.
 
 ## Retención — `/modules/retention` (admin)
 
