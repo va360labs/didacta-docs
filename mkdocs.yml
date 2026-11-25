@@ -59,7 +59,7 @@ extra:
   # defecto: el workflow de deploy la sobreescribe en cada build con la
   # ultima release real de GitHub, y un cron diario reconstruye el sitio
   # para que nunca se quede vieja. En las paginas: {{ didacta_version }}.
-  didacta_version: 0.1.0-beta.28
+  didacta_version: 0.1.0-beta.29
   # Canal derivado de esa version (-alpha -> Alpha, -beta -> Beta, sin
   # sufijo -> Estable/Stable). Tambien lo refresca el deploy en cada build:
   # ninguna pagina vuelve a escribir el canal a mano.

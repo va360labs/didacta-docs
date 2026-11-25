@@ -7,7 +7,7 @@ What you can customise in your Didacta Cloud academy and what you cannot. In sim
 Your academy lives at `https://<your-academy-name>.didacta.io`. That address is derived from the name you enter when signing up: lowercase, without accents and with hyphens in place of spaces and symbols (for example, "Watercolour Workshop" becomes `watercolour-workshop`). If it is already taken a number is added, and some names are reserved and never granted (`www`, `api`, `admin`, `login`…). You see it in the second question of the sign-up ("Your address").
 
 !!! note "Custom domain"
-    You cannot use your own domain on Didacta Cloud today. You can add your logo and your colour.
+    You cannot use your own domain on Didacta Cloud today. You can add your logo and your colour. That is why the menu has no "Dominios propios" (Custom domains) entry (not in simple mode's "More" either) and, if you open `/admin/domains`, the screen says "Not available on Didacta Cloud" and takes you to change the address (since version 0.1.0-beta.29).
 
 ### Changing the address
 

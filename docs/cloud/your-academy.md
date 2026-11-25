@@ -7,7 +7,7 @@ Qué puedes personalizar en tu aula de Didacta Cloud y qué no. En modo sencillo
 Tu aula vive en `https://<nombre-de-tu-academia>.didacta.io`. Esa dirección se deriva del nombre que pones al darte de alta: en minúsculas, sin acentos y con guiones en lugar de espacios y signos (por ejemplo, «Taller de Acuarela» da `taller-de-acuarela`). Si ya está cogida se le añade un número, y hay nombres reservados que no se conceden (`www`, `api`, `admin`, `login`…). La ves en la segunda pregunta del alta («Tu dirección»).
 
 !!! note "Dominio propio"
-    Hoy no se puede usar un dominio propio en Didacta Cloud. Sí puedes poner tu logo y tu color.
+    Hoy no se puede usar un dominio propio en Didacta Cloud. Sí puedes poner tu logo y tu color. Por eso el menú no tiene «Dominios propios» (tampoco en «Más» del modo sencillo) y, si abres `/admin/domains`, la pantalla dice «No disponible en Didacta Cloud» y te lleva a cambiar la dirección (desde la versión 0.1.0-beta.29).
 
 ### Cambiar la dirección
 

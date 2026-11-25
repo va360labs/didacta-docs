@@ -63,6 +63,9 @@ If your classrooms hang from a single domain (`<classroom>.classrooms.example.co
 !!! warning "What the panel does not do yet"
     In this version verification is **manual**: it compares the token you paste and **does not query DNS**. And registering a domain here **does not route it**: traffic only reaches the academy if the host is registered on it (**Tenants**, above) and your proxy and certificate serve it. Without a licence the endpoint answers **402** and the screen shows what it unlocks.
 
+!!! note "No custom domains on Didacta Cloud"
+    With the `cloud` edition licence (Didacta Cloud) the proxy only routes the platform's subdomains. Since version 0.1.0-beta.29 the menu has no "Dominios propios" (Custom domains) entry, `/admin/domains` says "Not available on Didacta Cloud" and links to [Academy address](#academy-address-subdomain), and the API answers **404** `ADMIN_CUSTOM_DOMAINS_NOT_IN_CLOUD` when adding, validating or activating a domain. Listing and deleting still work, to remove one that was already there.
+
 ## Full white-label (Enterprise)
 
 Hiding the Didacta brand entirely ("powered by Didacta") and customising the **CSS** (max. 16 KB, sanitised: `@import`, `expression()`, `javascript:` and closing `<style>` are blocked) and the **HTML footer** (max. 4 KB, basic tags) is the Enterprise capability `feat:white_label`. Without a licence those cards show what they unlock and the backend answers **402** to any attempt to save them with content — like every Enterprise feature, it is [never hidden](../getting-started/editions.md). The rest of the branding (logo, colours, typography, texts) is Community and needs no licence.

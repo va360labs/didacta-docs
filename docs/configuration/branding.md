@@ -63,6 +63,9 @@ Si tus aulas cuelgan de un mismo dominio (`<aula>.aulas.example.com`), quien adm
 !!! warning "Lo que el panel no hace todavía"
     En esta versión la verificación es **manual**: compara el token que pegas, **no consulta el DNS**. Y dar de alta un dominio aquí **no lo enruta**: el tráfico solo llega a la academia si el host está registrado en ella (**Tenants**, arriba) y tu proxy y tu certificado lo sirven. Sin licencia, el endpoint responde **402** y la pantalla muestra el aviso de qué desbloquea.
 
+!!! note "En Didacta Cloud no hay dominios propios"
+    Con la licencia de edición `cloud` (Didacta Cloud) el proxy solo enruta los subdominios de la plataforma. Desde la versión 0.1.0-beta.29 el menú no tiene «Dominios propios», `/admin/domains` dice «No disponible en Didacta Cloud» y lleva a [Dirección de la academia](#direccion-de-la-academia-subdominio), y la API responde **404** `ADMIN_CUSTOM_DOMAINS_NOT_IN_CLOUD` al añadir, validar o activar un dominio. Listar y borrar siguen funcionando, para quitar uno que ya estuviera.
+
 ## White-label completo (Enterprise)
 
 Ocultar por completo la marca Didacta («powered by Didacta») y personalizar el **CSS** (máx. 16 KB, sanitizado: se bloquean `@import`, `expression()`, `javascript:` y el cierre de `<style>`) y el **footer HTML** (máx. 4 KB, etiquetas básicas) es la capability Enterprise `feat:white_label`. Sin licencia, esas tarjetas muestran el aviso de qué desbloquean y el backend responde **402** a cualquier intento de guardarlos con contenido — como todas las features Enterprise, [nunca se oculta](../getting-started/editions.md). El resto del branding (logo, colores, tipografía, textos) es Community y no requiere licencia.
