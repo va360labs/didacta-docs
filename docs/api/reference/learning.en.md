@@ -133,6 +133,7 @@ Endpoints for courses, enrollments and progress, learning paths, assessments, ce
 |---|---|---|
 | GET | `/modules/access-groups` | Paginated list (`page`, `limit`). |
 | GET | `/modules/access-groups/catalog/courses` · `catalog/users` | Pickers: published courses · candidate users (`?q=`). |
+| GET | `/modules/access-groups/options` | Options for the "Who can see it" field of spaces and live classes: `[{ id, name }]`. With paid levels, those levels in their order and with their name (not the free one); without them, `[]`. **Admin or instructor** (the only route under this prefix that does not require admin). |
 | GET | `/modules/access-groups/:id` | Detail with courses and members. |
 | POST | `/modules/access-groups` | Creates one: `name`, `slug?`, `kind` (`ALL_COURSES\|COURSE\|MULTI_COURSE`), `courseIds?`, `autoGrantNewCourses?`. |
 | PATCH | `/modules/access-groups/:id` | Edits it (`name`, `description`, `autoGrantNewCourses`, `isDefaultForApproval`, `linkedTierName` — links a payment tier). |

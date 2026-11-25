@@ -12,7 +12,7 @@ Cloud y Community son **el mismo producto**: los mismos módulos y la misma imag
 | **Cobros** | Con tu propia cuenta de Stripe, sin comisión de Didacta. | Siempre con la cuenta de Stripe de Didacta, que te transfiere tu parte cada semana y se queda el 5 %. No se puede conectar una cuenta de Stripe propia ([Cobros y pagos](payouts.md)). |
 | **Países de cobro** | Los que permita tu cuenta de Stripe. | 33 países: la UE, Noruega, Liechtenstein, Reino Unido, Suiza, EE. UU. y Canadá. |
 | **Modo del aula** | Completo (menú lateral), con opción de pasar al sencillo. | Sencillo («Empieza aquí»), con opción de pasar al completo. |
-| **Dirección** | Tu dominio, como configures. | `<tu-academia>.didacta.io`; sin dominio propio por ahora. |
+| **Dirección** | Tu dominio, como configures. | `<tu-academia>.didacta.io`, que cambias tú desde Ajustes (hasta 3 veces cada 30 días; ver [Tu aula](your-academy.md#cambiar-la-direccion)); sin dominio propio por ahora. |
 | **Datos** | Donde los alojes. | Servidores de la UE. |
 | **Copias de seguridad** | Las tuyas ([Copias de seguridad](../installation/backups.md)). | Nocturnas y cifradas: 30 días y una al mes durante 12 meses. |
 | **Correo** | Tu SMTP. | El servicio de la plataforma con el nombre de tu academia; SMTP propio opcional ([Tu aula](your-academy.md#correo)). |

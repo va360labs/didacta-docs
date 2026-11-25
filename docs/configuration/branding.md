@@ -41,12 +41,30 @@ El tenant se resuelve por el **host** de la petición: cada academia tiene uno o
 - La resolución exige **match exacto**: no hay comodines de subdominio. Cada subdominio que quieras usar debe estar dado de alta.
 - Poner el dominio en producción (DNS, certificado TLS y enrutado del proxy hacia Didacta) es cosa de tu infraestructura; ver [docker compose](../installation/docker-compose.md).
 
+### Dirección de la academia (subdominio)
+
+Si tus aulas cuelgan de un mismo dominio (`<aula>.aulas.example.com`), quien administra cada una puede cambiar él solo su subdominio desde **Ajustes → «Dirección de tu academia»** (en modo completo, **Configuración → General**). Es la misma función que usa Didacta Cloud ([Tu aula → Cambiar la dirección](../cloud/your-academy.md#cambiar-la-direccion)).
+
+**Solo existe si defines `TENANT_SUBDOMAIN_SUFFIX`** con ese dominio (`aulas.example.com`). Sin ella —lo normal en una instalación propia con una sola academia— no aparece ni en la API (404 `ACADEMY_ADDRESS_DISABLED`) ni en la interfaz. Para que funcione, tu DNS, tu proxy y tu certificado tienen que servir `*.<sufijo>` hacia Didacta: una dirección nueva tiene que llegar sin que toques nada.
+
+- **Qué se puede pedir**: una etiqueta DNS de 3 a 63 caracteres (minúsculas, números y guiones, sin guion al principio ni al final, sin `xn--`), que no esté reservada (`www`, `api`, `admin`…) ni la use otra academia, ni como dirección actual ni como anterior, ni coincida con el `slug` de otra academia o con un dominio del sitio público.
+- **Límite**: 3 cambios cada 30 días por academia, contados en el registro de auditoría (`academy.address.changed`).
+- **Solo para direcciones del sufijo**: un aula cuyo dominio principal es un dominio propio no la cambia desde ahí, para no convertir ese dominio en una redirección.
+- **La anterior se conserva para siempre** como dirección anterior del aula (`tenant_domain.redirect_to_primary`): sus páginas responden **308** a la nueva con la misma ruta y query, y `/api/*` no se redirige, así que los webhooks de Stripe y Zoom, los clientes MCP y los `.ics` registrados con ella siguen respondiendo. El web guarda 5 minutos en caché cada host conocido: la vieja puede tardar hasta 5 minutos por proceso del web en empezar a redirigir.
+- **No cambia el `slug`** del aula, que es un identificador interno.
+- **Todos vuelven a entrar**: las sesiones son de cada dirección y no se traspasan.
+- **Lo que se recalcula solo**: correos, `.ics`, MCP, canonical, sitemap y robots usan la dirección principal en cada uso; la caché de buscadores del aula se invalida y, con [cobros de plataforma](../modules/catalog/payouts.md), la web del negocio de la cuenta conectada en Stripe se vuelve a sincronizar.
+- **SSO**: la «URL de callback» del [SSO desde WordPress](../modules/catalog/wp-sso.md) lleva la dirección principal del aula, así que hay que pegar la nueva en `wp-config.php`. Las URL de OIDC y SAML salen de la instalación (`PUBLIC_API_URL`, `OIDC_REDIRECT_URI`, `SAML_PUBLIC_API_URL`), no de la dirección del aula.
+
 ### Panel «Dominios propios» (Enterprise)
 
 **Administración → Dominios** (`/admin/domains`, capability `feat:custom_domains`) lleva el **registro** de los dominios personalizados de la academia: al añadir uno genera el destino CNAME (el de `DIDACTA_CNAME_TARGET`, por defecto `cname.didacta.io`) y un token de verificación; tú configuras el CNAME y el TXT en tu DNS y pulsas **«Validar»** con el token. Un dominio puede quedar `verified` o `inactive` sin borrarlo.
 
 !!! warning "Lo que el panel no hace todavía"
     En esta versión la verificación es **manual**: compara el token que pegas, **no consulta el DNS**. Y dar de alta un dominio aquí **no lo enruta**: el tráfico solo llega a la academia si el host está registrado en ella (**Tenants**, arriba) y tu proxy y tu certificado lo sirven. Sin licencia, el endpoint responde **402** y la pantalla muestra el aviso de qué desbloquea.
+
+!!! note "En Didacta Cloud no hay dominios propios"
+    Con la licencia de edición `cloud` (Didacta Cloud) el proxy solo enruta los subdominios de la plataforma. Desde la versión 0.1.0-beta.29 el menú no tiene «Dominios propios», `/admin/domains` dice «No disponible en Didacta Cloud» y lleva a [Dirección de la academia](#direccion-de-la-academia-subdominio), y la API responde **404** `ADMIN_CUSTOM_DOMAINS_NOT_IN_CLOUD` al añadir, validar o activar un dominio. Listar y borrar siguen funcionando, para quitar uno que ya estuviera.
 
 ## White-label completo (Enterprise)
 

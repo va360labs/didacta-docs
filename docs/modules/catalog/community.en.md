@@ -23,7 +23,7 @@ The tenant's social feed: **posts** (optionally tied to a course and a space), *
 
 Everything else is configured from the panel, each thing on its own screen:
 
-- **Spaces** — `/admin/community/spaces` ("Community spaces", Community group of the admin area). Per space: "Name", "Slug" (permanent once created), "Description (optional)", icon or emoji, "Color" and "Order" (lower number → appears earlier in the sidebar). System spaces are marked with 🔒: editable, not deletable. An admin can also create a space from the "+" button of the "Forums" sidebar group.
+- **Spaces** — `/admin/community/spaces` ("Community spaces", Community group of the admin area). Per space: "Name", "Slug" (permanent once created), "Description (optional)", icon or emoji, "Color", "Order" (lower number → appears earlier in the sidebar) and **"Who can see it"** (all members or only some membership levels; see [Spaces by level](#spaces-by-level)). System spaces carry the "System" label: editable, not deletable. An admin can also create a space from the "+" button of the "Forums" sidebar group.
 - **Curated tags** — `/admin/community/tags` ("Community tags"). Name (normalized to lowercase to avoid duplicates), color and icon; editing a tag affects every post that uses it. Authors can still write free-form tags in their posts.
 - **Posts via API** — `/admin/community/api-posts` ("Posts via API") lists the posts created with `POST /community-api/posts`, grouped by the admin who owns the API key. Keys (scope `community:post`) are managed in `/admin/api-keys` ("API keys").
 - **Announcements** — `/admin/broadcasts` ("Community announcements", Communication group): "Subject", "Message" and the "Mark as important (ignores unsubscribes)" checkbox.
@@ -31,6 +31,9 @@ Everything else is configured from the panel, each thing on its own screen:
 - **Roles** — hide/restore, pin, tags, spaces, announcements and `notifyAll` require `super_admin` or `tenant_admin`; instructors do not moderate the community.
 
 ![Community spaces: the list with system spaces and the edit form](../../assets/modules/community/en/community-3-spaces.png)
+
+!!! note "The screenshot predates spaces by level"
+    In the screenshot, system spaces carry a 🔒 padlock and the form has no "Who can see it". Since version 0.1.0-beta.27 system spaces carry the "System" label and the padlock is kept only for spaces restricted to some levels.
 
 Environment variables (workers):
 
@@ -68,6 +71,27 @@ Manual digest trigger (QA): `POST /modules/community/digest/run-now`, `super_adm
 4. Mentions accumulate in `/community/mentions` ("My mentions"); the directory lives at `/members` and each member's public profile at `/u/<id>`.
 5. To stop community emails, turn off the "Community" row in `/account` → "Notifications", or use the unsubscribe link in the email itself; announcements marked as important still arrive.
 
+## Spaces by level
+
+If the membership has [levels](subscriptions.md#levels) (Basic, Pro…), a space can be for only some of them. In the space editor (`/admin/community/spaces`, and also in the quick creation from the "+" of "Forums"), **"Who can see it"**:
+
+- **"All members"**: as always. A space where nothing is chosen belongs to everyone.
+- **"Only these levels"**: one checkbox per paid level, with its name and in its order. When you pick this option they all come **ticked**; untick the ones that should not see it. The screen reminds you: **"One level doesn't include another: tick every level that should see it."** If Pro should see Basic's space, tick both. With none ticked it is not saved ("Tick at least one level.").
+- The **free level** is not offered: what the free level sees, every member sees, and restricting to it would leave paying members out.
+- Without paid levels there are no checkboxes: only "All members" is possible and the screen says "You don't have membership levels yet. Once you create them, you can choose here who sees it.". Plain access groups are not offered because they are not levels (since version 0.1.0-beta.28; before, they showed up here).
+- In the panel list, a restricted space carries the "Only for: Pro" mark (with its levels) and a padlock.
+
+**Who sees it.** The classroom team (`super_admin`, `tenant_admin` and instructor) always does: "You and your team always can." A member does if they are an active member of any of the ticked levels. A deleted level opens nothing: a space that only had that level is left for the team only.
+
+**What someone without the level sees:**
+
+- In the "Forums" menu the space shows with a padlock, and the composer does not offer it for posting.
+- At `/spaces/<slug>` (and in the space filter of the simple-mode feed): the name, a padlock with "This space is only for some membership levels.", **"Available in: Pro"** (with its levels) and the **"See plans"** button, which leads to `/join`. Never the description or the posts.
+- That space's posts do not show up for them in the general feed, in "latest comments", in the weekly digest or on anyone's public profile; they are not notified of mentions or replies in them, mass announcements of a post in that space only reach its audience, and the space's chat room does not appear for them. If a post is in two spaces and one is closed to them, they do not see it.
+- Notifications sent before the space was restricted are not deleted.
+
+**Through the API**: reading something closed answers 404, as if it did not exist; posting, commenting or reacting in a closed space, 403 `COMMUNITY_SPACE_LOCKED`. `GET /modules/community/spaces` lists closed spaces with `locked: true`, name, icon and `accessLevels` (no description). When creating or editing a space, `accessGroupIds` (access-group ids; `[]` opens it to everyone; one that does not exist gives 422 `COMMUNITY_ACCESS_GROUP_UNKNOWN`). The editor's options come from `GET /modules/access-groups/options` (admin or instructor).
+
 ## Sanctions and the user record
 
 Besides hiding content, an admin can **sanction a person**: they can still sign in and read (and keep what they have bought), but can no longer contribute content in the areas you pick. This is not account suspension, which cuts access entirely. This part lives in the **core** (not in `mod.community`), because a sanction spans several modules at once and is enforced at a single control point.
@@ -86,11 +110,11 @@ Endpoints (admin only): `GET/POST /admin/users/:userId/restrictions`, `POST /adm
 
 ## Dependencies
 
-No hard dependencies. Optional (read-only, declared in the manifest): `mod.courses` (posts tied to a course), `mod.gamification` (sidebar ranking), `mod.messaging` (presence) and `mod.theming` (branding for the academy card).
+No hard dependencies. Optional (read-only, declared in the manifest): `mod.courses` (posts tied to a course), `mod.gamification` (sidebar ranking), `mod.messaging` (presence), `mod.theming` (branding for the academy card) and `mod.access-groups` (who is an active member of each level, for spaces by level; the host resolves it, the module does not read its tables).
 
 ## Data model
 
-`mod_community_post` · `_comment` · `_reaction` · `_mention` · `_tag` · `_space` · `_broadcast` (with status and cursor) · `_user_pref` (preferences: digest opt-out and announcement opt-out). A hidden post keeps `hidden_at`/`hidden_by_id`/`hidden_reason`, pinning stores `pinned_at`, and the last content edit is `edited_at`.
+`mod_community_post` · `_comment` · `_reaction` · `_mention` · `_tag` · `_space` (with `access_group_ids`: empty = all members) · `_broadcast` (with status and cursor) · `_user_pref` (preferences: digest opt-out and announcement opt-out). A hidden post keeps `hidden_at`/`hidden_by_id`/`hidden_reason`, pinning stores `pinned_at`, and the last content edit is `edited_at`.
 
 ## API
 

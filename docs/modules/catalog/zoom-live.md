@@ -43,9 +43,9 @@ Como formador (o admin):
 
 1. Abre **Aula virtual** en el menú del formador (`/studio/live`) y pulsa **Nueva sesión**.
 2. Rellena **Título**, **Fecha y hora**, **Duración (min)** (15–480) y **Zona horaria** — la hora se interpreta en la zona elegida, no en la de tu ordenador. El **Email del host** debe tener usuario en vuestra cuenta de Zoom: la reunión se crea a su nombre.
-3. Opcional: vincula **Curso (opcional)** y **Lección (opcional)** — con lección, los alumnos matriculados ven la sesión en su detalle. Deja marcado **Anunciar en la comunidad** para publicar una tarjeta en el feed desde la que inscribirse.
+3. Opcional: vincula **Curso (opcional)** y **Lección (opcional)** — con lección, los alumnos matriculados ven la sesión en su detalle. Deja marcado **Anunciar en la comunidad** para publicar una tarjeta en el feed desde la que inscribirse. Si la membresía tiene niveles, elige en **«Quién puede verlo»** si la clase es para todos los miembros o solo para algunos niveles (ver [Directos por nivel](#directos-por-nivel)).
 4. Pulsa **Crear sesión** y luego **Copiar enlace** para compartir la página de inscripción (`/live/<id>`).
-5. **Editar** solo permite cambiar título, fecha, duración, zona y agenda; el host, el curso y la lección quedan fijos desde la creación. **Cancelar** avisa a los inscritos.
+5. **Editar** solo permite cambiar título, fecha, duración, zona, agenda y «Quién puede verlo»; el host, el curso y la lección quedan fijos desde la creación. **Cancelar** avisa a los inscritos.
 6. A la hora de la clase, pulsa **Iniciar** (o **Iniciar (host)** desde la página de la clase).
 
 ![Lista de sesiones del aula virtual del formador con una clase programada](../../assets/modules/zoom-live/zoom-live-2-live-sessions.png)
@@ -67,13 +67,30 @@ Asistencia (staff, en la misma página de la clase):
 
 ![Panel de asistencia de la clase con la sincronización y el marcado manual](../../assets/modules/zoom-live/zoom-live-4-attendance.png)
 
+## Directos por nivel
+
+Si la membresía tiene [niveles](subscriptions.md#niveles) (Básico, Pro…), una clase puede ser solo para algunos. El formulario de la clase —en modo completo, **Aula virtual** (`/studio/live`); en modo sencillo, **Directos**— tiene **«Quién puede verlo»**, al crearla y al editarla:
+
+- **«Todos los miembros»**: lo de siempre. Una clase en la que no se elige nada es de todos.
+- **«Solo estos niveles»**: una casilla por nivel de pago, con su nombre y en su orden. Al elegir esta opción salen **todas marcadas**; desmarca las que no deban verla. La pantalla lo recuerda: **«Un nivel no incluye a otro: marca todos los que deben verlo.»** Sin ninguna marcada no se guarda («Marca al menos un nivel.»).
+- El nivel gratis no se ofrece (lo que ve el gratis lo ven todos). Sin niveles de pago no hay casillas: solo cabe «Todos los miembros» (los grupos de acceso sueltos no son niveles y no se ofrecen).
+- En la lista de clases del panel, una clase restringida lleva la marca «Solo para: Pro» (con sus niveles) y un candado.
+
+**Quién la ve.** El equipo del aula (`super_admin`, `tenant_admin` y formador, que es quien anfitriona) la ve siempre. Un miembro, si es miembro activo de alguno de los niveles marcados. Solo ellos se inscriben y reciben el enlace, el recordatorio, el aviso de cancelación, la grabación y la encuesta post-clase.
+
+**Qué ve quien no tiene el nivel.** En `/live/<id>`, el título, la hora y la duración, un candado con «Esta clase es solo para algunos niveles de la membresía.», **«Disponible en: Pro»** (con sus niveles) y el botón **«Ver planes»**, que lleva a `/join`. La tarjeta del directo en el feed de la comunidad sale igual de cerrada (el anuncio de una clase con nivel se publica sin su descripción). Nunca ve la descripción, el enlace ni la grabación, y no tiene botón para inscribirse; aunque se hubiera inscrito antes de restringirla, ya no recibe el enlace.
+
+Se quedan como estaban, a propósito: el `.ics` y los enlaces de calendario (solo título, hora, duración y `/live/<id>`), el «próximo directo» de la portada pública (título y hora, sin enlace) y las notificaciones enviadas antes de restringir la clase. Las tarjetas de los niveles en `/join` nombran los próximos directos de cada nivel (solo nombre y fecha).
+
+**Por API**: el detalle de una clase cerrada llega con `locked: true` y `accessLevels`, sin descripción, enlace ni grabación; inscribirse o pedir el enlace (`register`, `join`) responden 403 `ZOOM_SESSION_LOCKED`. Al crear o editar, `accessGroupIds` (`[]` la abre a todos; un grupo que no existe da 422 `ZOOM_ACCESS_GROUP_UNKNOWN`).
+
 ## Dependencias
 
-Opcional: `mod.courses` (vincular sesión ↔ curso/lección).
+Opcionales: `mod.courses` (vincular sesión ↔ curso/lección) y `mod.access-groups` (quién es miembro activo de cada nivel, para los directos por nivel; lo resuelve el host, el módulo no lee sus tablas).
 
 ## Modelo de datos
 
-`mod_zoom_session` (clase: horario, host, URLs, grabación, marcas de sync) · `_session_registration` (inscripción, base del gating) · `_session_attendance` (clic de entrada + datos de Zoom + override) · `_webhook_event` (log idempotente).
+`mod_zoom_live_session` (clase: horario, host, URLs, grabación, marcas de sync y `access_group_ids`, vacío = todos los miembros) · `_session_registration` (inscripción, base del gating) · `_session_attendance` (clic de entrada + datos de Zoom + override) · `_webhook_event` (log idempotente).
 
 Permisos del manifest: `zoom.session.read` y `zoom.session.write`.
 

@@ -102,7 +102,7 @@ Endpoints que usa la web para pintar lo que ve un visitante. El aula sale del do
 
 | Método | Ruta | Auth | Qué hace |
 |---|---|---|---|
-| GET | `/tenancy/resolve` | Público | `{ known, slug, host, surface, suspended }`: a qué aula corresponde el dominio y si sirve la app (`APP`) o el sitio público (`SITE`). Un dominio de aula suspendida da `known: false` y `suspended: true`. |
+| GET | `/tenancy/resolve` | Público | `{ known, slug, host, surface, suspended, redirectTo }`: a qué aula corresponde el dominio y si sirve la app (`APP`) o el sitio público (`SITE`). Un dominio de aula suspendida da `known: false` y `suspended: true`. `redirectTo` es el dominio principal cuando el host es una **dirección anterior** del aula (el web redirige sus páginas con 308; `/api/*` no se redirige); `null` en cualquier otro caso. |
 | GET | `/tenancy/locale` | Público | `{ locale: "es" \| "en" \| "pt" \| null }`: idioma del aula del dominio. |
 | GET | `/public/academy-home` | Público | Portada pública: marca, nº de miembros, quién la lleva, próximo directo y opciones de acceso (cursos a la venta, membresía, acceso gratuito). `{ enabled: false }` si el aula la tiene apagada. |
 | GET | `/public/seo` | Público | Indexación: si se indexa, dominio canónico, idioma, datos públicos y fichas de venta con su última modificación. `{ indexable: false }` con la página pública apagada. |

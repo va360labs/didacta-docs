@@ -19,6 +19,8 @@ Group membership materialises as **real core enrollments** (through `mod.learnin
 - **Who owns a membership.** A manual add over an already active membership of another origin **promotes** it to `MANUAL`: from then on neither a tier change nor a non-payment removes it. Conversely, a **revoked** membership that is reactivated (by a payment, for example) becomes the property of whoever reactivates it, even if it used to be `MANUAL`: that way access granted by money does not outlive the payment stopping.
 - **Refcount and refunds.** The refcount is the number of live grants (`mod_access_groups_grant` without `revoked_at`) of a course to a person across all their groups. When a course purchase is refunded, the purchase enrollment is withdrawn unless some group still grants it: in that case it goes back to origin `GROUP`.
 - Deleting a group revokes its memberships and cleans up orphaned drip schedules.
+- **Membership levels.** Each [level](subscriptions.md#levels) (Basic, Pro, Free…) is a group of its own that the membership creates and maintains through this module's public service: it is called "Membresía · Pro" (with the level's name) and is "All courses" or "Several courses" depending on what was chosen when the level was created. On a level change, the bridge grants the new group and only then removes the old one (only what has `MEMBERSHIP` origin), so shared courses are never lost. The free level's group is the one marked as default when approving registrations.
+- **Content by level.** Community spaces and live classes can be restricted to paid membership levels (each level is a group) with "Who can see it": they are seen by whoever is an **active** member of any of them. See [Community](community.md#spaces-by-level) and [Virtual classroom](zoom-live.md#live-classes-by-level).
 - A group can be flagged `isDefaultForApproval` (granted when registrations are approved; only one per tenant: flagging another unflags the previous one) or linked to a tier (`linkedTierName`). Changing or removing the tier link removes those who came in through the previous tier; whoever still qualifies comes back on the next sync.
 
 It is a first-party module **formalised as a package** (`modules/access-groups/`, with its own manifest) whose NestJS orchestration — controller, Prisma service and event bridges — lives in the host (`apps/api/src/modules/access-groups/`), the standard built-in module pattern.
@@ -34,7 +36,7 @@ Everything is configured from the panel, always with an admin role (`super_admin
 - **"Auto-grant" switch** — `/admin/access-groups`, only on "All courses" groups: `autoGrantNewCourses` (**on** by default), enrolls members in every course as it is published.
 - **"Courses in the group"** — `/admin/access-groups` → "Manage": the course set of a "Several courses"/"One course" group, with "Save courses".
 - **"Tier link (payments)"** — `/admin/access-groups` → "Manage": "Tier name" field + "Save link" (`linkedTierName`). Reconciliation is triggered with the "Sync tiers from payments" button on `/admin/integrations/payment-connections` (owner: `mod.payment-connections`).
-- **"Access group it grants"** — `/admin/membership`: which group the paid membership grants. That setting belongs to `mod.subscriptions`, not to this module.
+- **"Access group it grants"** — `/admin/membership`: which group the paid membership grants. That setting belongs to `mod.subscriptions`, not to this module. With paid levels it is not shown: each level gives its own group, and its courses are changed in **Membership → "Levels"**.
 
 !!! note "Screenshots in full mode"
     The screenshots on this page come from **full mode** (side menu), the mode a new installation starts in. In **simple mode** the same routes are still available from "More", except for the screens that mode replaces with a simplified version (the course editor, Settings, Sales, Students, Live, the community and Referrals); to use them as shown here, switch to full mode under **Settings → "Use the full mode"**.
@@ -59,6 +61,9 @@ Everything is configured from the panel, always with an admin role (`super_admin
 
 ![Membership settings: "Access group it grants" selector](../../assets/modules/access-groups/en/access-groups-3-membership.png)
 
+!!! note "The screenshot is from a classroom without levels"
+    Since version 0.1.0-beta.27, in a classroom with paid levels that picker is replaced by the note "Each level gives its own courses: change them above, in “Levels”.", and the "Levels" card sits above "Plans". See [Subscriptions → Levels](subscriptions.md#levels).
+
 From a person's profile (`/u/<id>`, "Record" → "Training" → "Access groups", admins only) you can also add them to a group with "Add" or take them out with "Remove": removing them withdraws the enrollment in the courses that only came from that group (progress is kept in case they return). "By tier" memberships are managed by the payment.
 
 The member never sees "groups" on any screen: the group's courses simply show up as active enrollments in `/courses`, and disappear when no live group grants them (enrollments from any other origin are never touched).
@@ -73,9 +78,9 @@ The member never sees "groups" on any screen: the group's courses simply show up
 
 ## API
 
-Prefix `/modules/access-groups` — **everything requires admin**, reads included (they expose the roster): list and create groups, `GET/PATCH/DELETE /:id`, `PUT /:id/courses`, `POST /:id/members`, `DELETE /:id/members/:userId` and the `GET /catalog/courses` and `GET /catalog/users` catalogs for the panel's pickers. Details in [Reference → Learning](../../api/reference/learning.md#access-groups-modulesaccess-groups-all-admin).
+Prefix `/modules/access-groups` — **everything requires admin**, reads included (they expose the roster): list and create groups, `GET/PATCH/DELETE /:id`, `PUT /:id/courses`, `POST /:id/members`, `DELETE /:id/members/:userId` and the `GET /catalog/courses` and `GET /catalog/users` catalogs for the panel's pickers. The exception is `GET /options` (`{ id, name }` for the "Who can see it" field of spaces and live classes), which instructors can also call. Details in [Reference → Learning](../../api/reference/learning.md#access-groups-modulesaccess-groups-all-admin).
 
 ## Events
 
 - **Emits**: none.
-- **Consumes**: `courses.course.published`, `payment_connections.user_tier.changed`, `subscriptions.membership.activated`, `subscriptions.subscription.activated/canceled/unpaid`.
+- **Consumes**: `courses.course.published`, `payment_connections.user_tier.changed`, `subscriptions.membership.activated/plan_changed`, `subscriptions.subscription.activated/canceled/unpaid/paused`.

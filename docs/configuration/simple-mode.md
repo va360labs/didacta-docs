@@ -47,7 +47,7 @@ Tras la primera venta la pantalla pasa a un resumen (ventas, alumnos, próximo d
 
 ## Dónde quedan las opciones avanzadas
 
-En **Ajustes → «Todas las opciones avanzadas»** (correo, cobros con tu propia cuenta, Zoom, idioma y más), y con **Ajustes → «Usar el modo completo»** vuelve el menú lateral. Los mensajes automáticos de [mod.retention](../modules/catalog/retention.md) y los premios de [mod.gamification](../modules/catalog/gamification.md) se gestionan en **Ajustes** del modo sencillo.
+En **Ajustes → «Todas las opciones avanzadas»** (correo, cobros con tu propia cuenta, Zoom, idioma y más), y con **Ajustes → «Usar el modo completo»** vuelve el menú lateral. Los mensajes automáticos de [mod.retention](../modules/catalog/retention.md) y los premios de [mod.gamification](../modules/catalog/gamification.md) se gestionan en **Ajustes** del modo sencillo. Los [niveles de la membresía](../modules/catalog/subscriptions.md#niveles) están en **Ventas** (sección «Niveles»), y la [dirección de la academia](branding.md#direccion-de-la-academia-subdominio), en **Ajustes** si la instalación lo permite.
 
 ## Para el operador
 

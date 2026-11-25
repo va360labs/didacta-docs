@@ -47,7 +47,7 @@ After the first sale the screen switches to a summary (sales, students, next liv
 
 ## Where the advanced options went
 
-Under **Settings → "Todas las opciones avanzadas"** (All advanced options: email, payments with your own account, Zoom, language and more), and **Settings → "Usar el modo completo"** brings the side menu back. The automated messages of [mod.retention](../modules/catalog/retention.md) and the rewards of [mod.gamification](../modules/catalog/gamification.md) are managed under **Settings** in simple mode.
+Under **Settings → "Todas las opciones avanzadas"** (All advanced options: email, payments with your own account, Zoom, language and more), and **Settings → "Usar el modo completo"** brings the side menu back. The automated messages of [mod.retention](../modules/catalog/retention.md) and the rewards of [mod.gamification](../modules/catalog/gamification.md) are managed under **Settings** in simple mode. The [membership levels](../modules/catalog/subscriptions.md#levels) are under **Sales** ("Levels" section), and the [academy address](branding.md#academy-address-subdomain), under **Settings** if the installation allows it.
 
 ## For the operator
 

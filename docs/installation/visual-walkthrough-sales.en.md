@@ -76,6 +76,9 @@ With a real key saved and verified: for each course linked from **Payments · St
 
 Unlike individual courses, **creating and editing membership plans does not require Stripe to be configured** — the Stripe Price is generated on its own at the first real charge. Only the final checkout (the "Continue to secure payment" button) depends on the same credentials as the previous step.
 
+!!! note "Membership with levels (0.1.0-beta.27)"
+    This walkthrough sells a membership **without levels**: one access group for every plan, which is how a classroom that creates no levels still works. Since version 0.1.0-beta.27 the **Membership** screen also has, above "Plans", the **"Levels"** card, which these screenshots do not show: with it each level (Basic, Pro, a free one…) gives its own courses and has its own prices, without creating groups by hand. See [Subscriptions → Levels](../modules/catalog/subscriptions.md#levels).
+
 ### Access group
 
 Each plan grants access through an **access group**. Before creating the plan, we add one at `/admin/access-groups` with type "All courses":

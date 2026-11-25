@@ -102,7 +102,7 @@ Endpoints the web uses to render what a visitor sees. The classroom comes from t
 
 | Method | Route | Auth | What it does |
 |---|---|---|---|
-| GET | `/tenancy/resolve` | Public | `{ known, slug, host, surface, suspended }`: which classroom the domain maps to and whether it serves the app (`APP`) or the public site (`SITE`). A suspended classroom's domain gives `known: false` and `suspended: true`. |
+| GET | `/tenancy/resolve` | Public | `{ known, slug, host, surface, suspended, redirectTo }`: which classroom the domain maps to and whether it serves the app (`APP`) or the public site (`SITE`). A suspended classroom's domain gives `known: false` and `suspended: true`. `redirectTo` is the primary domain when the host is a **previous address** of the classroom (the web app redirects its pages with 308; `/api/*` is not redirected); `null` in any other case. |
 | GET | `/tenancy/locale` | Public | `{ locale: "es" \| "en" \| "pt" \| null }`: the classroom's language for the domain. |
 | GET | `/public/academy-home` | Public | Public home: brand, member count, who runs it, next live class and access options (courses for sale, membership, free access). `{ enabled: false }` if the classroom has it turned off. |
 | GET | `/public/seo` | Public | Indexing: whether it is indexed, canonical domain, language, public data and sales pages with their last modification. `{ indexable: false }` with the public page turned off. |

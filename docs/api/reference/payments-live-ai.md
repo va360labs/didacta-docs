@@ -19,16 +19,19 @@ Billing, suscripciones, conexiones de pago, cobros de plataforma (Cloud), Zoom y
 | Método | Ruta | Auth | Qué hace |
 |---|---|---|---|
 | POST | `/modules/subscriptions/checkout/:courseId` | Bearer | Checkout `mode=subscription`: `{ stripePriceId }` (recurring). |
-| GET | `/modules/subscriptions/me` | Bearer | Mis suscripciones (incluye canceladas, con plan y curso). Devuelve `[]` si el módulo no está configurado. |
+| GET | `/modules/subscriptions/me` | Bearer | Mis suscripciones (incluye canceladas, con plan y curso; en la membresía, `tierId` y `tierName` del nivel). Devuelve `[]` si el módulo no está configurado. |
 | GET | `/modules/subscriptions/me/:id/invoices` | Bearer (propietario) | Facturas con URL hosted de Stripe. |
 | POST | `/modules/subscriptions/me/:id/cancel` | Bearer (propietario) | Cancela: `{ immediate? }` (por defecto al final del periodo). |
 | POST | `/modules/subscriptions/me/portal` | Bearer | Abre el portal de cliente de Stripe del alumno (cambiar la tarjeta, ver sus facturas, darse de baja). |
 | GET · POST | `/modules/subscriptions/me/:id/leave` | Bearer (propietario) | **Al darse de baja**: GET devuelve los motivos y la pausa o el descuento que el aula ofrece ahora a esa suscripción · POST registra lo que decide: `{ reason, reasonText?, choice: pause \| discount \| cancel, pauseMonths? (1–12) }` —pausar (sin cobro ni acceso hasta el primer cobro tras la pausa), quedarse con el descuento o la baja al final del periodo pagado—. Se confirma por correo. La oferta se configura en `/membership/admin/retention`. |
 | POST | `/modules/subscriptions/me/membership/pay-now` | Bearer | Termina el trial de la membresía y cobra ya. |
+| GET | `/modules/subscriptions/me/membership/change-options` | Bearer | **Cambiar de nivel**: la membresía viva, a qué precios puede pasar (niveles de pago encendidos, misma moneda; cada uno con `direction`: `upgrade` \| `downgrade` según el precio al mes), el nivel gratis si lo hay y si algo lo impide ahora (`blockedReason`: `no_membership` \| `not_active` \| `cancel_scheduled` \| `pause_scheduled`). Sin niveles, sin opciones. |
+| POST | `/modules/subscriptions/me/membership/change-preview` | Bearer | `{ planId }` → lo que pasaría al cambiar ahora: `amountDueNow` (subir), `creditCents` (bajar: a favor en la próxima factura) o `trialing: true` (sin prorrateo). No cambia nada. |
+| POST | `/modules/subscriptions/me/membership/change` | Bearer | `{ planId }` → cambia al momento con prorrateo de Stripe: subir cobra la diferencia ya (si falla, 402 y no cambia nada); bajar la deja a favor en la próxima factura; en prueba, sin cobro. Devuelve `{ subscription, direction, charged }`. Ver [Suscripciones → Niveles](../../modules/catalog/subscriptions.md#cambiar-de-nivel-desde-la-cuenta). |
 | POST | `/modules/subscriptions/webhook` | Firma Stripe (secret propio) | `customer.subscription.*`, `invoice.*`; fulfillment de membresía idempotente. |
 | POST | `/modules/subscriptions/admin/grace-expiration/run-now` | super_admin | Fuerza la expiración de periodos de gracia (QA) → 202. |
 
-Errores comunes: `SUBSCRIPTIONS_PRICE_NOT_RECURRING` 422 · `SUBSCRIPTIONS_ALREADY_ACTIVE` 409 · `*_STRIPE_CONFIG_MISSING` 503 · `*_STRIPE_API_ERROR` 502.
+Errores comunes: `SUBSCRIPTIONS_PRICE_NOT_RECURRING` 422 · `SUBSCRIPTIONS_ALREADY_ACTIVE` 409 · `*_STRIPE_CONFIG_MISSING` 503 · `*_STRIPE_API_ERROR` 502. Cambio de nivel: `MEMBERSHIP_PLAN_CHANGE_NOT_ALLOWED` 409 · `MEMBERSHIP_PLAN_CHANGE_PAYMENT_FAILED` 402.
 
 ## Conexiones de pago — `/modules/payment-connections` (super_admin)
 
@@ -91,10 +94,10 @@ El **modo plataforma**: el operador cobra las ventas de todas las aulas con su c
 
 | Método | Ruta | Auth | Qué hace |
 |---|---|---|---|
-| GET | `/modules/zoom-live/sessions[/:id]` | Bearer | Lista (filtros curso/lección/estado/rango) · detalle. `joinUrl` y grabación **solo** para inscritos o staff. |
-| POST | `/modules/zoom-live/sessions/:id/register` · `unregister` | Bearer | Inscripción (idempotente) · cancelación. |
-| POST | `/modules/zoom-live/sessions/:id/join` | Bearer | Sella la entrada (proxy de asistencia) y devuelve el `joinUrl`. |
-| POST · PUT · DELETE | `/modules/zoom-live/sessions[/:id]` | staff | Crea (`topic`, `startTime`, `durationMinutes` 15-480, `hostEmail`, `timezone`, curso/lección opcional) · edita · cancela (soft). |
+| GET | `/modules/zoom-live/sessions[/:id]` | Bearer | Lista (filtros curso/lección/estado/rango) · detalle. `joinUrl` y grabación **solo** para inscritos o staff. Una clase de un nivel que quien mira no tiene llega con `locked: true` y `accessLevels` (título, hora y duración; sin descripción, enlace ni grabación). |
+| POST | `/modules/zoom-live/sessions/:id/register` · `unregister` | Bearer | Inscripción (idempotente) · cancelación. Clase de un nivel que no tiene: 403 `ZOOM_SESSION_LOCKED`. |
+| POST | `/modules/zoom-live/sessions/:id/join` | Bearer | Sella la entrada (proxy de asistencia) y devuelve el `joinUrl`. Clase de un nivel que no tiene: 403 `ZOOM_SESSION_LOCKED`, aunque se hubiera inscrito antes. |
+| POST · PUT · DELETE | `/modules/zoom-live/sessions[/:id]` | staff | Crea (`topic`, `startTime`, `durationMinutes` 15-480, `hostEmail`, `timezone`, curso/lección opcional y `accessGroupIds?`: solo para esos niveles; vacío = todos) · edita · cancela (soft). Un grupo que no existe: 422 `ZOOM_ACCESS_GROUP_UNKNOWN`. |
 | GET | `/modules/zoom-live/sessions/:id/registrations` | staff | Roster de inscritos. |
 | GET · POST · PUT | `/modules/zoom-live/sessions/:id/attendance[…]` | staff | Informe de asistencia · sincroniza contra la API de Zoom · override manual por miembro (`{ present: bool\|null }`). |
 | POST | `/modules/zoom-live/test-credentials` | admin | Smoke test de las credenciales S2S (`real` o `stub`). |
