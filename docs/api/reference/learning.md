@@ -133,7 +133,7 @@ Endpoints de cursos, matrículas y progreso, rutas, evaluaciones, certificados, 
 |---|---|---|
 | GET | `/modules/access-groups` | Lista paginada (`page`, `limit`). |
 | GET | `/modules/access-groups/catalog/courses` · `catalog/users` | Selectores: cursos publicados · usuarios candidatos (`?q=`). |
-| GET | `/modules/access-groups/options` | Opciones de «Quién puede verlo» de espacios y directos: `[{ id, name }]`. Con niveles de pago, esos niveles en su orden y con su nombre (el gratis no); sin ellos, todos los grupos. **Admin o formador** (la única ruta de este prefijo que no exige admin). |
+| GET | `/modules/access-groups/options` | Opciones de «Quién puede verlo» de espacios y directos: `[{ id, name }]`. Con niveles de pago, esos niveles en su orden y con su nombre (el gratis no); sin ellos, `[]`. **Admin o formador** (la única ruta de este prefijo que no exige admin). |
 | GET | `/modules/access-groups/:id` | Detalle con cursos y miembros. |
 | POST | `/modules/access-groups` | Crea: `name`, `slug?`, `kind` (`ALL_COURSES\|COURSE\|MULTI_COURSE`), `courseIds?`, `autoGrantNewCourses?`. |
 | PATCH | `/modules/access-groups/:id` | Edita (`name`, `description`, `autoGrantNewCourses`, `isDefaultForApproval`, `linkedTierName` — vincula un tier de pagos). |

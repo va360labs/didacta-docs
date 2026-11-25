@@ -78,7 +78,7 @@ If the membership has [levels](subscriptions.md#levels) (Basic, Pro…), a space
 - **"All members"**: as always. A space where nothing is chosen belongs to everyone.
 - **"Only these levels"**: one checkbox per paid level, with its name and in its order. When you pick this option they all come **ticked**; untick the ones that should not see it. The screen reminds you: **"One level doesn't include another: tick every level that should see it."** If Pro should see Basic's space, tick both. With none ticked it is not saved ("Tick at least one level.").
 - The **free level** is not offered: what the free level sees, every member sees, and restricting to it would leave paying members out.
-- Without paid levels, the checkboxes are the classroom's access groups; if there are none, only "All members" is possible ("You don't have membership levels yet. Once you create them, you can choose here who sees it.").
+- Without paid levels there are no checkboxes: only "All members" is possible and the screen says "You don't have membership levels yet. Once you create them, you can choose here who sees it.". Plain access groups are not offered because they are not levels (since version 0.1.0-beta.28; before, they showed up here).
 - In the panel list, a restricted space carries the "Only for: Pro" mark (with its levels) and a padlock.
 
 **Who sees it.** The classroom team (`super_admin`, `tenant_admin` and instructor) always does: "You and your team always can." A member does if they are an active member of any of the ticked levels. A deleted level opens nothing: a space that only had that level is left for the team only.

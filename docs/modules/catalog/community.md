@@ -78,7 +78,7 @@ Si la membresía tiene [niveles](subscriptions.md#niveles) (Básico, Pro…), un
 - **«Todos los miembros»**: lo de siempre. Un espacio en el que no se elige nada es de todos.
 - **«Solo estos niveles»**: una casilla por nivel de pago, con su nombre y en su orden. Al elegir esta opción salen **todas marcadas**; desmarca las que no deban verlo. La pantalla lo recuerda: **«Un nivel no incluye a otro: marca todos los que deben verlo.»** Si Pro debe ver el espacio de Básico, marca los dos. Sin ninguna marcada no se guarda («Marca al menos un nivel.»).
 - El **nivel gratis** no se ofrece: lo que ve el gratis lo ven todos los miembros, y restringir a él dejaría fuera a quien paga.
-- Sin niveles de pago, las casillas son los grupos de acceso del aula; si no hay ninguno, solo cabe «Todos los miembros» («Todavía no tienes niveles de membresía. Cuando los crees, aquí podrás elegir quién lo ve.»).
+- Sin niveles de pago no hay casillas: solo cabe «Todos los miembros» y la pantalla dice «Todavía no tienes niveles de membresía. Cuando los crees, aquí podrás elegir quién lo ve.». Los grupos de acceso sueltos no se ofrecen porque no son niveles (desde la versión 0.1.0-beta.28; antes salían aquí).
 - En la lista del panel, un espacio restringido lleva la marca «Solo para: Pro» (con sus niveles) y un candado.
 
 **Quién lo ve.** El equipo del aula (`super_admin`, `tenant_admin` y formador) lo ve siempre: «Tú y tu equipo lo veis siempre.» Un miembro, si es miembro activo de alguno de los niveles marcados. Un nivel borrado no abre nada: un espacio que solo tenía ese nivel queda solo para el equipo.

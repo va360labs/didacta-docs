@@ -73,7 +73,7 @@ If the membership has [levels](subscriptions.md#levels) (Basic, Pro…), a class
 
 - **"All members"**: as always. A class where nothing is chosen belongs to everyone.
 - **"Only these levels"**: one checkbox per paid level, with its name and in its order. When you pick this option they all come **ticked**; untick the ones that should not see it. The screen reminds you: **"One level doesn't include another: tick every level that should see it."** With none ticked it is not saved ("Tick at least one level.").
-- The free level is not offered (what the free level sees, everyone sees). Without paid levels, the checkboxes are the classroom's access groups; if there are none, only "All members" is possible.
+- The free level is not offered (what the free level sees, everyone sees). Without paid levels there are no checkboxes: only "All members" is possible (plain access groups are not levels and are not offered).
 - In the panel's class list, a restricted class carries the "Only for: Pro" mark (with its levels) and a padlock.
 
 **Who sees it.** The classroom team (`super_admin`, `tenant_admin` and instructor, who hosts) always does. A member does if they are an active member of any of the ticked levels. Only they register and receive the link, the reminder, the cancellation notice, the recording and the post-class survey.

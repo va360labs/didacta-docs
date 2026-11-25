@@ -73,7 +73,7 @@ Si la membresía tiene [niveles](subscriptions.md#niveles) (Básico, Pro…), un
 
 - **«Todos los miembros»**: lo de siempre. Una clase en la que no se elige nada es de todos.
 - **«Solo estos niveles»**: una casilla por nivel de pago, con su nombre y en su orden. Al elegir esta opción salen **todas marcadas**; desmarca las que no deban verla. La pantalla lo recuerda: **«Un nivel no incluye a otro: marca todos los que deben verlo.»** Sin ninguna marcada no se guarda («Marca al menos un nivel.»).
-- El nivel gratis no se ofrece (lo que ve el gratis lo ven todos). Sin niveles de pago, las casillas son los grupos de acceso del aula; si no hay ninguno, solo cabe «Todos los miembros».
+- El nivel gratis no se ofrece (lo que ve el gratis lo ven todos). Sin niveles de pago no hay casillas: solo cabe «Todos los miembros» (los grupos de acceso sueltos no son niveles y no se ofrecen).
 - En la lista de clases del panel, una clase restringida lleva la marca «Solo para: Pro» (con sus niveles) y un candado.
 
 **Quién la ve.** El equipo del aula (`super_admin`, `tenant_admin` y formador, que es quien anfitriona) la ve siempre. Un miembro, si es miembro activo de alguno de los niveles marcados. Solo ellos se inscriben y reciben el enlace, el recordatorio, el aviso de cancelación, la grabación y la encuesta post-clase.

@@ -86,8 +86,8 @@ Cuando la membresía tiene un [nivel gratis](subscriptions.md#el-nivel-gratis), 
 - **«Revisar a mano cada alta gratis»**, en la tarjeta del nivel gratis (Membresía en modo completo, Ventas en modo sencillo), la apaga: cada alta vuelve a esperar a que la apruebes. Apagar o borrar el nivel gratis también la apaga.
 - **Las aulas sin nivel gratis no cambian**: aprobación manual, como siempre.
 
-!!! warning "Con Telegram exigido"
-    Si además exiges «Pertenencia a tu grupo de Telegram», la entrada al momento no mira si la persona está en el grupo: queda anotado en su solicitud, pero entra igual. Si quieres revisarlo, enciende «Revisar a mano cada alta gratis».
+!!! note "Con Telegram exigido"
+    Si además exiges «Pertenencia a tu grupo de Telegram», solo entra al momento quien **está en el grupo**. Quien no está (o si Telegram no deja comprobarlo) queda **pendiente de tu aprobación**, como sin nivel gratis: el aprobador recibe el aviso y el asistente vuelve a hablar de «tu solicitud». Desde la versión 0.1.0-beta.28; en la 0.1.0-beta.27 entraba igual.
 
 Por API, `GET /modules/member-registration/config` dice `autoApprove` (si se entra al momento) y `POST /modules/member-registration/register` responde `{ status: 'ACTIVE' }` cuando el alta entra sola (`PENDING` si no). El ajuste vive en el scope `member-registration`, clave `auto-approve` (`{ enabled, manualReview }`), y lo escribe el editor de niveles.
 

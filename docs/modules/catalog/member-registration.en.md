@@ -86,8 +86,8 @@ When the membership has a [free level](subscriptions.md#the-free-level), this re
 - **"Review every free sign-up by hand"**, on the free level's card (Membership in full mode, Sales in simple mode), turns it off: every sign-up waits for your approval again. Turning the free level off or deleting it also turns it off.
 - **Classrooms without a free level do not change**: manual approval, as always.
 
-!!! warning "With Telegram required"
-    If you also require "Membership of your Telegram group", instant entry does not check whether the person is in the group: it is noted on their request, but they get in anyway. If you want to review that, turn on "Review every free sign-up by hand".
+!!! note "With Telegram required"
+    If you also require "Membership of your Telegram group", only people who **are in the group** get in straight away. Anyone who is not (or when Telegram does not let us check) stays **pending your approval**, as without a free level: the approver gets the notice and the wizard talks about "your request" again. Since version 0.1.0-beta.28; in 0.1.0-beta.27 they got in anyway.
 
 Through the API, `GET /modules/member-registration/config` says `autoApprove` (whether people get in straight away) and `POST /modules/member-registration/register` answers `{ status: 'ACTIVE' }` when the sign-up gets in on its own (`PENDING` otherwise). The setting lives in the `member-registration` scope, key `auto-approve` (`{ enabled, manualReview }`), and the levels editor writes it.
 
